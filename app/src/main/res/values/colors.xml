@@ -10,4 +10,6 @@
     <color name="dashboardpink">#FFDDE5</color>
     <color name="dashboardyellow">#FFFDC8</color>
     <color name="dashboardgreen">#CCFFC8</color>
+    <color name="darkpink">#FF9393</color>
+    <color name="darkgreen">#BBFCC1</color>
 </resources>

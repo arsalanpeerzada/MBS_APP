@@ -13,6 +13,18 @@
         android:theme="@style/Theme.MBSAPP"
         tools:targetApi="31">
         <activity
+            android:name=".EndActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Stock_Gift_CountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StorePictureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".QuestionnaireActivity"
+            android:exported="false" />
+        <activity
             android:name=".Dashboard"
             android:exported="false" />
         <activity

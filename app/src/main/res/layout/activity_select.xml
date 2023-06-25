@@ -133,13 +133,13 @@
 
     <Button
         android:layout_marginTop="30dp"
-        android:id="@+id/login"
+        android:id="@+id/next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="35dp"
         android:backgroundTint="@color/appblue"
         android:fontFamily="@font/poppins_regular"
-        android:text="Login"
+        android:text="Next"
         app:layout_constraintTop_toBottomOf="@+id/selectLocation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

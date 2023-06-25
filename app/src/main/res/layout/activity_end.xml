@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ClusterStartActivity">
+    tools:context=".EndActivity">
 
     <View
         android:id="@+id/view"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
         android:fontFamily="@font/poppins_regular"
-        android:text="Knorr Cluster Activity"
+        android:text="End Activity"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
@@ -189,7 +189,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="60dp"
         android:fontFamily="@font/poppins_regular"
-        android:text="Start Activity"
+        android:text="End Activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardview3" />
@@ -200,7 +200,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/poppins_regular"
-        android:text="Once you have start activity you can not go back"
+        android:text="Once you have End activity you can not go back"
         android:textColor="@color/appred"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
