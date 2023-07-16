@@ -19,5 +19,7 @@ class SelectActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.left, R.anim.left2);
 
         }
+
+
     }
 }

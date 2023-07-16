@@ -71,7 +71,8 @@
         app:layout_constraintTop_toBottomOf="@+id/view">
 
         <Button
-android:layout_centerVertical="true"
+            android:id="@+id/close"
+            android:layout_centerVertical="true"
             android:textColor="@color/black"
             android:layout_marginLeft="20dp"
             android:layout_width="150dp"
@@ -83,6 +84,7 @@ android:layout_centerVertical="true"
             android:text="Close" />
 
         <Button
+            android:id="@+id/submit"
             android:layout_centerVertical="true"
             android:textColor="@color/black"
             android:layout_alignParentRight="true"
@@ -98,7 +100,6 @@ android:layout_centerVertical="true"
     </RelativeLayout>
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"
@@ -108,7 +109,6 @@ android:layout_centerVertical="true"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

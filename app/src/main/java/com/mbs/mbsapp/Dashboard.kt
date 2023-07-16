@@ -40,5 +40,12 @@ class Dashboard : AppCompatActivity() {
             overridePendingTransition(R.anim.left, R.anim.left2);
 
         }
+
+        binding.logout.setOnClickListener{
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.left, R.anim.left2);
+            this.finish()
+        }
     }
 }
