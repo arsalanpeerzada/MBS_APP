@@ -2,12 +2,14 @@ package com.mbs.mbsapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.inksy.Database.MBSDatabase
+import com.mbs.mbsapp.Utils.DbHandler
+import com.mbs.mbsapp.Utils.DbScript
+
 
 class SplashActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +25,7 @@ class SplashActivity : AppCompatActivity() {
                         e.printStackTrace()
                     }
                 } finally {
+
                     startActivity(intent)
                     overridePendingTransition(R.anim.left, R.anim.left2);
                     finish()
@@ -31,4 +34,9 @@ class SplashActivity : AppCompatActivity() {
         }
         timer.start()
     }
+
+//    class DBHelper : SQLiteOpenHelper(context, DATABASE_NAME, null, 1) {
+//        override fun onCreate(db: SQLiteDatabase) {}
+//        override fun onUpgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+//    }
 }

@@ -3,6 +3,7 @@ package com.mbs.mbsapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityDashboardBinding
 
 class Dashboard : AppCompatActivity() {
@@ -42,6 +43,8 @@ class Dashboard : AppCompatActivity() {
         }
 
         binding.logout.setOnClickListener{
+            var tinyDB = TinyDB(this)
+            tinyDB.clear();
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.left, R.anim.left2);

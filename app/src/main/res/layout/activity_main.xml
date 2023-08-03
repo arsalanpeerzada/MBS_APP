@@ -80,6 +80,7 @@
         android:fontFamily="@font/poppins_regular"
         android:gravity="center_vertical"
         android:hint="Password"
+        android:inputType="textPassword"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
         android:textColor="@color/appgrey"
@@ -103,14 +104,28 @@
 
     <Button
         android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="35dp"
+        android:layout_marginTop="50dp"
         android:backgroundTint="@color/appblue"
         android:fontFamily="@font/poppins_regular"
         android:text="Login"
-        android:layout_marginHorizontal="35dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         app:layout_constraintTop_toBottomOf="@+id/password" />
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/loading"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading .....   0%"
+        android:textColor="@color/appblue"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
