@@ -4,10 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
+import com.mbs.mbsapp.Database.Entities.ActivityMaster
 import com.mbs.mbsapp.Database.Entities.BrandEntity
+import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.QuestionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
 
@@ -24,6 +29,9 @@ interface iMBSSave {
     suspend fun insertCampaign(campaignEntity: CampaignEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCampaignChannel(campaignChannel: CampaignChannel?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCities(cityEntity: CityEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -33,10 +41,109 @@ interface iMBSSave {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStores(storeEntity: StoreEntity?)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertActivityDetails(activityDetailEntity: ActivityDetailEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertActivityMaster(activityMaster: ActivityMaster?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuestionnaire(questionnaireEntity: QuestionnaireEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuestion(questionEntity: QuestionEntity?)
+
+
+    @Query("Select * from users order by mid ASC")
+    fun getUser(): UserEntity
 
     @Query("Select * from brands order by mid ASC")
     fun getAllBrands(): List<BrandEntity>
 
+
+    @Query("Select * from campaigns order by mid ASC")
+    fun getAllCampaign(): List<CampaignEntity>
+
+    @Query("Select * from campaign_channels order by mid ASC")
+    fun getAllCampaignChannel(): List<CampaignChannel>
+
+    @Query("Select * from cities order by mid ASC")
+    fun getAllCities(): List<CityEntity>
+
+    @Query("Select * from locations order by mid ASC")
+    fun getAllLocations(): List<LocationEntity>
+
+    @Query("Select * from stores order by mid ASC")
+    fun getAllStores(): List<StoreEntity>
+
+    @Query("Select * from activity_detials order by mid ASC")
+    fun getAllActivityDetails(): List<ActivityDetailEntity>
+
+    @Query("Select * from activity_masters order by mid ASC")
+    fun getAllActivityMasters(): List<ActivityMaster>
+
+
+    @Query("DELETE FROM users")
+    suspend fun deleteAllUsers()
+
+    @Query("DELETE FROM activity_masters")
+    suspend fun deleteAllActivityMasters()
+
+    @Query("DELETE FROM activity_detials")
+    suspend fun deleteAllActivityDetails()
+
+    @Query("DELETE FROM brands")
+    suspend fun deleteAllBrands()
+
+    @Query("DELETE FROM campaigns")
+    suspend fun deleteAllCampaigns()
+
+    @Query("DELETE FROM cities")
+    suspend fun deleteAllCities()
+
+    @Query("DELETE FROM locations")
+    suspend fun deleteAllLocations()
+
+    @Query("DELETE FROM stores")
+    suspend fun deleteAllStores()
+
+    @Query("DELETE FROM questionnaire")
+    suspend fun deleteAllQuestionnaires()
+
+    @Query("DELETE FROM questions")
+    suspend fun deleteAllQuestions()
+
+
+    @Query(
+        "select campaigns.*, cc.cc_store_level, cc.cc_name from campaigns\n" +
+                "inner join campaign_channels cc ON cc.id = campaigns.cc_id\n" +
+                "where brand_id = :brandid"
+    )
+    fun getCampaignbyBrand(brandid: Int): List<CampaignEntity>
+
+
+    @Query("select c.city_name, c.id from activity_masters am inner join activity_detials ad ON ad.activity_master_id = am.id inner join cities c ON c.id = ad.city_id where am.campaign_id = :campaignId and am.user_id = :userId group by (c.id);")
+    fun getCitybyCampaign(campaignId: Int, userId: Int): List<CityEntity>
+
+
+    @Query(
+        "select l.location_name, l.id from activity_masters am\n" +
+                "    inner join activity_detials ad ON ad.activity_master_id = am.id\n" +
+                "    inner join locations l ON l.id = ad.location_id\n" +
+                "    where am.campaign_id = :campaignId and am.user_id = :userId and ad.city_id = :cityId\n" +
+                "    group by (l.id);"
+    )
+    fun getLocationbyCity(campaignId: Int, userId: Int, cityId: Int): List<LocationEntity>
+
+
+    @Query(
+        "select s.store_name, s.id from activity_masters am\n" +
+                "inner join activity_detials ad ON ad.activity_master_id = am.id\n" +
+                "inner join stores s ON s.id = ad.store_id\n" +
+                "where am.campaign_id = :campaignId and am.user_id = :userId and ad.location_id = :locationId\n" +
+                "group by (s.id)"
+    )
+    fun getStorebyLocation(campaignId: Int, userId: Int, locationId: Int): List<StoreEntity>
 
 
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.inksy.Database.MBSDatabase
 import com.mbs.mbsapp.Utils.DbHandler
 import com.mbs.mbsapp.Utils.DbScript
+import com.mbs.mbsapp.Utils.TinyDB
 
 
 class SplashActivity : AppCompatActivity() {
@@ -26,9 +27,21 @@ class SplashActivity : AppCompatActivity() {
                     }
                 } finally {
 
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.left, R.anim.left2);
-                    finish()
+                    var tinyDB = TinyDB(this@SplashActivity)
+                    var token = tinyDB.getString("token")
+
+                    if (token.isNullOrBlank()){
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.left, R.anim.left2);
+                        finish()
+                    }else {
+                        val intent = Intent(this@SplashActivity, SelectActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.left, R.anim.left2);
+                        finish()
+                    }
+
+
                 }
             }
         }

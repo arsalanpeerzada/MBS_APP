@@ -4,9 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mbs.mbsapp.Model.ActivityModel
 import com.mbs.mbsapp.Model.BrandsModel
+import com.mbs.mbsapp.Model.CampaignChannelModel
 import com.mbs.mbsapp.Model.CampaignModel
 import com.mbs.mbsapp.Model.CitiesModel
 import com.mbs.mbsapp.Model.LocationModel
+import com.mbs.mbsapp.Model.QuestionnaireModel
 import com.mbs.mbsapp.Model.StoreModel
 import com.mbs.mbsapp.Model.UserModel
 import retrofit2.Call
@@ -36,6 +38,10 @@ public interface APIInterface {
     @Headers("Accept: application/json")
     fun getCampaign(@Header("Authorization") token: String?): Call<ApiResponse<List<CampaignModel>>>
 
+    @GET("initialsync/channels")
+    @Headers("Accept: application/json")
+    fun getCampaignChannel(@Header("Authorization") token: String?): Call<ApiResponse<List<CampaignChannelModel>>>
+
     @GET("initialsync/cities")
     @Headers("Accept: application/json")
     fun getCities(@Header("Authorization") token: String?): Call<ApiResponse<List<CitiesModel>>>
@@ -51,6 +57,10 @@ public interface APIInterface {
     @GET("initialsync/activities")
     @Headers("Accept: application/json")
     fun getactivities(@Header("Authorization") token: String?): Call<ApiResponse<ActivityModel>>
+
+    @GET("initialsync/questionnair")
+    @Headers("Accept: application/json")
+    fun getQuestionnaire(@Header("Authorization") token: String?): Call<ApiResponse<QuestionnaireModel>>
 
 
     class ApiResponse<T> {

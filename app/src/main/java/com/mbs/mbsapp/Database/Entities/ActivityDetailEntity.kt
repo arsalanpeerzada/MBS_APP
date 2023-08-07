@@ -10,15 +10,15 @@ data class ActivityDetailEntity(
     @ColumnInfo(name = "mid")
     val mid :Int? = 0,
     @ColumnInfo(name = "id")
-    val id: Long,
+    val id: Int?,
     @ColumnInfo(name = "activity_master_id")
-    val activityMasterId: Long,
+    val activityMasterId: Int?,
     @ColumnInfo(name = "city_id")
-    val cityId: Long,
+    val cityId: Int?,
     @ColumnInfo(name = "location_id")
-    val locationId: Long,
+    val locationId: Int?,
     @ColumnInfo(name = "store_id")
-    val storeId: Long?,
+    val storeId: Int?,
     @ColumnInfo(name = "created_at")
     var createdAt: String? = null,
     @ColumnInfo(name = "updated_at")

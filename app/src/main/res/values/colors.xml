@@ -12,4 +12,5 @@
     <color name="dashboardgreen">#CCFFC8</color>
     <color name="darkpink">#FF9393</color>
     <color name="darkgreen">#BBFCC1</color>
+    <color name="color_divider">#d1d1d1</color>
 </resources>

@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -39,13 +39,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
         android:padding="10dp"
         android:src="@drawable/refresh_icon"
         app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/logout"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -60,12 +60,15 @@
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <EditText
-        android:layout_marginTop="20dp"
         android:id="@+id/selectBrand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/curve_edittext"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
         android:fontFamily="@font/poppins_regular"
         android:gravity="center_vertical"
         android:hint="Select Brand"
@@ -78,15 +81,18 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
-        android:layout_marginTop="10dp"
         android:id="@+id/selectActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/curve_edittext"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
         android:fontFamily="@font/poppins_regular"
         android:gravity="center_vertical"
-        android:hint="Select Activity"
+        android:hint="Select Campaign"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
         android:textColor="@color/appgrey"
@@ -96,12 +102,15 @@
         app:layout_constraintTop_toBottomOf="@+id/selectBrand" />
 
     <EditText
-        android:layout_marginTop="10dp"
         android:id="@+id/selectCity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/curve_edittext"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
         android:fontFamily="@font/poppins_regular"
         android:gravity="center_vertical"
         android:hint="Select City"
@@ -114,12 +123,15 @@
         app:layout_constraintTop_toBottomOf="@+id/selectActivity" />
 
     <EditText
-        android:layout_marginTop="10dp"
         android:id="@+id/selectLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/curve_edittext"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
         android:fontFamily="@font/poppins_regular"
         android:gravity="center_vertical"
         android:hint="Select Location"
@@ -131,15 +143,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectCity" />
 
+
+    <EditText
+        android:id="@+id/selectStore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/curve_edittext"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center_vertical"
+        android:hint="Select Store"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/appgrey"
+        android:textSize="14dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectLocation" />
+
     <Button
-        android:layout_marginTop="30dp"
         android:id="@+id/next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="35dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="@color/appblue"
         android:fontFamily="@font/poppins_regular"
         android:text="Next"
-        app:layout_constraintTop_toBottomOf="@+id/selectLocation" />
+        app:layout_constraintTop_toBottomOf="@+id/selectStore" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

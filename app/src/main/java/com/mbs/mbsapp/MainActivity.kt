@@ -10,17 +10,23 @@ import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
+import com.mbs.mbsapp.Database.Entities.ActivityMaster
 import com.mbs.mbsapp.Database.Entities.BrandEntity
+import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.QuestionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
 import com.mbs.mbsapp.Model.ActivityModel
 import com.mbs.mbsapp.Model.BrandsModel
+import com.mbs.mbsapp.Model.CampaignChannelModel
 import com.mbs.mbsapp.Model.CampaignModel
 import com.mbs.mbsapp.Model.CitiesModel
 import com.mbs.mbsapp.Model.LocationModel
+import com.mbs.mbsapp.Model.QuestionnaireModel
 import com.mbs.mbsapp.Model.StoreModel
 import com.mbs.mbsapp.Model.UserModel
 import com.mbs.mbsapp.Utils.Constants
@@ -44,7 +50,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         tinyDB = TinyDB(this@MainActivity)
         mbsDatabase = MBSDatabase.getInstance(this@MainActivity)!!
         binding.login.setOnClickListener {
@@ -84,6 +89,12 @@ class MainActivity : AppCompatActivity() {
                         getStoresAPI(finaltoken)
                         getCitiesAPI(finaltoken)
                         getActivitiesAPI(finaltoken)
+                        getQuestionnaire(finaltoken)
+                        getCampaignChannelAPI(finaltoken)
+
+                    }else {
+                        binding.login.isEnabled = true
+                        Toast.makeText(this@MainActivity, "Login Failed, Try Again", Toast.LENGTH_SHORT).show()
 
                     }
                 }
@@ -92,6 +103,7 @@ class MainActivity : AppCompatActivity() {
                     call: Call<APIInterface.ApiResponse<UserModel>>,
                     t: Throwable
                 ) {
+                    binding.login.isEnabled = true
                     Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -146,6 +158,62 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<List<CampaignModel>>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Campaign Data Loading Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    checkAPI(false)
+                }
+
+            })
+    }
+
+    private fun getCampaignChannelAPI(token: String) {
+        apiInterface.getCampaignChannel(token)
+            .enqueue(object : Callback<APIInterface.ApiResponse<List<CampaignChannelModel>>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<List<CampaignChannelModel>>>,
+                    response: Response<APIInterface.ApiResponse<List<CampaignChannelModel>>>
+                ) {
+                    if (response.isSuccessful) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Campaign Loaded Successfully",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                        checkAPI(true)
+
+                        GlobalScope.launch {
+                            var id = 0
+                            for (item in response.body()?.data!!) {
+                                var campaignChannel = CampaignChannel(
+                                    id,
+                                    item.id,
+                                    item.statusId,
+                                    item.ccName,
+                                    item.ccStoreLevel,
+                                    item.createdBy,
+                                    item.updatedBy,
+                                    item.isDeleted,
+                                    item.deletedBy,
+                                    item.deletedAt,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertCampaignChannel(campaignChannel)
+                                id++
+                            }
+                        }
+
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<List<CampaignChannelModel>>>,
                     t: Throwable
                 ) {
                     Toast.makeText(
@@ -399,27 +467,44 @@ class MainActivity : AppCompatActivity() {
                         checkAPI(true)
 
                         GlobalScope.launch {
+                            var id = 0
+                            for (item in response.body()?.data?.activityDetials!!) {
+                                var activityDetailEntity = ActivityDetailEntity(
+                                    id,
+                                    item.id,
+                                    item.activityMasterId,
+                                    item.cityId,
+                                    item.locationId,
+                                    item.storeId,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertActivityDetails(activityDetailEntity)
+                                id++
+                            }
 
-//                            for (item in response.body()?.data?.activityDetials!!) {
-//                                var activityDetailEntity = ActivityDetailEntity(
-//                                    0,
-//                                    item.id,
-//                                    item.statusId,
-//                                    item.brandName,
-//                                    item.brandDesciption,
-//                                    item.brandLogoId,
-//                                    item.brandPrimaryColor,
-//                                    item.brandSecondaryColor,
-//                                    item.createdBy,
-//                                    item.updatedBy,
-//                                    item.isDeleted,
-//                                    item.deletedBy,
-//                                    item.deletedAt,
-//                                    item.createdAt,
-//                                    item.updatedAt
-//                                )
-//                                mbsDatabase.getMBSData().insertBrands(brandEntity)
-//                            }
+                            var idd = 0
+                            for (item in response.body()?.data?.activityMaster!!) {
+                                var activityMaster = ActivityMaster(
+                                    idd,
+                                    item.id,
+                                    item.activityName,
+                                    item.activityCode,
+                                    item.brandId,
+                                    item.campaignId,
+                                    item.campaignChannelId,
+                                    item.userId,
+                                    item.createdBy,
+                                    item.updatedBy,
+                                    item.isDeleted,
+                                    item.deletedBy,
+                                    item.deletedAt,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertActivityMaster(activityMaster)
+                                idd++
+                            }
                         }
 
                     } else {
@@ -446,32 +531,128 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    private fun getQuestionnaire(token: String) {
+        apiInterface.getQuestionnaire(token)
+            .enqueue(object : Callback<APIInterface.ApiResponse<QuestionnaireModel>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<QuestionnaireModel>>,
+                    response: Response<APIInterface.ApiResponse<QuestionnaireModel>>
+                ) {
+                    if (response.isSuccessful) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Brands Loaded Successfully",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                        checkAPI(true)
+
+                        GlobalScope.launch {
+                            var id = 0
+                            for (item in response.body()?.data?.questionnaires!!) {
+                                var questionnaireEntity = QuestionnaireEntity(
+                                    id,
+                                    item.id,
+                                    item.questionnairName,
+                                    item.campaignId,
+                                    item.outOf,
+                                    item.questionsCount,
+                                    item.createdBy,
+                                    item.updatedBy,
+                                    item.isDeleted,
+                                    item.deletedBy,
+                                    item.deletedAt,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertQuestionnaire(questionnaireEntity)
+                                id++
+                            }
+
+                            var idd = 0
+                            for (item in response.body()?.data?.questions!!) {
+                                var questionEntity = QuestionEntity(
+                                    idd,
+                                    item.id,
+                                    item.questionnaireId,
+                                    item.questionSectionId,
+                                    item.questionSectionName,
+                                    item.question,
+                                    item.isMediaAllowed,
+                                    item.mediaCount,
+                                    item.marks,
+                                    item.createdBy,
+                                    item.updatedBy,
+                                    item.isDeleted,
+                                    item.deletedBy,
+                                    item.deletedAt,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertQuestion(questionEntity)
+                                idd++
+                            }
+                        }
+
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity,
+                            response.message().toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<QuestionnaireModel>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Brands Data Loading Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    checkAPI(false)
+                }
+
+            })
+    }
+
 
     fun checkAPI(check: Boolean) {
 
         if (check) {
             when (loadingPercentageNo) {
                 0 -> {
-                    binding.loading.text = "Loading .....   20%"
+                    binding.loading.text = "Loading .....   15%"
                     loadingPercentageNo++
                 }
 
                 1 -> {
-                    binding.loading.text = "Loading .....   40%"
+                    binding.loading.text = "Loading .....   30%"
                     loadingPercentageNo++
                 }
 
                 2 -> {
-                    binding.loading.text = "Loading .....   60%"
+                    binding.loading.text = "Loading .....   45%"
                     loadingPercentageNo++
                 }
 
                 3 -> {
-                    binding.loading.text = "Loading .....   80%"
+                    binding.loading.text = "Loading .....   60%"
                     loadingPercentageNo++
                 }
 
                 4 -> {
+                    binding.loading.text = "Loading .....   75%"
+                    loadingPercentageNo++
+                }
+
+                5 -> {
+                    binding.loading.text = "Loading .....   90%"
+                    loadingPercentageNo++
+                }
+
+                6 -> {
                     binding.loading.text = "Loading .....   100%"
                     loadingPercentageNo++
 

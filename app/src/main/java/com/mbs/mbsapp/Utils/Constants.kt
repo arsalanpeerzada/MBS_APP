@@ -10,6 +10,13 @@ class Constants {
     companion object{
         var baseURL = "https://msb.count-square.com/api/"
 
+
+        var BRANDS = 1
+        var CAMPAIGN = 2
+        var CITY = 3
+        var LOCATION = 4
+        var STORE = 5
+
         fun isInternetConnected(context: Context): Boolean {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

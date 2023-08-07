@@ -95,6 +95,7 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:scaleType="centerCrop"
                 android:id="@+id/imageView5"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -137,6 +138,7 @@
         app:layout_constraintTop_toTopOf="@+id/teampicture">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/imageView6"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -176,6 +178,7 @@
         app:layout_constraintTop_toTopOf="@+id/stepup">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/imageView8"
             android:layout_width="80dp"
             android:layout_height="80dp"

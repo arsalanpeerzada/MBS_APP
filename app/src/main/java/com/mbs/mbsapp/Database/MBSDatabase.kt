@@ -5,18 +5,22 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
+import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.ActivityMaster
 import com.mbs.mbsapp.Database.Entities.BrandEntity
+import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.QuestionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
 import com.mbs.mbsapp.Database.iMBSSave
 
 @Database(
-    entities = [UserEntity::class,ActivityMaster::class, ActivityDetailEntity::class,BrandEntity::class,CampaignEntity::class,CityEntity::class,LocationEntity::class,StoreEntity::class],
-    version = 4,
+    entities = [UserEntity::class, ActivityMaster::class, ActivityDetailEntity::class, BrandEntity::class, CampaignEntity::class, CityEntity::class, LocationEntity::class, StoreEntity::class, QuestionnaireEntity::class, QuestionEntity::class, CampaignChannel::class, ActivityLog::class],
+    version = 9,
     exportSchema = false
 )
 abstract class MBSDatabase : RoomDatabase() {
@@ -36,6 +40,7 @@ abstract class MBSDatabase : RoomDatabase() {
             }
             return mbsDatabase
         }
+
         private fun buildDatabaseInstance(context: Context): MBSDatabase {
             return Room.databaseBuilder(
                 context,

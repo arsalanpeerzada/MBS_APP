@@ -1,16 +1,20 @@
 package com.mbs.mbsapp
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
+import android.os.Environment
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.inksy.Database.MBSDatabase
 import com.mbs.mbsapp.Utils.Permissions
 import com.mbs.mbsapp.databinding.ActivityClusterStartBinding
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+
 
 class ClusterStartActivity : AppCompatActivity() {
 
@@ -21,6 +25,24 @@ class ClusterStartActivity : AppCompatActivity() {
     private val contract = registerForActivityResult(ActivityResultContracts.TakePicture()) {
         binding.imageView5.setImageURI(null)
         binding.imageView5.setImageURI(cameraUri)
+        var bitmap = uriToBitmap(cameraUri)
+        saveImageToFolder(bitmap!!)
+
+    }
+
+    private val contract1 = registerForActivityResult(ActivityResultContracts.TakePicture()) {
+        binding.imageView6.setImageURI(null)
+        binding.imageView6.setImageURI(cameraUri)
+        var bitmap = uriToBitmap(cameraUri)
+        saveImageToFolder(bitmap!!)
+
+    }
+
+    private val contract2 = registerForActivityResult(ActivityResultContracts.TakePicture()) {
+        binding.imageView8.setImageURI(null)
+        binding.imageView8.setImageURI(cameraUri)
+        var bitmap = uriToBitmap(cameraUri)
+        saveImageToFolder(bitmap!!)
 
     }
 
@@ -53,6 +75,18 @@ class ClusterStartActivity : AppCompatActivity() {
             this.finish()
         }
 
+        binding.button.setOnClickListener {
+            binding.cardview1.performClick()
+        }
+
+        binding.button2.setOnClickListener {
+            binding.cardview2.performClick()
+        }
+
+        binding.button3.setOnClickListener {
+            binding.cardview3.performClick()
+        }
+
         binding.cardview1.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@ClusterStartActivity) || !Permissions.Check_STORAGE(
@@ -62,6 +96,30 @@ class ClusterStartActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
             } else {
                 contract.launch(cameraUri)
+            }
+        }
+
+        binding.cardview2.setOnClickListener {
+
+            if (!Permissions.Check_CAMERA(this@ClusterStartActivity) || !Permissions.Check_STORAGE(
+                    this@ClusterStartActivity
+                )
+            ) {
+                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+            } else {
+                contract1.launch(cameraUri)
+            }
+        }
+
+        binding.cardview3.setOnClickListener {
+
+            if (!Permissions.Check_CAMERA(this@ClusterStartActivity) || !Permissions.Check_STORAGE(
+                    this@ClusterStartActivity
+                )
+            ) {
+                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+            } else {
+                contract2.launch(cameraUri)
             }
         }
 
@@ -75,5 +133,46 @@ class ClusterStartActivity : AppCompatActivity() {
             "com.mbs.mbsapp.fileprovider",
             image
         )
+    }
+
+    private fun uriToBitmap(uri: Uri): Bitmap? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun saveImageToFolder(bitmap: Bitmap) {
+        val folderName = "YourFolderName"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val folder = File(storageDir, folderName)
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+
+        val fileName = "y_picture.jpg"
+        val pictureFile = File(folder, fileName)
+
+
+        val bos = ByteArrayOutputStream()
+       bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos) // YOU can also save it in JPEG
+
+        val bitmapdata = bos.toByteArray()
+        val fos = FileOutputStream(pictureFile)
+        fos.write(bitmapdata)
+        fos.flush()
+        fos.close()
+
+//        val fos = FileOutputStream(pictureFile)
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+//        fos.write();
+//        fos.flush();
+//        fos.close()
+
+
+
     }
 }
