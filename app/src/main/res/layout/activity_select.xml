@@ -166,12 +166,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectLocation" />
 
+    <TextView
+        android:id="@+id/reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Reset"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="@+id/selectLocation"
+        app:layout_constraintTop_toBottomOf="@+id/selectStore" />
+
     <Button
         android:id="@+id/next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="35dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="100dp"
         android:backgroundTint="@color/appblue"
         android:fontFamily="@font/poppins_regular"
         android:text="Next"

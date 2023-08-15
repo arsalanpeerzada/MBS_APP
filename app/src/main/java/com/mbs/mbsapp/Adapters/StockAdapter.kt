@@ -4,15 +4,19 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.mbs.mbsapp.Database.Entities.ProductEntity
 import com.mbs.mbsapp.R
 
-class StockAdapter(var context: Context) : RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+class StockAdapter(var context: Context, var productlist: List<ProductEntity>) :
+    RecyclerView.Adapter<StockAdapter.ViewHolder>() {
     class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
 
+        lateinit var productName: TextView
         fun bind() {
+            productName = itemView.findViewById(R.id.productName)
         }
     }
 
@@ -27,6 +31,8 @@ class StockAdapter(var context: Context) : RecyclerView.Adapter<StockAdapter.Vie
         try {
             holder.bind()
 
+            holder.productName.text = productlist[position].productName
+
 
         } catch (e: NullPointerException) {
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show()
@@ -36,6 +42,6 @@ class StockAdapter(var context: Context) : RecyclerView.Adapter<StockAdapter.Vie
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return productlist.size
     }
 }

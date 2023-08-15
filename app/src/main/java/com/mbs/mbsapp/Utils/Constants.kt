@@ -9,6 +9,7 @@ class Constants {
 
     companion object{
         var baseURL = "https://msb.count-square.com/api/"
+        var baseURLforPicture = "https://msb.count-square.com"
 
 
         var BRANDS = 1

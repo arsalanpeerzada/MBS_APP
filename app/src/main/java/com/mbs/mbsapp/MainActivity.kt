@@ -16,7 +16,9 @@ import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.ProductEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
@@ -26,6 +28,8 @@ import com.mbs.mbsapp.Model.CampaignChannelModel
 import com.mbs.mbsapp.Model.CampaignModel
 import com.mbs.mbsapp.Model.CitiesModel
 import com.mbs.mbsapp.Model.LocationModel
+import com.mbs.mbsapp.Model.ProductModel
+import com.mbs.mbsapp.Model.QuestionSectionModel
 import com.mbs.mbsapp.Model.QuestionnaireModel
 import com.mbs.mbsapp.Model.StoreModel
 import com.mbs.mbsapp.Model.UserModel
@@ -67,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         email: String?,
         password: String?
     ) {
-        binding.login.isEnabled = false
+        binding.login.text = "Please Wait"
         apiInterface.login(email, password)
             .enqueue(object : Callback<APIInterface.ApiResponse<UserModel>> {
                 override fun onResponse(
@@ -91,10 +95,16 @@ class MainActivity : AppCompatActivity() {
                         getActivitiesAPI(finaltoken)
                         getQuestionnaire(finaltoken)
                         getCampaignChannelAPI(finaltoken)
+                        getQuestionSection(finaltoken)
+                        getProductAPI(finaltoken)
 
-                    }else {
-                        binding.login.isEnabled = true
-                        Toast.makeText(this@MainActivity, "Login Failed, Try Again", Toast.LENGTH_SHORT).show()
+                    } else {
+                        binding.login.text = "Login"
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Login Failed, Try Again",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                     }
                 }
@@ -103,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                     call: Call<APIInterface.ApiResponse<UserModel>>,
                     t: Throwable
                 ) {
-                    binding.login.isEnabled = true
+                    binding.login.text = "Login"
                     Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -158,6 +168,61 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<List<CampaignModel>>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Campaign Data Loading Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    checkAPI(false)
+                }
+
+            })
+    }
+
+    private fun getProductAPI(token: String) {
+        apiInterface.getProducts(token)
+            .enqueue(object : Callback<APIInterface.ApiResponse<List<ProductModel>>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<List<ProductModel>>>,
+                    response: Response<APIInterface.ApiResponse<List<ProductModel>>>
+                ) {
+                    if (response.isSuccessful) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Campaign Loaded Successfully",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                        checkAPI(true)
+
+                        GlobalScope.launch {
+                            var id = 0
+                            for (item in response.body()?.data!!) {
+                                var productEntity = ProductEntity(
+                                    id,
+                                    item.id,
+                                    item.campaignId,
+                                    item.productName,
+                                    item.createdBy,
+                                    item.updatedBy,
+                                    item.isDeleted,
+                                    item.deletedBy,
+                                    item.deletedAt,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertProduct(productEntity)
+                                id++
+                            }
+                        }
+
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<List<ProductModel>>>,
                     t: Throwable
                 ) {
                     Toast.makeText(
@@ -419,7 +484,9 @@ class MainActivity : AppCompatActivity() {
                                     item.deletedBy,
                                     item.deletedAt,
                                     item.createdAt,
-                                    item.updatedAt
+                                    item.updatedAt,
+                                    item.brandLogoPath,
+                                    item.brandLogoName
                                 )
                                 mbsDatabase.getMBSData().insertBrands(brandEntity)
                                 id++
@@ -617,42 +684,113 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    private fun getQuestionSection(token: String) {
+        apiInterface.getQuestionSection(token)
+            .enqueue(object : Callback<APIInterface.ApiResponse<List<QuestionSectionModel>>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<List<QuestionSectionModel>>>,
+                    response: Response<APIInterface.ApiResponse<List<QuestionSectionModel>>>
+                ) {
+                    if (response.isSuccessful) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Brands Loaded Successfully",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                        checkAPI(true)
+
+                        GlobalScope.launch {
+                            var id = 0
+                            for (item in response.body()?.data!!) {
+                                var questionSectionEntity = QuestionSectionEntity(
+                                    id,
+                                    item.id,
+                                    item.sectionName,
+                                    item.createdAt,
+                                    item.updatedAt,
+                                )
+                                mbsDatabase.getMBSData()
+                                    .insertQuestionSection(questionSectionEntity)
+                                id++
+                            }
+                        }
+
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity,
+                            response.message().toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<List<QuestionSectionModel>>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Brands Data Loading Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    checkAPI(false)
+                }
+
+            })
+    }
+
 
     fun checkAPI(check: Boolean) {
 
         if (check) {
             when (loadingPercentageNo) {
                 0 -> {
-                    binding.loading.text = "Loading .....   15%"
+                    binding.loading.text = "Loading .....   10%"
                     loadingPercentageNo++
                 }
 
                 1 -> {
-                    binding.loading.text = "Loading .....   30%"
+                    binding.loading.text = "Loading .....   20%"
                     loadingPercentageNo++
                 }
 
                 2 -> {
-                    binding.loading.text = "Loading .....   45%"
+                    binding.loading.text = "Loading .....   30%"
                     loadingPercentageNo++
                 }
 
                 3 -> {
-                    binding.loading.text = "Loading .....   60%"
+                    binding.loading.text = "Loading .....   40%"
                     loadingPercentageNo++
                 }
 
                 4 -> {
-                    binding.loading.text = "Loading .....   75%"
+                    binding.loading.text = "Loading .....   50%"
                     loadingPercentageNo++
                 }
 
                 5 -> {
-                    binding.loading.text = "Loading .....   90%"
+                    binding.loading.text = "Loading .....   60%"
                     loadingPercentageNo++
                 }
 
                 6 -> {
+                    binding.loading.text = "Loading .....   70%"
+                    loadingPercentageNo++
+                }
+
+                7 -> {
+                    binding.loading.text = "Loading .....   80%"
+                    loadingPercentageNo++
+                }
+
+                8 -> {
+                    binding.loading.text = "Loading .....   90%"
+                    loadingPercentageNo++
+                }
+
+
+                9 -> {
                     binding.loading.text = "Loading .....   100%"
                     loadingPercentageNo++
 
@@ -681,7 +819,7 @@ class MainActivity : AppCompatActivity() {
 
             }
         } else {
-            binding.login.isEnabled = true
+            binding.login.text = "Login"
             binding.loading.visibility = View.GONE
             binding.loading.text = "Loading .....   0%"
             loadingPercentageNo = 0

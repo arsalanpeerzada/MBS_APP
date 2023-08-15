@@ -5,13 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
+import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.ActivityMaster
 import com.mbs.mbsapp.Database.Entities.BrandEntity
 import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.ProductEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
@@ -27,6 +30,9 @@ interface iMBSSave {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCampaign(campaignEntity: CampaignEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProduct(productEntity: ProductEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCampaignChannel(campaignChannel: CampaignChannel?)
@@ -53,12 +59,21 @@ interface iMBSSave {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuestion(questionEntity: QuestionEntity?)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertActivityLog(activityLog: ActivityLog?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuestionSection(questionSectionEntity: QuestionSectionEntity?)
+
 
     @Query("Select * from users order by mid ASC")
     fun getUser(): UserEntity
 
     @Query("Select * from brands order by mid ASC")
     fun getAllBrands(): List<BrandEntity>
+
+    @Query("Select * from brands where id = :brandId")
+    fun getBrandByID(brandId: Int): BrandEntity
 
 
     @Query("Select * from campaigns order by mid ASC")
@@ -70,11 +85,20 @@ interface iMBSSave {
     @Query("Select * from cities order by mid ASC")
     fun getAllCities(): List<CityEntity>
 
+    @Query("Select * from cities where id = :cityId")
+    fun getCityById(cityId: Int): CityEntity
+
     @Query("Select * from locations order by mid ASC")
     fun getAllLocations(): List<LocationEntity>
 
+    @Query("Select * from locations where id = :locationId")
+    fun getLocationByID(locationId: Int): LocationEntity
+
     @Query("Select * from stores order by mid ASC")
     fun getAllStores(): List<StoreEntity>
+
+    @Query("Select * from stores where id = :storeId")
+    fun getStoresByID(storeId: Int): StoreEntity
 
     @Query("Select * from activity_detials order by mid ASC")
     fun getAllActivityDetails(): List<ActivityDetailEntity>
@@ -82,6 +106,17 @@ interface iMBSSave {
     @Query("Select * from activity_masters order by mid ASC")
     fun getAllActivityMasters(): List<ActivityMaster>
 
+    @Query("Select * from question_sections order by mid ASC")
+    fun getQuestionSection(): List<QuestionSectionEntity>
+
+    @Query("Select * from questionnaire where campaign_id = :campaignId")
+    fun getQuestionnaire(campaignId: Int): List<QuestionnaireEntity>
+
+    @Query("Select * from questions where questionnaire_id = :questionnaireid")
+    fun getQuestion(questionnaireid: Int): List<QuestionEntity>
+
+    @Query("Select * from products where campaign_id = :campaignId")
+    fun getProducts(campaignId: Int): List<ProductEntity>
 
     @Query("DELETE FROM users")
     suspend fun deleteAllUsers()
@@ -112,6 +147,15 @@ interface iMBSSave {
 
     @Query("DELETE FROM questions")
     suspend fun deleteAllQuestions()
+
+    @Query("DELETE FROM question_sections")
+    suspend fun deleteQuestionSection()
+
+    @Query("DELETE FROM activity_logs")
+    suspend fun deleteActivityLogs()
+
+    @Query("DELETE FROM products")
+    suspend fun deleteProducts()
 
 
     @Query(

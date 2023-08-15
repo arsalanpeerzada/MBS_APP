@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/selfie"
+        android:id="@+id/question"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -18,7 +18,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:inputType="number"
+        android:id="@+id/marks"
         android:layout_width="65dp"
         android:layout_height="37dp"
         android:layout_marginLeft="20dp"
@@ -27,26 +30,28 @@
         android:hint="8"
         android:paddingLeft="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selfie" />
+        app:layout_constraintTop_toBottomOf="@+id/question" />
 
     <TextView
+        android:id="@+id/marksOutOf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:text="/10"
         android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="@+id/editText"
-        app:layout_constraintStart_toEndOf="@+id/editText"
-        app:layout_constraintTop_toTopOf="@+id/editText" />
+        app:layout_constraintBottom_toBottomOf="@+id/marks"
+        app:layout_constraintStart_toEndOf="@+id/marks"
+        app:layout_constraintTop_toTopOf="@+id/marks" />
 
     <Button
+        android:id="@+id/upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginRight="20dp"
         android:text="Upload Image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selfie" />
+        app:layout_constraintTop_toBottomOf="@+id/question" />
 
     <EditText
         android:textSize="12dp"
@@ -64,9 +69,10 @@
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/marks" />
 
     <LinearLayout
+        android:id="@+id/pictureLayout"
         android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

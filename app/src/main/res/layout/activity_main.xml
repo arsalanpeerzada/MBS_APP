@@ -54,6 +54,7 @@
 
     <EditText
         android:id="@+id/email"
+        android:maxLines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="35dp"
@@ -74,6 +75,7 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:layout_marginHorizontal="35dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/curve_edittext"

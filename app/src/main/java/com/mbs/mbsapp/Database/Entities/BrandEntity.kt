@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class BrandEntity(
     @PrimaryKey
     @ColumnInfo(name = "mid")
-    val mid :Int? = 0,
+    val mid: Int? = 0,
     @ColumnInfo(name = "id")
     val id: Int?,
     @ColumnInfo(name = "status_id")
@@ -36,5 +36,9 @@ data class BrandEntity(
     @ColumnInfo(name = "created_at")
     var createdAt: String? = null,
     @ColumnInfo(name = "updated_at")
-    var updatedAt: String? = null
+    var updatedAt: String? = null,
+    @ColumnInfo(name = "brand_logo_path")
+    var picturepath: String? = null,
+    @ColumnInfo(name = "brand_logo_name")
+    var pictureName: String? = null
 )

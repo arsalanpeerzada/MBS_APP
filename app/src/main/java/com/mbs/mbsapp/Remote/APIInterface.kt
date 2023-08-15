@@ -8,6 +8,8 @@ import com.mbs.mbsapp.Model.CampaignChannelModel
 import com.mbs.mbsapp.Model.CampaignModel
 import com.mbs.mbsapp.Model.CitiesModel
 import com.mbs.mbsapp.Model.LocationModel
+import com.mbs.mbsapp.Model.ProductModel
+import com.mbs.mbsapp.Model.QuestionSectionModel
 import com.mbs.mbsapp.Model.QuestionnaireModel
 import com.mbs.mbsapp.Model.StoreModel
 import com.mbs.mbsapp.Model.UserModel
@@ -29,9 +31,20 @@ public interface APIInterface {
         @Field("password") password: String?,
     ): Call<ApiResponse<UserModel>>
 
+
+    @POST("logout")
+    @Headers("Accept: application/json")
+    fun LogOut(
+        @Header("Authorization") token: String?
+    ): Call<ApiResponse<String>>
+
     @GET("initialsync/brands")
     @Headers("Accept: application/json")
     fun getBrands(@Header("Authorization") token: String?): Call<ApiResponse<List<BrandsModel>>>
+
+    @GET("initialsync/question_section")
+    @Headers("Accept: application/json")
+    fun getQuestionSection(@Header("Authorization") token: String?): Call<ApiResponse<List<QuestionSectionModel>>>
 
 
     @GET("initialsync/campaigns")
@@ -62,11 +75,15 @@ public interface APIInterface {
     @Headers("Accept: application/json")
     fun getQuestionnaire(@Header("Authorization") token: String?): Call<ApiResponse<QuestionnaireModel>>
 
+    @GET("initialsync/products")
+    @Headers("Accept: application/json")
+    fun getProducts(@Header("Authorization") token: String?): Call<ApiResponse<List<ProductModel>>>
+
 
     class ApiResponse<T> {
         @SerializedName("success")
         @Expose
-        var status: Int? = null
+        var status: Boolean? = null
 
         @SerializedName("message")
         @Expose

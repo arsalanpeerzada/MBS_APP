@@ -40,17 +40,22 @@
 
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
+        android:ellipsize="end"
         android:fontFamily="@font/poppins_regular"
+        android:maxLines="1"
         android:text="Knorr Cluster Activity"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/imageView7"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/imageView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
@@ -95,10 +100,10 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:scaleType="centerCrop"
                 android:id="@+id/imageView5"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -138,10 +143,10 @@
         app:layout_constraintTop_toTopOf="@+id/teampicture">
 
         <ImageView
-            android:scaleType="centerCrop"
             android:id="@+id/imageView6"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/image" />
     </androidx.cardview.widget.CardView>
 
@@ -178,10 +183,10 @@
         app:layout_constraintTop_toTopOf="@+id/stepup">
 
         <ImageView
-            android:scaleType="centerCrop"
             android:id="@+id/imageView8"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/image" />
     </androidx.cardview.widget.CardView>
 
@@ -212,17 +217,18 @@
 
     <ImageView
         android:id="@+id/selfiecancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginTop="-7dp"
         android:layout_marginRight="-7dp"
         android:elevation="10dp"
-        android:padding="5dp"
+android:visibility="gone"
         android:src="@drawable/cancel_sphere"
         app:layout_constraintEnd_toEndOf="@+id/cardview1"
         app:layout_constraintTop_toTopOf="@+id/cardview1" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/teamcancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -235,6 +241,7 @@
         app:layout_constraintTop_toTopOf="@+id/cardview2" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/setupcancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -29,19 +29,28 @@ class SplashActivity : AppCompatActivity() {
 
                     var tinyDB = TinyDB(this@SplashActivity)
                     var token = tinyDB.getString("token")
+                    var activityTime = tinyDB.getString("time")
 
-                    if (token.isNullOrBlank()){
+                    if (token.isNullOrBlank()) {
                         startActivity(intent)
                         overridePendingTransition(R.anim.left, R.anim.left2);
                         finish()
-                    }else {
-                        val intent = Intent(this@SplashActivity, SelectActivity::class.java)
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.left, R.anim.left2);
-                        finish()
+                    } else {
+                        if (activityTime.isNullOrEmpty()) {
+
+                            val intent = Intent(this@SplashActivity, SelectActivity::class.java)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.left, R.anim.left2);
+                            finish()
+                        } else {
+                            val intent = Intent(this@SplashActivity, Dashboard::class.java)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.left, R.anim.left2);
+                            finish()
+
+
+                        }
                     }
-
-
                 }
             }
         }

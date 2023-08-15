@@ -12,15 +12,17 @@ import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.ProductEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
 import com.mbs.mbsapp.Database.iMBSSave
 
 @Database(
-    entities = [UserEntity::class, ActivityMaster::class, ActivityDetailEntity::class, BrandEntity::class, CampaignEntity::class, CityEntity::class, LocationEntity::class, StoreEntity::class, QuestionnaireEntity::class, QuestionEntity::class, CampaignChannel::class, ActivityLog::class],
-    version = 9,
+    entities = [UserEntity::class, ActivityMaster::class, ActivityDetailEntity::class, BrandEntity::class, CampaignEntity::class, CityEntity::class, LocationEntity::class, StoreEntity::class, QuestionnaireEntity::class, QuestionEntity::class, CampaignChannel::class, ActivityLog::class, QuestionSectionEntity::class,ProductEntity::class],
+    version = 13,
     exportSchema = false
 )
 abstract class MBSDatabase : RoomDatabase() {
