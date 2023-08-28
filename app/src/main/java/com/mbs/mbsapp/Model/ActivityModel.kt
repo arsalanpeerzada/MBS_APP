@@ -22,17 +22,16 @@ data class ActivityModel(
         @SerializedName("deleted_at"          ) var deletedAt         : String? = null,
         @SerializedName("created_at"          ) var createdAt         : String? = null,
         @SerializedName("updated_at"          ) var updatedAt         : String? = null
-
     )
     data class ActivityDetials (
 
-        @SerializedName("id"                 ) var id               : Int?    = null,
-        @SerializedName("activity_master_id" ) var activityMasterId : Int?    = null,
-        @SerializedName("city_id"            ) var cityId           : Int?    = null,
-        @SerializedName("location_id"        ) var locationId       : Int?    = null,
-        @SerializedName("store_id"           ) var storeId          : Int? = null,
-        @SerializedName("created_at"         ) var createdAt        : String? = null,
-        @SerializedName("updated_at"         ) var updatedAt        : String? = null
-
+        @SerializedName("id"                   ) var id                 : Int?    = null,
+        @SerializedName("activity_master_id"   ) var activityMasterId   : Int?    = null,
+        @SerializedName("activity_detail_code" ) var activityDetailCode : String? = null,
+        @SerializedName("city_id"              ) var cityId             : Int?    = null,
+        @SerializedName("location_id"          ) var locationId         : Int?    = null,
+        @SerializedName("store_id"             ) var storeId            : Int?    = null,
+        @SerializedName("created_at"           ) var createdAt          : String? = null,
+        @SerializedName("updated_at"           ) var updatedAt          : String? = null
     )
 }

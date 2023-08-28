@@ -1,36 +1,47 @@
 package com.mbs.mbsapp
 
-import android.Manifest
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.devlomi.record_view.OnRecordListener
-import com.devlomi.record_view.RecordPermissionHandler
 import com.inksy.Database.MBSDatabase
 import com.mbs.mbsapp.Adapters.SectionAdapter
+import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
+import com.mbs.mbsapp.Database.Entities.AnswerMasterEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
-import com.mbs.mbsapp.Utils.AudioRecorder
+import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
+import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
+import com.mbs.mbsapp.Interfaces.iTakePicture
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityQuestionnaireBinding
-import java.io.File
-import java.io.IOException
-import java.util.UUID
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.OutputStream
 
 
-class QuestionnaireActivity : AppCompatActivity() {
+class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
     lateinit var binding: ActivityQuestionnaireBinding
     lateinit var mbsDatabase: MBSDatabase
     lateinit var tinydb: TinyDB
+    lateinit var questionnaireList: List<QuestionnaireEntity>
+    lateinit var questionList: List<QuestionEntity>
+    lateinit var section: List<QuestionSectionEntity>
+    lateinit var superList: ArrayList<ArrayList<QuestionEntity>>
+    lateinit var answerlist: ArrayList<AnswerDetailEntity>
 
-    private var audioRecorder: AudioRecorder? = null
-    private var recordFile: File? = null
+    var itemNumber: Int = 0
+    var questionId: Int = 0
+    var SectionId: Int = 0
+    var activityLogID: Int = 0
+    lateinit var sectionadapter: SectionAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQuestionnaireBinding.inflate(layoutInflater)
@@ -38,23 +49,20 @@ class QuestionnaireActivity : AppCompatActivity() {
 
         mbsDatabase = MBSDatabase.getInstance(this)!!
         tinydb = TinyDB(this)
-        audioRecorder = AudioRecorder()
-
-        val recordView = binding.recordView
-        val recordButton = binding.recordButton
-
-        recordButton.setRecordView(recordView)
-        recordView.setCustomSounds(R.raw.record_start, R.raw.record_finished, 0);
-
+        binding.logout.visibility = View.GONE
         var campaignId = tinydb.getInt("campaignId")
+        var activityId = tinydb.getInt("activitymasterid")
+        var activitydetailid = tinydb.getInt("activitydetailid")
+        activityLogID = tinydb.getInt("activityLogID")
 
+        questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignId)
+        questionList = mbsDatabase.getMBSData().getQuestion(questionnaireList[0].id!!)
+        section = mbsDatabase.getMBSData().getQuestionSection()
+        superList = ArrayList<ArrayList<QuestionEntity>>()
 
-
-
-        var questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignId)
-        var questionList = mbsDatabase.getMBSData().getQuestion(questionnaireList[0].id!!)
-        var section = mbsDatabase.getMBSData().getQuestionSection()
-        var superList = ArrayList<ArrayList<QuestionEntity>>()
+        var answers =
+            mbsDatabase.getMBSData()
+                .getanswersbyID(activitydetailid, questionnaireList[0].id!!, activityLogID)
 
         for (item in section.indices) {
             var list = ArrayList<QuestionEntity>()
@@ -66,14 +74,19 @@ class QuestionnaireActivity : AppCompatActivity() {
             superList.add(list)
         }
 
-        binding.recyclerview.adapter = SectionAdapter(this@QuestionnaireActivity,section, superList)
+        sectionadapter =
+            SectionAdapter(this@QuestionnaireActivity, section, superList, answers, this)
+
+
+        binding.recyclerview.adapter = sectionadapter
 
 
         binding.back.setOnClickListener {
-            this@QuestionnaireActivity.finish()
+            backfromQuestionActivity(
+                questionnaireList[0].id!!, campaignId, activityId, activitydetailid
+            )
+            startActivity(Intent(this@QuestionnaireActivity, Dashboard::class.java))
         }
-
-
         binding.logout.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -83,7 +96,8 @@ class QuestionnaireActivity : AppCompatActivity() {
         }
 
         binding.close.setOnClickListener {
-            this@QuestionnaireActivity.finish()
+            binding.back.performClick()
+            startActivity(Intent(this@QuestionnaireActivity, Dashboard::class.java))
         }
 
         binding.submit.setOnClickListener {
@@ -94,93 +108,116 @@ class QuestionnaireActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.left, R.anim.left2);
             this.finish()
         }
-
-        recordView.setOnRecordListener(object : OnRecordListener {
-            override fun onStart() {
-                //Start Recording..
-                Log.d("RecordView", "onStart")
-                recordFile = File(filesDir, UUID.randomUUID().toString() + ".3gp")
-                try {
-                    audioRecorder!!.start(recordFile!!.path)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                Log.d("RecordView", "onStart")
-                Toast.makeText(this@QuestionnaireActivity, "OnStartRecord", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onCancel() {
-                //On Swipe To Cancel
-                stopRecording(true);
-
-                Toast.makeText(this@QuestionnaireActivity, "onCancel", Toast.LENGTH_SHORT).show();
-                Log.d("RecordView", "onCancel")
-            }
-
-            override fun onFinish(recordTime: Long, limitReached: Boolean) {
-                //Stop Recording..
-                //limitReached to determine if the Record was finished when time limit reached.
-
-                stopRecording(false);
-                val time: String = getHumanTimeText(recordTime)
-                Log.d("RecordView", "onFinish")
-                Log.d("RecordTime", time)
-            }
-
-            override fun onLessThanSecond() {
-                //When the record time is less than One Second
-                Log.d("RecordView", "onLessThanSecond")
-            }
-
-            override fun onLock() {
-                //When Lock gets activated
-                Log.d("RecordView", "onLock")
-            }
-        })
-
-        recordView.setOnBasketAnimationEndListener {
-            Log.d(
-                "RecordView",
-                "Basket Animation Finished"
-            )
-        }
-
-        recordView.setRecordPermissionHandler(RecordPermissionHandler {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                return@RecordPermissionHandler true
-            }
-            val recordPermissionAvailable = ContextCompat.checkSelfPermission(
-                this@QuestionnaireActivity,
-                Manifest.permission.RECORD_AUDIO
-            ) == PERMISSION_GRANTED
-            if (recordPermissionAvailable) {
-                return@RecordPermissionHandler true
-            }
-            ActivityCompat.requestPermissions(
-                this@QuestionnaireActivity, arrayOf<String>(Manifest.permission.RECORD_AUDIO),
-                0
-            )
-            false
-        })
     }
 
+    fun backfromQuestionActivity(
+        questionnaireId: Int, campaignId: Int, activityId: Int, activitydetailid: Int
+    ) {
 
 
-    private fun getHumanTimeText(milliseconds: Long): String {
-        return java.lang.String.format(
-            "%02d:%02d",
-            TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-            TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds))
+        var answermaster = AnswerMasterEntity(
+            0, questionnaireId, campaignId, activityLogID, activityId, 0, "", "", "", ""
         )
+        mbsDatabase.getMBSData().insertAnswerMaster(answermaster)
+
+
+        var data = superList
+        var count = 0
+        for (section in data) {
+            for (question in section) {
+
+                var answerDetailEntity = AnswerDetailEntity(
+                    count,
+                    0,
+                    0,
+                    activityId,
+                    question.questionSectionId,
+                    activitydetailid,
+                    activityLogID,
+                    questionnaireId,
+                    question.id,
+                    question.marksRecieved.toString(),
+                    question.answerComment,
+                    0,
+                    0,
+                    0,
+                    "",
+                    "",
+                    "",
+                    question.media1,
+                    question.media2,
+                    question.media3,
+                    question.media4
+
+                )
+                count++
+                mbsDatabase.getMBSData().insertAnswerDetail(answerDetailEntity)
+            }
+        }
+
+        Toast.makeText(this@QuestionnaireActivity, "$count", Toast.LENGTH_SHORT).show()
     }
-    private fun stopRecording(deleteFile: Boolean) {
-        audioRecorder!!.stop()
-        if (recordFile != null && deleteFile) {
-            recordFile!!.delete()
+
+    override fun picture(position: Int, _itemNumber: Int, _questionId: Int, _SectionId: Int) {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+        startActivityForResult(takePictureIntent, _itemNumber)
+
+        itemNumber = _itemNumber
+        questionId = _questionId
+        SectionId = _SectionId
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap?
+            val displayName = "image_${System.currentTimeMillis()}"
+            val uri =
+                saveBitmapToGallery(this@QuestionnaireActivity, imageBitmap!!, displayName)
+            if (requestCode == 1) {
+                superList[SectionId][questionId].media1 = uri.toString()
+
+                sectionadapter.notifyDataSetChanged()
+            }
+            if (requestCode == 2) {
+                superList[SectionId][questionId].media2 = uri.toString()
+
+                sectionadapter.notifyDataSetChanged()
+            }
+            if (requestCode == 3) {
+                superList[SectionId][questionId].media3 = uri.toString()
+
+                sectionadapter.notifyDataSetChanged()
+            }
+            if (requestCode == 4) {
+                superList[SectionId][questionId].media4 = uri.toString()
+
+                sectionadapter.notifyDataSetChanged()
+            }
+
         }
     }
 
+    fun saveBitmapToGallery(context: Context, bitmap: Bitmap, displayName: String): Uri? {
+        val contentResolver: ContentResolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$displayName.jpg")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis() / 1000)
+            put(MediaStore.MediaColumns.DATE_TAKEN, System.currentTimeMillis())
+        }
 
+        val imageUri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        imageUri?.let {
+            val outputStream: OutputStream? = contentResolver.openOutputStream(it)
+            outputStream?.use { stream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            }
+        }
 
+        return imageUri
+    }
 }

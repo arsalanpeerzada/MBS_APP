@@ -53,6 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
+        android:inputType="text|textAutoCorrect"
         android:id="@+id/email"
         android:maxLines="1"
         android:layout_width="match_parent"

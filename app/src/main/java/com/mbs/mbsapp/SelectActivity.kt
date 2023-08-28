@@ -58,7 +58,7 @@ class SelectActivity : AppCompatActivity() {
 
             if (getStore.size > 0) {
                 var activityName =
-                    "${binding.selectBrand.text} ${binding.selectActivity.text} Activity"
+                    "${binding.selectActivity.text}"
                 tinydb.putString("activityName", activityName)
 
 
@@ -75,6 +75,9 @@ class SelectActivity : AppCompatActivity() {
                     ).show()
                 }
             } else {
+                var activityName =
+                    "${binding.selectActivity.text}"
+                tinydb.putString("activityName", activityName)
                 if (SELECTED_BRAND_ID != 0 && SELECTED_CAMPAIGN_ID != 0 && SELECTED_CITY_ID != 0 && SELECTED_LOCATION_ID != 0) {
                     val intent = Intent(this, ClusterStartActivity::class.java)
                     startActivity(intent)
@@ -212,6 +215,13 @@ class SelectActivity : AppCompatActivity() {
                     mbsDatabase.getMBSData().deleteQuestionSection()
                     mbsDatabase.getMBSData().deleteActivityLogs()
                     mbsDatabase.getMBSData().deleteProducts()
+                    mbsDatabase.getMBSData().deleteAdetail()
+                    mbsDatabase.getMBSData().deleteAMaster()
+                    mbsDatabase.getMBSData().deletemedia()
+                    mbsDatabase.getMBSData().deleteProductStocks()
+                    mbsDatabase.getMBSData().deletebapitches()
+                    mbsDatabase.getMBSData().deletebrandambbassadors()
+                    mbsDatabase.getMBSData().deleteCampaignChannel()
                 }
 
                 val intent = Intent(this, MainActivity::class.java)

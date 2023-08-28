@@ -13,6 +13,8 @@ data class ActivityDetailEntity(
     val id: Int?,
     @ColumnInfo(name = "activity_master_id")
     val activityMasterId: Int?,
+    @ColumnInfo(name = "activity_detail_code")
+    val activity_detail_code: String?,
     @ColumnInfo(name = "city_id")
     val cityId: Int?,
     @ColumnInfo(name = "location_id")

@@ -7,12 +7,18 @@ import androidx.room.RoomDatabase
 import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
 import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.ActivityMaster
+import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
+import com.mbs.mbsapp.Database.Entities.AnswerMasterEntity
+import com.mbs.mbsapp.Database.Entities.BaPitchEntity
+import com.mbs.mbsapp.Database.Entities.BrandAmbassadorEntity
 import com.mbs.mbsapp.Database.Entities.BrandEntity
 import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.MediaEntity
 import com.mbs.mbsapp.Database.Entities.ProductEntity
+import com.mbs.mbsapp.Database.Entities.ProductStock
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
@@ -21,8 +27,14 @@ import com.mbs.mbsapp.Database.Entities.UserEntity
 import com.mbs.mbsapp.Database.iMBSSave
 
 @Database(
-    entities = [UserEntity::class, ActivityMaster::class, ActivityDetailEntity::class, BrandEntity::class, CampaignEntity::class, CityEntity::class, LocationEntity::class, StoreEntity::class, QuestionnaireEntity::class, QuestionEntity::class, CampaignChannel::class, ActivityLog::class, QuestionSectionEntity::class,ProductEntity::class],
-    version = 13,
+    entities = [UserEntity::class, ActivityMaster::class,
+        ActivityDetailEntity::class, BrandEntity::class, CampaignEntity::class,
+        CityEntity::class, LocationEntity::class, StoreEntity::class,
+        QuestionnaireEntity::class, QuestionEntity::class, CampaignChannel::class,
+        ActivityLog::class, QuestionSectionEntity::class, ProductEntity::class,
+        AnswerMasterEntity::class, AnswerDetailEntity::class, MediaEntity::class, ProductStock::class,
+        BaPitchEntity::class, BrandAmbassadorEntity::class],
+    version = 28,
     exportSchema = false
 )
 abstract class MBSDatabase : RoomDatabase() {

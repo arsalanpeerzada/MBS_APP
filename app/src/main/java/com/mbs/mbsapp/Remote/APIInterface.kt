@@ -3,6 +3,7 @@ package com.inksy.Remote
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mbs.mbsapp.Model.ActivityModel
+import com.mbs.mbsapp.Model.BrandAmbassadorModel
 import com.mbs.mbsapp.Model.BrandsModel
 import com.mbs.mbsapp.Model.CampaignChannelModel
 import com.mbs.mbsapp.Model.CampaignModel
@@ -78,6 +79,11 @@ public interface APIInterface {
     @GET("initialsync/products")
     @Headers("Accept: application/json")
     fun getProducts(@Header("Authorization") token: String?): Call<ApiResponse<List<ProductModel>>>
+
+
+    @GET("initialsync/brand_ambassadors")
+    @Headers("Accept: application/json")
+    fun getBrandAmbassador(@Header("Authorization") token: String?): Call<ApiResponse<List<BrandAmbassadorModel>>>
 
 
     class ApiResponse<T> {

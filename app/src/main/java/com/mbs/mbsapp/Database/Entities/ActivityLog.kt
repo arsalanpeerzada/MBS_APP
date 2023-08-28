@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "activity_logs")
 data class ActivityLog(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "mid")
     val mid: Int?,
 
@@ -19,8 +19,17 @@ data class ActivityLog(
     @ColumnInfo(name = "campaign_id")
     val campaignId: Int?,
 
+    @ColumnInfo(name = "brand_id")
+    val brandId: Int?,
+
     @ColumnInfo(name = "user_id")
     val userId: Int?,
+
+    @ColumnInfo(name = "isSync")
+    val isSync: Int?,
+
+    @ColumnInfo(name = "activity_detail_code")
+    val activity_detail_code: String?,
 
     @ColumnInfo(name = "activity_start_date")
     val activityStartDate: String?,

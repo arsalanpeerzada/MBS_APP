@@ -7,12 +7,18 @@ import androidx.room.Query
 import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
 import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.ActivityMaster
+import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
+import com.mbs.mbsapp.Database.Entities.AnswerMasterEntity
+import com.mbs.mbsapp.Database.Entities.BaPitchEntity
+import com.mbs.mbsapp.Database.Entities.BrandAmbassadorEntity
 import com.mbs.mbsapp.Database.Entities.BrandEntity
 import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
+import com.mbs.mbsapp.Database.Entities.MediaEntity
 import com.mbs.mbsapp.Database.Entities.ProductEntity
+import com.mbs.mbsapp.Database.Entities.ProductStock
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
@@ -30,6 +36,9 @@ interface iMBSSave {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCampaign(campaignEntity: CampaignEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBA(brandAmbassadorEntity: BrandAmbassadorEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProduct(productEntity: ProductEntity?)
@@ -65,6 +74,36 @@ interface iMBSSave {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuestionSection(questionSectionEntity: QuestionSectionEntity?)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertActivityLogs(activityLog: ActivityLog?)
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAnswerMaster(answerMasterEntity: AnswerMasterEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAnswerDetail(answerDetailEntity: AnswerDetailEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMedia(mediaEntity: MediaEntity?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertProductStocks(productStock: ProductStock?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertBAPitch(baPitchEntity: BaPitchEntity?)
+
+    @Query("Select * from product_stocks where campaign_id = :campaignId AND activity_detail_id = :activitydetailid")
+    fun getProductStocks(campaignId: Int, activitydetailid: Int): List<ProductStock>
+
+    @Query("Select * from media order by mid ASC")
+    fun getmedia(): List<MediaEntity>
+
+    @Query("Select * from activity_logs order by mid ASC")
+    fun getactivitylogs(): List<ActivityLog>
+
+    @Query("Select * from media where activity_log_id = :activityLogid AND form_id = :formId")
+    fun getmedia(activityLogid: Int, formId: Int): List<MediaEntity>
 
     @Query("Select * from users order by mid ASC")
     fun getUser(): UserEntity
@@ -115,8 +154,46 @@ interface iMBSSave {
     @Query("Select * from questions where questionnaire_id = :questionnaireid")
     fun getQuestion(questionnaireid: Int): List<QuestionEntity>
 
+    @Query("Select * from questions where id = :questionid")
+    fun getsingleQuestion(questionid: Int): List<QuestionEntity>
+
     @Query("Select * from products where campaign_id = :campaignId")
     fun getProducts(campaignId: Int): List<ProductEntity>
+
+    @Query("Select * from activity_logs where campaign_id = :campaignId")
+    fun getactivityLogs(campaignId: Int): List<ActivityLog>
+
+    @Query("Select * from activity_detials where activity_detail_code = :activity_detail_Id")
+    fun getMasterId(activity_detail_Id: String): List<ActivityDetailEntity>
+
+    @Query("Select * from answere_detials where activity_detail_id = :activity_detail_Id AND questionnaire_id = :questionnaireId AND activity_log_id = :activityLogid")
+    fun getanswersbyID(
+        activity_detail_Id: Int,
+        questionnaireId: Int,
+        activityLogid: Int
+    ): List<AnswerDetailEntity>
+
+    @Query("Select * from answere_detials")
+    fun getanswersbyIDss(
+    ): List<AnswerDetailEntity>
+
+
+    @Query("Select * from ba_pitches bp inner join brand_ambassadors ba on bp.ba_id = ba.id where ba.activity_detail_id = :activity_detail_Id")
+    fun getBApitches(
+        activity_detail_Id: Int,
+    ): List<BaPitchEntity>
+
+    @Query("Select * from brand_ambassadors where activity_detail_id = :activity_detail_Id AND campaign_id = :campaignId AND activity_id = :activityID AND pitchCompleted = 0")
+    fun getBA(
+        activity_detail_Id: Int,
+        campaignId: Int,
+        activityID: Int
+    ): List<BrandAmbassadorEntity>
+
+    @Query("Select * from brand_ambassadors  order by mid ASC ")
+    fun getBAaa(
+    ): List<BrandAmbassadorEntity>
+
 
     @Query("DELETE FROM users")
     suspend fun deleteAllUsers()
@@ -157,6 +234,29 @@ interface iMBSSave {
     @Query("DELETE FROM products")
     suspend fun deleteProducts()
 
+
+    @Query("DELETE FROM answere_detials")
+    suspend fun deleteAdetail()
+
+    @Query("DELETE FROM answere_masters")
+    suspend fun deleteAMaster()
+
+    @Query("DELETE FROM media")
+    suspend fun deletemedia()
+
+    @Query("DELETE FROM product_stocks")
+    suspend fun deleteProductStocks()
+
+    @Query("DELETE FROM campaign_channels")
+    suspend fun deleteCampaignChannel()
+
+    @Query("DELETE FROM ba_pitches")
+    suspend fun deletebapitches()
+
+    @Query("DELETE FROM brand_ambassadors")
+    suspend fun deletebrandambbassadors()
+    @Query("UPDATE brand_ambassadors SET pitchCompleted = :pitchCompleted WHERE id = :id")
+    fun updatePitchCompleted(id: Int, pitchCompleted: Int)
 
     @Query(
         "select campaigns.*, cc.cc_store_level, cc.cc_name from campaigns\n" +

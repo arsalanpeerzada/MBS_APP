@@ -109,71 +109,7 @@
 
         </RelativeLayout>
 
-        <View
-            android:id="@+id/view10"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/appblue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view2" />
 
-        <TextView
-            android:id="@+id/sectionHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:fontFamily="@font/poppins_regular"
-            android:text="Brand Ambsassador Pitch"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/view10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/view10" />
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view10">
-
-
-            <com.devlomi.record_view.RecordView
-                android:id="@+id/record_view"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_alignParentBottom="true"
-                android:layout_toLeftOf="@id/record_button"
-
-                app:counter_time_color="#ff0000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:slide_to_cancel_arrow="@drawable/recv_ic_arrow"
-                app:slide_to_cancel_arrow_color="#000000"
-                app:slide_to_cancel_bounds="8dp"
-                app:slide_to_cancel_margin_right="10dp"
-                app:slide_to_cancel_text="Slide To Cancel" />
-
-            <com.devlomi.record_view.RecordButton
-                android:id="@+id/record_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/recv_bg_mic"
-
-                android:scaleType="centerInside"
-                android:src="@drawable/recv_ic_mic_white"
-                app:layout_constraintBottom_toBottomOf="@+id/record_view"
-                app:layout_constraintEnd_toEndOf="@+id/record_view"
-                app:layout_constraintTop_toTopOf="@+id/record_view"
-                app:mic_icon="@drawable/recv_ic_mic_white" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

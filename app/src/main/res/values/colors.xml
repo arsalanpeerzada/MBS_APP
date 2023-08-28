@@ -10,7 +10,9 @@
     <color name="dashboardpink">#FFDDE5</color>
     <color name="dashboardyellow">#FFFDC8</color>
     <color name="dashboardgreen">#CCFFC8</color>
+    <color name="dashboardbapitch">#C8F5FF</color>
     <color name="darkpink">#FF9393</color>
     <color name="darkgreen">#BBFCC1</color>
     <color name="color_divider">#d1d1d1</color>
+    <color name="transparent">#00DDDDDD</color>
 </resources>

@@ -55,7 +55,7 @@
 
     <EditText
         android:textSize="12dp"
-        android:id="@+id/editText2"
+        android:id="@+id/comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -79,9 +79,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2">
+        app:layout_constraintTop_toBottomOf="@+id/comments">
 
         <androidx.cardview.widget.CardView
+            android:layout_marginVertical="5dp"
             android:id="@+id/cardview1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,6 +96,8 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:scaleType="centerCrop"
+
                     android:id="@+id/imageView1"
                     android:layout_width="65dp"
                     android:layout_height="65dp"
@@ -106,6 +109,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_marginVertical="5dp"
             android:id="@+id/cardview2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,6 +123,8 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:scaleType="centerCrop"
+
                     android:id="@+id/imageView2"
                     android:layout_width="65dp"
                     android:layout_height="65dp"
@@ -130,6 +136,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_marginVertical="5dp"
             android:id="@+id/cardview3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -143,6 +150,8 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:scaleType="centerCrop"
+
                     android:id="@+id/imageView3"
                     android:layout_width="65dp"
                     android:layout_height="65dp"
@@ -154,6 +163,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_marginVertical="5dp"
             android:id="@+id/cardview4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -166,6 +176,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:scaleType="centerCrop"
                     android:id="@+id/imageView4"
                     android:layout_width="65dp"
                     android:layout_height="65dp"

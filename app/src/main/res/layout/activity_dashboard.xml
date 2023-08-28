@@ -241,6 +241,7 @@
                         android:src="@drawable/questionnaire" />
 
                     <TextView
+                        android:id="@+id/questionsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
@@ -287,6 +288,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayout5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -333,7 +335,92 @@
                     android:layout_weight="1" />
 
                 <LinearLayout
+                    android:id="@+id/BAPitch"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="4.5"
+                    android:background="@drawable/curve_edittext"
+                    android:backgroundTint="@color/dashboardbapitch"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Brand Ambassador Pitch" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ba" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Pending" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+
+
+                <LinearLayout
                     android:id="@+id/EndActivity"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="4.5"
+                    android:background="@drawable/curve_edittext"
+                    android:backgroundTint="@color/dashboardgreen"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
+                        android:text="End Activity" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/end_activity" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Click to End Activity" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:visibility="invisible"
+                    android:id="@+id/EndsActivity"
                     android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:layout_weight="4.5"

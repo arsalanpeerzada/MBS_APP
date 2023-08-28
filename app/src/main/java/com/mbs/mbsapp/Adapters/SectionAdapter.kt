@@ -4,21 +4,21 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.R
+import com.mbs.mbsapp.Interfaces.iTakePicture
 
 class SectionAdapter(
     var context: Context,
     var sectionHeaders: List<QuestionSectionEntity>,
-    var superList: ArrayList<ArrayList<QuestionEntity>>
+    var superList: ArrayList<ArrayList<QuestionEntity>>,
+    var answers: List<AnswerDetailEntity>,
+    var iTakePicture: iTakePicture
 ) : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
     class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
 
@@ -43,8 +43,37 @@ class SectionAdapter(
         try {
             holder.bind()
 
-            holder.sectionHeader.setText(sectionHeaders[position].sectionName)
-            holder.recyclerView.adapter = QuestionAdapter(context, superList[position])
+            var list = ArrayList<AnswerDetailEntity>()
+            var data = answers
+            holder.sectionHeader.text = sectionHeaders[position].sectionName
+            for (item in data) {
+                if (sectionHeaders[position].id == item.section_id) {
+                    list.add(item)
+                }
+            }
+
+            holder.recyclerView.adapter =
+                QuestionAdapter(
+                    context,
+                    superList[position],
+                    list,
+                    position,
+                    object : iTakePicture {
+                        override fun picture(
+                            position: Int,
+                            itemNumber: Int,
+                            questionId: Int,
+                            SectionId: Int
+                        ) {
+                            iTakePicture.picture(
+                                position,
+                                itemNumber,
+                                questionId,
+                                SectionId
+                            )
+                        }
+
+                    })
 
 
         } catch (e: NullPointerException) {

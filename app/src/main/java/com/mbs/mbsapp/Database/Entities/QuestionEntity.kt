@@ -24,7 +24,11 @@ data class QuestionEntity(
     @ColumnInfo(name = "media_count")
     val mediaCount: Int? = 0,
     @ColumnInfo(name = "marks")
-    val marks: Int?, // Change this type to appropriate type (e.g., Int, Long, etc.)
+    var marks: Int?, // Change this type to appropriate type (e.g., Int, Long, etc.)
+    @ColumnInfo(name = "marksRecieved")
+    var marksRecieved: Int?, // Change this type to appropriate type (e.g., Int, Long, etc.)
+    @ColumnInfo(name = "answere_comment")
+    var answerComment: String?, // Convert to appropriate type if necessary
     @ColumnInfo(name = "created_by")
     val createdBy: String?,
     @ColumnInfo(name = "updated_by")
@@ -38,5 +42,13 @@ data class QuestionEntity(
     @ColumnInfo(name = "created_at")
     var createdAt: String? = null,
     @ColumnInfo(name = "updated_at")
-    var updatedAt: String? = null
+    var updatedAt: String? = null,
+    @ColumnInfo(name = "media1")
+    var media1: String?,
+    @ColumnInfo(name = "media2")
+    var media2: String?,
+    @ColumnInfo(name = "media3")
+    var media3: String?,
+    @ColumnInfo(name = "media4")
+    var media4: String?
 )

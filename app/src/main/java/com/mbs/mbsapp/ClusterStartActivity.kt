@@ -1,21 +1,32 @@
 package com.mbs.mbsapp
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import com.airbnb.lottie.utils.Utils
+import com.inksy.Database.MBSDatabase
+import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Utils.Permissions
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityClusterStartBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -36,14 +47,16 @@ class ClusterStartActivity : AppCompatActivity() {
     var selfiecount = 0
     var teamcount = 0
     var locationcount = 0
-
-
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+    var activitydetailID: String = ""
+    lateinit var mbsDatabase: MBSDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityClusterStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        mbsDatabase = MBSDatabase.getInstance(this)!!
         tinyDB = TinyDB(this)
         cameraUri = createImageUri()!!
         binding.startActivity.setOnClickListener {
@@ -64,6 +77,61 @@ class ClusterStartActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+        getlocation()
+        var campaignid = tinyDB.getInt("campaignId")
+        var brandId = tinyDB.getInt("brandId")
+        var locationId = tinyDB.getInt("locationid")
+        var cityId = tinyDB.getInt("cityId")
+        var storeId = tinyDB.getInt("storeId")
+        var time = tinyDB.getString("time")
+        var user = mbsDatabase.getMBSData().getUser()
+
+        if (storeId > 0) {
+            var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
+            tinyDB.putString("storeName",getStore.storeName)
+            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
+        } else {
+
+            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId"
+        }
+
+        var getmasterid = mbsDatabase.getMBSData().getMasterId(activitydetailID)
+        tinyDB.putInt("activitymasterid", getmasterid[0].activityMasterId!!)
+        tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
+
+        val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+        val currentDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+
+        var activityCount = 0
+        tinyDB.putInt("activityLogID", activityCount )
+        GlobalScope.launch {
+            var activitylog = ActivityLog(
+                activityCount,
+                activityCount,
+                getmasterid[0].activityMasterId,
+                campaignid,
+                brandId,
+                user.id!!,
+                0,
+                activitydetailID,
+                currentDate,
+                currentTime,
+                latitude.toString(),
+                longitude.toString(),
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                "",
+                "",
+                "",
+                ""
+            )
+            var activitymaster = mbsDatabase.getMBSData().insertActivityLogs(activitylog)
         }
 
         binding.back.setOnClickListener {
@@ -212,5 +280,42 @@ class ClusterStartActivity : AppCompatActivity() {
         intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
         startActivityForResult(takePictureIntent, request)
 
+    }
+
+    fun getlocation() {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        // Check if the location provider is enabled
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // Get the last known location
+            val lastKnownLocation: Location?
+            if (ActivityCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+            // Check if the location is available
+            if (lastKnownLocation != null) {
+
+                latitude = lastKnownLocation.latitude
+
+                longitude = lastKnownLocation.longitude
+                // Now you have the latitude and longitude
+            } else {
+                // Location data not available
+            }
+        }
     }
 }

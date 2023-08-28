@@ -11,6 +11,7 @@ import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Database.Entities.ActivityDetailEntity
 import com.mbs.mbsapp.Database.Entities.ActivityMaster
+import com.mbs.mbsapp.Database.Entities.BrandAmbassadorEntity
 import com.mbs.mbsapp.Database.Entities.BrandEntity
 import com.mbs.mbsapp.Database.Entities.CampaignChannel
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
@@ -23,6 +24,7 @@ import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
 import com.mbs.mbsapp.Model.ActivityModel
+import com.mbs.mbsapp.Model.BrandAmbassadorModel
 import com.mbs.mbsapp.Model.BrandsModel
 import com.mbs.mbsapp.Model.CampaignChannelModel
 import com.mbs.mbsapp.Model.CampaignModel
@@ -84,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                         tinyDB.putString("User", response.body()?.user?.id.toString())
                         tinyDB.putString("token", token)
                         insertIntoUserTable(response)
-                        var finaltoken = "Bearer $token"
+                        val finaltoken = "Bearer $token"
 
 
                         getBrandsAPI(finaltoken)
@@ -97,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                         getCampaignChannelAPI(finaltoken)
                         getQuestionSection(finaltoken)
                         getProductAPI(finaltoken)
+                        getBrandAmbassador(finaltoken)
 
                     } else {
                         binding.login.text = "Login"
@@ -181,6 +184,61 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    private fun getBrandAmbassador(token: String) {
+        apiInterface.getBrandAmbassador(token)
+            .enqueue(object : Callback<APIInterface.ApiResponse<List<BrandAmbassadorModel>>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<List<BrandAmbassadorModel>>>,
+                    response: Response<APIInterface.ApiResponse<List<BrandAmbassadorModel>>>
+                ) {
+                    if (response.isSuccessful) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Campaign Loaded Successfully",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                        checkAPI(true)
+
+                        GlobalScope.launch {
+                            var id = 0
+                            for (item in response.body()?.data!!) {
+                                var brandAmbassadorEntity = BrandAmbassadorEntity(
+                                    id,
+                                    item.id,
+                                    item.baName,
+                                    item.campaignId,
+                                    item.activityId,
+                                    item.activityDetailId,
+                                    0,
+                                    item.submitedAt,
+                                    item.submitedBy,
+                                    item.createdAt,
+                                    item.updatedAt
+                                )
+                                mbsDatabase.getMBSData().insertBA(brandAmbassadorEntity)
+                                id++
+                            }
+                        }
+
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<List<BrandAmbassadorModel>>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Campaign Data Loading Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    checkAPI(false)
+                }
+
+            })
+    }
+
     private fun getProductAPI(token: String) {
         apiInterface.getProducts(token)
             .enqueue(object : Callback<APIInterface.ApiResponse<List<ProductModel>>> {
@@ -204,6 +262,7 @@ class MainActivity : AppCompatActivity() {
                                     item.id,
                                     item.campaignId,
                                     item.productName,
+                                    0,
                                     item.createdBy,
                                     item.updatedBy,
                                     item.isDeleted,
@@ -540,6 +599,7 @@ class MainActivity : AppCompatActivity() {
                                     id,
                                     item.id,
                                     item.activityMasterId,
+                                    item.activityDetailCode,
                                     item.cityId,
                                     item.locationId,
                                     item.storeId,
@@ -647,13 +707,19 @@ class MainActivity : AppCompatActivity() {
                                     item.isMediaAllowed,
                                     item.mediaCount,
                                     item.marks,
+                                    item.marksReceived,
+                                    "",
                                     item.createdBy,
                                     item.updatedBy,
                                     item.isDeleted,
                                     item.deletedBy,
                                     item.deletedAt,
                                     item.createdAt,
-                                    item.updatedAt
+                                    item.updatedAt,
+                                    "",
+                                    "",
+                                    "",
+                                    "",
                                 )
                                 mbsDatabase.getMBSData().insertQuestion(questionEntity)
                                 idd++

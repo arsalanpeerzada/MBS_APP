@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:text="Knoor Gift Vouchers"
-        app:layout_constraintBottom_toBottomOf="@+id/editText"
+        app:layout_constraintBottom_toBottomOf="@+id/productanswer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editText" />
+        app:layout_constraintTop_toTopOf="@+id/productanswer" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/productanswer"
         android:layout_width="65dp"
         android:layout_height="37dp"
         android:layout_marginTop="15dp"
@@ -40,6 +40,6 @@
         android:background="@color/appgrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/productanswer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

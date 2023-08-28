@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "products")
-data class ProductEntity(
+@Entity(tableName = "product_stocks")
+data class ProductStock(
     @PrimaryKey
     @ColumnInfo(name = "mid")
     val mid: Int?,
@@ -13,10 +13,14 @@ data class ProductEntity(
     val id: Int?,
     @ColumnInfo(name = "campaign_id")
     val campaignId: Int?,
-    @ColumnInfo(name = "product_name")
-    val productName: String?,
-    @ColumnInfo(name = "product_answer")
-    var productAnswer: Int?,
+    @ColumnInfo(name = "activity_id")
+    val activityId: Int?,
+    @ColumnInfo(name = "activity_detail_id")
+    val activityDetailId: Int?,
+    @ColumnInfo(name = "product_id")
+    val productId: Int?,
+    @ColumnInfo(name = "count")
+    val count: Int?,
     @ColumnInfo(name = "created_by")
     val createdBy: String?,
     @ColumnInfo(name = "updated_by")
