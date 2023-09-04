@@ -105,6 +105,9 @@ interface iMBSSave {
     @Query("Select * from media where activity_log_id = :activityLogid AND form_id = :formId")
     fun getmedia(activityLogid: Int, formId: Int): List<MediaEntity>
 
+    @Query("Select * from media where activity_log_id = :activityLogid ")
+    fun getmediabyID(activityLogid: Int): List<MediaEntity>
+
     @Query("Select * from users order by mid ASC")
     fun getUser(): UserEntity
 
@@ -168,9 +171,7 @@ interface iMBSSave {
 
     @Query("Select * from answere_detials where activity_detail_id = :activity_detail_Id AND questionnaire_id = :questionnaireId AND activity_log_id = :activityLogid")
     fun getanswersbyID(
-        activity_detail_Id: Int,
-        questionnaireId: Int,
-        activityLogid: Int
+        activity_detail_Id: Int, questionnaireId: Int, activityLogid: Int
     ): List<AnswerDetailEntity>
 
     @Query("Select * from answere_detials")
@@ -185,9 +186,7 @@ interface iMBSSave {
 
     @Query("Select * from brand_ambassadors where activity_detail_id = :activity_detail_Id AND campaign_id = :campaignId AND activity_id = :activityID AND pitchCompleted = 0")
     fun getBA(
-        activity_detail_Id: Int,
-        campaignId: Int,
-        activityID: Int
+        activity_detail_Id: Int, campaignId: Int, activityID: Int
     ): List<BrandAmbassadorEntity>
 
     @Query("Select * from brand_ambassadors  order by mid ASC ")
@@ -255,13 +254,34 @@ interface iMBSSave {
 
     @Query("DELETE FROM brand_ambassadors")
     suspend fun deletebrandambbassadors()
+
     @Query("UPDATE brand_ambassadors SET pitchCompleted = :pitchCompleted WHERE id = :id")
     fun updatePitchCompleted(id: Int, pitchCompleted: Int)
 
+    @Query("UPDATE activity_logs SET is_questionnaire_completed = :is_questionnaire_completed WHERE id = :id")
+    fun updateQuestionnaire(is_questionnaire_completed: Int, id: Int)
+
+    @Query("UPDATE activity_logs SET stock_entry_completed = :stock_entry_completed WHERE id = :id")
+    fun updateStockPicture(stock_entry_completed: Int, id: Int)
+
+    @Query("UPDATE activity_logs SET store_picture_completed = :store_picture_completed WHERE id = :id")
+    fun updateStorePicture(store_picture_completed: Int, id: Int)
+
+    @Query("UPDATE activity_logs SET ba_checklist_completed = :ba_checklist_completed WHERE id = :id")
+    fun updateBA(ba_checklist_completed: Int, id: Int)
+
+    @Query("UPDATE activity_logs SET start_activity_tasks_completed = :start_activity_tasks_completed WHERE id = :id")
+    fun updateStartActivity(start_activity_tasks_completed: Int, id: Int)
+
+    @Query("UPDATE activity_logs SET end_activity_tasks_completed = :end_activity_tasks_completed WHERE id = :id")
+    fun updateEndActivity(end_activity_tasks_completed: Int, id: Int)
+
+    @Query("UPDATE activity_logs SET all_task_completed = :all_task_completed, activity_end_date = :endDate, activity_end_time = :endTime  WHERE id = :id")
+    fun updateFinal(all_task_completed: Int, id: Int, endDate: String, endTime: String)
+
+
     @Query(
-        "select campaigns.*, cc.cc_store_level, cc.cc_name from campaigns\n" +
-                "inner join campaign_channels cc ON cc.id = campaigns.cc_id\n" +
-                "where brand_id = :brandid"
+        "select campaigns.*, cc.cc_store_level, cc.cc_name from campaigns\n" + "inner join campaign_channels cc ON cc.id = campaigns.cc_id\n" + "where brand_id = :brandid"
     )
     fun getCampaignbyBrand(brandid: Int): List<CampaignEntity>
 
@@ -271,21 +291,13 @@ interface iMBSSave {
 
 
     @Query(
-        "select l.location_name, l.id from activity_masters am\n" +
-                "    inner join activity_detials ad ON ad.activity_master_id = am.id\n" +
-                "    inner join locations l ON l.id = ad.location_id\n" +
-                "    where am.campaign_id = :campaignId and am.user_id = :userId and ad.city_id = :cityId\n" +
-                "    group by (l.id);"
+        "select l.location_name, l.id from activity_masters am\n" + "    inner join activity_detials ad ON ad.activity_master_id = am.id\n" + "    inner join locations l ON l.id = ad.location_id\n" + "    where am.campaign_id = :campaignId and am.user_id = :userId and ad.city_id = :cityId\n" + "    group by (l.id);"
     )
     fun getLocationbyCity(campaignId: Int, userId: Int, cityId: Int): List<LocationEntity>
 
 
     @Query(
-        "select s.store_name, s.id from activity_masters am\n" +
-                "inner join activity_detials ad ON ad.activity_master_id = am.id\n" +
-                "inner join stores s ON s.id = ad.store_id\n" +
-                "where am.campaign_id = :campaignId and am.user_id = :userId and ad.location_id = :locationId\n" +
-                "group by (s.id)"
+        "select s.store_name, s.id from activity_masters am\n" + "inner join activity_detials ad ON ad.activity_master_id = am.id\n" + "inner join stores s ON s.id = ad.store_id\n" + "where am.campaign_id = :campaignId and am.user_id = :userId and ad.location_id = :locationId\n" + "group by (s.id)"
     )
     fun getStorebyLocation(campaignId: Int, userId: Int, locationId: Int): List<StoreEntity>
 

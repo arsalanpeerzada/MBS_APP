@@ -40,8 +40,8 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
         binding.recyclerview.adapter = StockAdapter(context = this, productlist, getproducts)
 
         binding.back.setOnClickListener {
+            binding.submit.performClick()
 
-            insertIntoDatabae(productlist)
         }
 
         binding.logout.setOnClickListener {
@@ -53,8 +53,8 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
         }
 
         binding.close.setOnClickListener {
-            binding.back.performClick()
-            this@Stock_Gift_CountActivity.finish()
+            binding.submit.performClick()
+
         }
 
         binding.submit.setOnClickListener {
@@ -63,6 +63,7 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
                 "Product Stock Submitted",
                 Toast.LENGTH_SHORT
             ).show()
+            insertIntoDatabae(productlist)
             val intent = Intent(this, Dashboard::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

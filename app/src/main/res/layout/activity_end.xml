@@ -211,6 +211,7 @@
         app:layout_constraintTop_toBottomOf="@+id/EndActivity" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/selfiecancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -223,6 +224,7 @@
         app:layout_constraintTop_toTopOf="@+id/cardview1" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/teamcancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -235,6 +237,7 @@
         app:layout_constraintTop_toTopOf="@+id/cardview2" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/setupcancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Media")
 data class MediaEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "mid")
     val mid: Int? = 0,
     @ColumnInfo(name = "form_id")
@@ -35,4 +35,4 @@ data class MediaEntity(
     val sync_id: String?,
 
 
-)
+    )

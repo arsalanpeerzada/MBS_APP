@@ -40,7 +40,7 @@ class StorePictureActivity : AppCompatActivity() {
         tinyDB = TinyDB(this@StorePictureActivity)
         var campaignid = tinyDB.getInt("campaignId")
         var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
-        activityLogId = activitylog[0].id!!
+        activityLogId = activitylog[activitylog.size-1].id!!
         binding.back.setOnClickListener {
             this@StorePictureActivity.finish()
         }
@@ -48,7 +48,7 @@ class StorePictureActivity : AppCompatActivity() {
         var picturesdata =
             mbsDatabase.getMBSData().getmedia(activityLogId, Constants.store_location_pictures_num)
 
-        count = picturesdata.size
+       // count = picturesdata.size
         setdata(picturesdata)
 
         binding.logout.setOnClickListener {
@@ -126,6 +126,7 @@ class StorePictureActivity : AppCompatActivity() {
 
                 binding.cardview1.visibility = View.VISIBLE
                 binding.imageView1.setImageBitmap(imageBitmap)
+                binding.imageView1.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
 
@@ -142,6 +143,7 @@ class StorePictureActivity : AppCompatActivity() {
 
                 binding.cardview2.visibility = View.VISIBLE
                 binding.imageView2.setImageBitmap(imageBitmap)
+                binding.imageView2.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
 
@@ -157,6 +159,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview3.visibility = View.VISIBLE
                 binding.imageView3.setImageBitmap(imageBitmap)
+                binding.imageView3.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -170,6 +173,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview4.visibility = View.VISIBLE
                 binding.imageView4.setImageBitmap(imageBitmap)
+                binding.imageView4.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -181,6 +185,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview5.visibility = View.VISIBLE
                 binding.imageView5.setImageBitmap(imageBitmap)
+                binding.imageView5.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -192,6 +197,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview6.visibility = View.VISIBLE
                 binding.imageView6.setImageBitmap(imageBitmap)
+                binding.imageView6.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -203,6 +209,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview7.visibility = View.VISIBLE
                 binding.imageView7.setImageBitmap(imageBitmap)
+                binding.imageView7.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -214,6 +221,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview8.visibility = View.VISIBLE
                 binding.imageView8.setImageBitmap(imageBitmap)
+                binding.imageView8.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -225,6 +233,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview9.visibility = View.VISIBLE
                 binding.imageView9.setImageBitmap(imageBitmap)
+                binding.imageView9.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -236,6 +245,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview10.visibility = View.VISIBLE
                 binding.imageView10.setImageBitmap(imageBitmap)
+                binding.imageView10.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -247,6 +257,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview11.visibility = View.VISIBLE
                 binding.imageView11.setImageBitmap(imageBitmap)
+                binding.imageView11.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -258,6 +269,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview12.visibility = View.VISIBLE
                 binding.imageView12.setImageBitmap(imageBitmap)
+                binding.imageView12.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -269,6 +281,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview13.visibility = View.VISIBLE
                 binding.imageView13.setImageBitmap(imageBitmap)
+                binding.imageView13.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -280,6 +293,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview14.visibility = View.VISIBLE
                 binding.imageView14.setImageBitmap(imageBitmap)
+                binding.imageView14.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -291,6 +305,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview15.visibility = View.VISIBLE
                 binding.imageView15.setImageBitmap(imageBitmap)
+                binding.imageView15.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }
@@ -302,6 +317,7 @@ class StorePictureActivity : AppCompatActivity() {
                 insertIntoDB(uri!!, requestCode)
                 binding.cardview16.visibility = View.VISIBLE
                 binding.imageView16.setImageBitmap(imageBitmap)
+                binding.imageView16.isEnabled = false
                 saveImageToFolder(imageBitmap!!)
                 count++
             }

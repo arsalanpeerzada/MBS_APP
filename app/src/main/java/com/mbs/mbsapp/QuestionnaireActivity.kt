@@ -62,7 +62,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
 
         var answers =
             mbsDatabase.getMBSData()
-                .getanswersbyID(activitydetailid, questionnaireList[0].id!!, activityLogID)
+                .getanswersbyID(activitydetailid, questionnaireList[questionnaireList.size - 1].id!!, activityLogID)
 
         for (item in section.indices) {
             var list = ArrayList<QuestionEntity>()
@@ -82,10 +82,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
 
 
         binding.back.setOnClickListener {
-            backfromQuestionActivity(
-                questionnaireList[0].id!!, campaignId, activityId, activitydetailid
-            )
-            startActivity(Intent(this@QuestionnaireActivity, Dashboard::class.java))
+            binding.submit.performClick()
         }
         binding.logout.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -96,11 +93,15 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         }
 
         binding.close.setOnClickListener {
-            binding.back.performClick()
-            startActivity(Intent(this@QuestionnaireActivity, Dashboard::class.java))
+            binding.submit.performClick()
+
         }
 
         binding.submit.setOnClickListener {
+            backfromQuestionActivity(
+                questionnaireList[0].id!!, campaignId, activityId, activitydetailid
+            )
+
             Toast.makeText(this, "Questionnaire Submitted", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, Dashboard::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

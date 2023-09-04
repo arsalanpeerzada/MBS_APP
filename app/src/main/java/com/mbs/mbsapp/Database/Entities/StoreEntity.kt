@@ -9,12 +9,22 @@ data class StoreEntity(
     @PrimaryKey
     @ColumnInfo(name = "mid")
     val mid :Int? = 0,
+
+
+
     @ColumnInfo(name = "id")
     val id: Int?,
+
+
+
     @ColumnInfo(name = "location_id")
     val locationId: Int?,
+
+
     @ColumnInfo(name = "store_name")
     val storeName: String?,
+
+
     @ColumnInfo(name = "store_code")
     val storeCode: String?,
     @ColumnInfo(name = "created_by")

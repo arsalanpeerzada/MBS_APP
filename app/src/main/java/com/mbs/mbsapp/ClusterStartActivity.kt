@@ -2,6 +2,8 @@ package com.mbs.mbsapp
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,6 +24,8 @@ import androidx.core.content.FileProvider
 import com.airbnb.lottie.utils.Utils
 import com.inksy.Database.MBSDatabase
 import com.mbs.mbsapp.Database.Entities.ActivityLog
+import com.mbs.mbsapp.Database.Entities.MediaEntity
+import com.mbs.mbsapp.Utils.Constants
 import com.mbs.mbsapp.Utils.Permissions
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityClusterStartBinding
@@ -30,6 +34,8 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,7 +56,12 @@ class ClusterStartActivity : AppCompatActivity() {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     var activitydetailID: String = ""
+    var activityCount = 0
+    lateinit var URI_Selfie: Uri
+    lateinit var URI_TEAM: Uri
+    lateinit var URI_LOCATION: Uri
     lateinit var mbsDatabase: MBSDatabase
+    var mediacount: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,8 +70,31 @@ class ClusterStartActivity : AppCompatActivity() {
         mbsDatabase = MBSDatabase.getInstance(this)!!
         tinyDB = TinyDB(this)
         cameraUri = createImageUri()!!
+        getlocation()
         binding.startActivity.setOnClickListener {
             if (selfiecount == 1 && teamcount == 1 && locationcount == 1) {
+
+                for (i in 1..3) {
+                    when (i) {
+                        1 -> {
+                            insertIntoDB(URI_Selfie, mediacount)
+                            mediacount++
+                        }
+
+                        2 -> {
+                            insertIntoDB(URI_TEAM, mediacount)
+                            mediacount++
+                        }
+
+                        3 -> {
+                            insertIntoDB(URI_LOCATION, mediacount)
+                            mediacount++
+
+                            mbsDatabase.getMBSData().updateStartActivity(1, activityCount)
+                        }
+                    }
+                }
+
                 Toast.makeText(this, "Activity Started", Toast.LENGTH_SHORT).show()
                 val currentTime: String =
                     SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
@@ -89,7 +123,7 @@ class ClusterStartActivity : AppCompatActivity() {
 
         if (storeId > 0) {
             var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
-            tinyDB.putString("storeName",getStore.storeName)
+            tinyDB.putString("storeName", getStore.storeName)
             activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
         } else {
 
@@ -101,10 +135,11 @@ class ClusterStartActivity : AppCompatActivity() {
         tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
 
         val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        val currentDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+        val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        var activityCount = 0
-        tinyDB.putInt("activityLogID", activityCount )
+        activityCount = mbsDatabase.getMBSData().getactivitylogs().size
+
+        tinyDB.putInt("activityLogID", activityCount)
         GlobalScope.launch {
             var activitylog = ActivityLog(
                 activityCount,
@@ -132,7 +167,11 @@ class ClusterStartActivity : AppCompatActivity() {
                 ""
             )
             var activitymaster = mbsDatabase.getMBSData().insertActivityLogs(activitylog)
+
+
         }
+
+        mediacount = mbsDatabase.getMBSData().getmedia().size
 
         binding.back.setOnClickListener {
             selfiecount = 0
@@ -219,39 +258,37 @@ class ClusterStartActivity : AppCompatActivity() {
     }
 
 
-    private fun saveImageToFolder(bitmap: Bitmap) {
-        val folderName = "YourFolderName"
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val folder = File(storageDir, folderName)
-        if (!folder.exists()) {
-            folder.mkdirs()
+    fun saveBitmapToGallery(context: Context, bitmap: Bitmap, displayName: String): Uri? {
+        val contentResolver: ContentResolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$displayName.jpg")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis() / 1000)
+            put(MediaStore.MediaColumns.DATE_TAKEN, System.currentTimeMillis())
         }
 
-        val fileName = "y_picture.jpg"
-        val pictureFile = File(folder, fileName)
+        val imageUri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        imageUri?.let {
+            val outputStream: OutputStream? = contentResolver.openOutputStream(it)
+            outputStream?.use { stream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            }
+        }
 
-
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos) // YOU can also save it in JPEG
-
-        val bitmapdata = bos.toByteArray()
-        val fos = FileOutputStream(pictureFile)
-        fos.write(bitmapdata)
-        fos.flush()
-        fos.close()
-
-
+        return imageUri
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
+            val displayName = "image_${System.currentTimeMillis()}"
             if (requestCode == Selfie) {
                 val imageBitmap = data?.extras?.get("data") as Bitmap?
 
                 binding.imageView5.setImageBitmap(imageBitmap)
-                saveImageToFolder(imageBitmap!!)
+                URI_Selfie = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
                 selfiecount = 1
 
 
@@ -260,16 +297,18 @@ class ClusterStartActivity : AppCompatActivity() {
                 val imageBitmap = data?.extras?.get("data") as Bitmap?
 
                 binding.imageView6.setImageBitmap(imageBitmap)
-                saveImageToFolder(imageBitmap!!)
+                URI_TEAM = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
                 teamcount = 1
+
             }
 
             if (requestCode == Location) {
                 val imageBitmap = data?.extras?.get("data") as Bitmap?
 
                 binding.imageView8.setImageBitmap(imageBitmap)
-                saveImageToFolder(imageBitmap!!)
+                URI_LOCATION = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
                 locationcount = 1
+
             }
         }
 
@@ -316,6 +355,27 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 // Location data not available
             }
+        }
+    }
+
+    fun insertIntoDB(uri: Uri, mediacount: Int) {
+        GlobalScope.launch {
+            var mediaEntity = MediaEntity(
+                mediacount,
+                Constants.activity_start_num,
+                Constants.activity_start_name,
+                activityCount,
+                0,
+                "",
+                "picture",
+                "",
+                uri.toString(),
+                "",
+                "",
+                "",
+                "",
+            )
+            var data = mbsDatabase.getMBSData().insertMedia(mediaEntity)
         }
     }
 }
