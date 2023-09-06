@@ -220,8 +220,10 @@ class Dashboard : AppCompatActivity() {
             activitydetailID, getquestionnaireid[0].id!!, activityLogid
         )
 
+
+        var count = 0
         if (questions.size > 0) {
-            var count = 0
+
             for (item in questions) {
                 if (item.answer != "0") {
                     count++
@@ -232,6 +234,8 @@ class Dashboard : AppCompatActivity() {
             if (count == questions.size) {
                 mbsDatabase.getMBSData().updateQuestionnaire(1, activityLogid)
             }
+        }else {
+            binding.questionsCount.text = "$count/${questions.size} Answered"
         }
 
 

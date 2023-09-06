@@ -69,7 +69,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
 
 
         binding.back.setOnClickListener {
-            this@BAPitch.finish()
+            binding.submit.performClick()
         }
 
         audioAdapter = AudioAdapter(this@BAPitch, list, object : iAudioPlay {
@@ -114,7 +114,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
         }
 
         binding.close.setOnClickListener {
-            this@BAPitch.finish()
+            binding.submit.performClick()
         }
 
         binding.submit.setOnClickListener {

@@ -42,7 +42,7 @@ class StorePictureActivity : AppCompatActivity() {
         var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
         activityLogId = activitylog[activitylog.size-1].id!!
         binding.back.setOnClickListener {
-            this@StorePictureActivity.finish()
+            binding.submit.performClick()
         }
 
         var picturesdata =
@@ -60,8 +60,7 @@ class StorePictureActivity : AppCompatActivity() {
         }
 
         binding.close.setOnClickListener {
-            binding.back.performClick()
-            this@StorePictureActivity.finish()
+            binding.submit.performClick()
         }
 
         binding.submit.setOnClickListener {

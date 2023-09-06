@@ -69,6 +69,7 @@ public interface APIInterface {
         @Field("current_status") current_status: Int?,
         @Field("submitted_at") submitted_ats: String?,
         @Field("answeres[ans][]") answers: List<String>,
+        @Field("answeres[question_id][]") question_id: List<String>,
         @Field("answeres[comment][]") comment: List<String>,
         @Field("answeres[media_attached][]") media_attached: List<String>,
         @Field("answeres[media_count][]") media_count: List<String>,

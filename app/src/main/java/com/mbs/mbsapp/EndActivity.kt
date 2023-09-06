@@ -16,6 +16,8 @@ import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Database.Entities.MediaEntity
+import com.mbs.mbsapp.Dialog.TwoButtonDialog
+import com.mbs.mbsapp.Interfaces.OnDialogClickListener
 import com.mbs.mbsapp.Model.ActivitySubmitModel
 import com.mbs.mbsapp.Model.AnswerModel
 import com.mbs.mbsapp.Utils.Constants
@@ -86,7 +88,8 @@ class EndActivity : AppCompatActivity() {
         mediacount = mbsDatabase.getMBSData().getmedia().size
         var token = tinyDB.getString("token")
         binding.back.setOnClickListener {
-            this@EndActivity.finish()
+            openDialog()
+
         }
         activityMasterId = tinyDB.getInt("activitymasterid")
         activitylogid = tinyDB.getInt("activityLogID")
@@ -268,17 +271,13 @@ class EndActivity : AppCompatActivity() {
 
                 }
             }
-
-
-//            var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
-            //  SubmitData()
-
         }
-        var finalUpdate =
-            mbsDatabase.getMBSData().updateFinal(1, activitylogid, currentDate, currentTime)
-        startActivity(Intent(this@EndActivity, SelectActivity::class.java))
-        this@EndActivity.finish()
 
+        var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
+        var finalUpdate =
+            mbsDatabase.getMBSData()
+                .updateFinal(1, activitylogid, currentDate, currentTime)
+        SubmitData()
 
     }
 
@@ -343,8 +342,9 @@ class EndActivity : AppCompatActivity() {
 
     fun SubmitMedia() {
         var data = mbsDatabase.getMBSData().getmediabyID(activitylogid)
-
+        var count = 0
         for (item in data) {
+            count++
             val activity_log_id = RequestBody.create(MultipartBody.FORM, activitylogid.toString())
             val form_id = RequestBody.create(MultipartBody.FORM, item.form_id.toString())
             val form_name = RequestBody.create(MultipartBody.FORM, item.form_name!!)
@@ -381,6 +381,12 @@ class EndActivity : AppCompatActivity() {
                 }
             })
         }
+
+        if (count == data.size) {
+
+            startActivity(Intent(this@EndActivity, SelectActivity::class.java))
+            this@EndActivity.finish()
+        }
     }
 
 
@@ -391,6 +397,7 @@ class EndActivity : AppCompatActivity() {
 
         var ans = ArrayList<String>()
         var answerComment = ArrayList<String>()
+        var questionId = ArrayList<String>()
         var isMediaAttached = ArrayList<String>()
         var attachedMediaCount = ArrayList<String>()
         var submittedBy = ArrayList<String>()
@@ -398,6 +405,7 @@ class EndActivity : AppCompatActivity() {
         for (item in answers) {
             ans.add(item.answer.toString())
             answerComment.add(item.answerComment.toString())
+            questionId.add(item.question_id.toString())
             isMediaAttached.add(item.isMediaAttached.toString())
             attachedMediaCount.add(item.attachedMediaCount.toString())
             submittedBy.add(item.submittedBy.toString())
@@ -415,6 +423,7 @@ class EndActivity : AppCompatActivity() {
             1,
             currentDate,
             ans,
+            questionId,
             answerComment,
             isMediaAttached,
             attachedMediaCount,
@@ -491,6 +500,24 @@ class EndActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun openDialog() {
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
+            this, "MSB APP",
+            "Are you sure?, Your unsaved data will be lost",
+            getString(android.R.string.yes),
+            getString(android.R.string.no),
+            object : OnDialogClickListener {
+                override fun onDialogClick(callBack: String?) {
+                    if (callBack == "Yes") {
+                        this@EndActivity.finish()
+                    } else {
+                    }
+                }
+            })
+        twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        twoButtonDialog.show()
     }
 
 
