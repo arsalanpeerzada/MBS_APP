@@ -74,6 +74,7 @@ class Dashboard : AppCompatActivity() {
 
         var activityLog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
         var activityLogid = activityLog[activityLog.size - 1].id!!
+        var datamedia = mbsDatabase.getMBSData().getmediabyID(activityLogid)
         updateQuestions(activityLogid)
         updateproducts(activityLogid)
         updateBA(activityLogid)
@@ -234,8 +235,9 @@ class Dashboard : AppCompatActivity() {
             if (count == questions.size) {
                 mbsDatabase.getMBSData().updateQuestionnaire(1, activityLogid)
             }
-        }else {
-            binding.questionsCount.text = "$count/${questions.size} Answered"
+        } else {
+            var rawquestions = mbsDatabase.getMBSData().getQuestion(getquestionnaireid[0].id!!)
+            binding.questionsCount.text = "$count/${rawquestions.size} Answered"
         }
 
 

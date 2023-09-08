@@ -71,7 +71,71 @@ class ClusterStartActivity : AppCompatActivity() {
         tinyDB = TinyDB(this)
         cameraUri = createImageUri()!!
         getlocation()
+
+        getlocation()
+        var campaignid = tinyDB.getInt("campaignId")
+        var brandId = tinyDB.getInt("brandId")
+        var locationId = tinyDB.getInt("locationid")
+        var cityId = tinyDB.getInt("cityId")
+        var storeId = tinyDB.getInt("storeId")
+        var time = tinyDB.getString("time")
+        var user = mbsDatabase.getMBSData().getUser()
+
+        if (storeId > 0) {
+            var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
+            tinyDB.putString("storeName", getStore.storeName)
+            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
+        } else {
+
+            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId"
+        }
+
+        var getmasterid = mbsDatabase.getMBSData().getMasterId(activitydetailID)
+        tinyDB.putInt("activitymasterid", getmasterid[0].activityMasterId!!)
+        tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
+
+        val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+        val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+        var data = mbsDatabase.getMBSData().getactivitylogs()
+        activityCount = data.size
+
+        tinyDB.putInt("activityLogID", activityCount)
+
+        var activitylog = ActivityLog(
+            activityCount,
+            activityCount,
+            getmasterid[0].activityMasterId,
+            campaignid,
+            brandId,
+            user.id!!,
+            0,
+            activitydetailID,
+            currentDate,
+            currentTime,
+            latitude.toString(),
+            longitude.toString(),
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "",
+            "",
+            "",
+            ""
+        )
+        var activitymaster = mbsDatabase.getMBSData().insertActivityLogs(activitylog)
+
+
+
+
         binding.startActivity.setOnClickListener {
+            mediacount = mbsDatabase.getMBSData().getmedia().size
+//            var activityLog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
+//            activityCount = activityLog[activityLog.size - 1].id!!
             if (selfiecount == 1 && teamcount == 1 && locationcount == 1) {
 
                 for (i in 1..3) {
@@ -112,66 +176,6 @@ class ClusterStartActivity : AppCompatActivity() {
                 ).show()
             }
         }
-        getlocation()
-        var campaignid = tinyDB.getInt("campaignId")
-        var brandId = tinyDB.getInt("brandId")
-        var locationId = tinyDB.getInt("locationid")
-        var cityId = tinyDB.getInt("cityId")
-        var storeId = tinyDB.getInt("storeId")
-        var time = tinyDB.getString("time")
-        var user = mbsDatabase.getMBSData().getUser()
-
-        if (storeId > 0) {
-            var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
-            tinyDB.putString("storeName", getStore.storeName)
-            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
-        } else {
-
-            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId"
-        }
-
-        var getmasterid = mbsDatabase.getMBSData().getMasterId(activitydetailID)
-        tinyDB.putInt("activitymasterid", getmasterid[0].activityMasterId!!)
-        tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
-
-        val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-        activityCount = mbsDatabase.getMBSData().getactivitylogs().size
-
-        tinyDB.putInt("activityLogID", activityCount)
-        GlobalScope.launch {
-            var activitylog = ActivityLog(
-                activityCount,
-                activityCount,
-                getmasterid[0].activityMasterId,
-                campaignid,
-                brandId,
-                user.id!!,
-                0,
-                activitydetailID,
-                currentDate,
-                currentTime,
-                latitude.toString(),
-                longitude.toString(),
-                1,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                "",
-                "",
-                "",
-                ""
-            )
-            var activitymaster = mbsDatabase.getMBSData().insertActivityLogs(activitylog)
-
-
-        }
-
-        mediacount = mbsDatabase.getMBSData().getmedia().size
 
         binding.back.setOnClickListener {
             selfiecount = 0

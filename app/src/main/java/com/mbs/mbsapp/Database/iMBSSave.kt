@@ -69,13 +69,10 @@ interface iMBSSave {
     suspend fun insertQuestion(questionEntity: QuestionEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertActivityLog(activityLog: ActivityLog?)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuestionSection(questionSectionEntity: QuestionSectionEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertActivityLogs(activityLog: ActivityLog?)
+    fun insertActivityLogs(activityLog: ActivityLog?)
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -182,6 +179,12 @@ interface iMBSSave {
     @Query("Select * from ba_pitches bp inner join brand_ambassadors ba on bp.ba_id = ba.id where ba.activity_detail_id = :activity_detail_Id")
     fun getBApitches(
         activity_detail_Id: Int,
+    ): List<BaPitchEntity>
+
+
+    @Query("Select * from ba_pitches where ba_id = :activity_log_id")
+    fun getBApitchesNew(
+        activity_log_id: Int,
     ): List<BaPitchEntity>
 
     @Query("Select * from brand_ambassadors where activity_detail_id = :activity_detail_Id AND campaign_id = :campaignId AND activity_id = :activityID AND pitchCompleted = 0")

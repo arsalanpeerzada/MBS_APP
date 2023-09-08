@@ -15,8 +15,12 @@ class Permissions {
                 act!!, arrayOf(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                ), code
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+
+                    ), code
             )
         }
 
@@ -61,13 +65,13 @@ class Permissions {
 //            )
 //        }
 //
-   /*     fun Request_Notification(act: Activity?, code: Int) {
-            ActivityCompat.requestPermissions(
-                act!!,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                code
-            )
-        }*/
+        /*     fun Request_Notification(act: Activity?, code: Int) {
+                 ActivityCompat.requestPermissions(
+                     act!!,
+                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                     code
+                 )
+             }*/
 
         //Check Permisson
         fun Check_STORAGE(act: Activity?): Boolean {

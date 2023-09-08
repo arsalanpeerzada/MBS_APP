@@ -6,13 +6,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "ba_pitches")
 data class BaPitchEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "mid")
     val mid: Int?,
     @ColumnInfo(name = "id")
     val id: Int?,
     @ColumnInfo(name = "ba_id")
     val baId: Int?,
+    @ColumnInfo(name = "ba_name")
+    val ba_name: String?,
     @ColumnInfo(name = "bap_media_original_name")
     val bapMediaOriginalName: String?,
     @ColumnInfo(name = "bap_path")

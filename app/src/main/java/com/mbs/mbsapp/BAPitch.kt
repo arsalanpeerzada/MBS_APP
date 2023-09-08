@@ -6,8 +6,11 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -50,6 +53,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
     lateinit var baDialog: BADialog
     lateinit var recordView: RecordView
     lateinit var recordButton: RecordButton
+    var brandAmbassador = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBapitchBinding.inflate(layoutInflater)
@@ -94,10 +98,53 @@ class BAPitch : AppCompatActivity(), iSetBA {
             Toast.makeText(this@BAPitch, "Select BA first", Toast.LENGTH_SHORT).show()
         }
 
-        var getbapitchs = mbsDatabase.getMBSData().getBApitches(activitydetailid)
+        var minLength = 3
+        binding.editText2.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Not used in this example
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Not used in this example
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString()
+
+                if (text.length < minLength) {
+                    isBASelected = false
+                    recordButton.isEnabled = false
+                    recordView.isEnabled = false
+                    binding.blocker.visibility = View.VISIBLE
+                    brandAmbassador = text
+                    binding.BASelect.setText("You are recording for BA")
+                    binding.editText2.error = "Minimum $minLength characters required"
+                    // Optionally, you can show a toast message:
+                    // Toast.makeText(editText.context, "Minimum $minLength characters required", Toast.LENGTH_SHORT).show()
+                } else if (text.length > 15) {
+                    isBASelected = false
+                    recordButton.isEnabled = false
+                    recordView.isEnabled = false
+                    binding.blocker.visibility = View.VISIBLE
+                    brandAmbassador = text
+                    binding.BASelect.setText("You are recording for BA")
+                    binding.editText2.error = "Maximum 15 characters required"
+                } else {
+                    binding.editText2.error = null // Clear the error message
+                    isBASelected = true
+                    binding.BASelect.setText("You are recording for $text")
+                    recordButton.isEnabled = true
+                    recordView.isEnabled = true
+                    binding.blocker.visibility = View.GONE
+                    brandAmbassador = text
+                }
+            }
+        })
+
+        var getbapitchs = mbsDatabase.getMBSData().getBApitchesNew(activitydetailid)
 
         for (item in getbapitchs) {
-            var audioModel = AudioModel(item.bapMediaName, item.bapPath)
+            var audioModel = AudioModel(item.ba_name, item.bapPath)
             list.add(audioModel)
             audioAdapter.notifyDataSetChanged()
         }
@@ -128,13 +175,15 @@ class BAPitch : AppCompatActivity(), iSetBA {
 
         binding.BASelect.setOnClickListener {
 
-            var ba_list = mbsDatabase.getMBSData().getBA(activitydetailid, campaignid, activitymasterid)
+//            var ba_list = mbsDatabase.getMBSData().getBA(activitydetailid, campaignid, activitymasterid)
+//
+//
+//            baDialog = BADialog(this@BAPitch, ba_list, this)
+//
+//            baDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+//            baDialog.show()
 
-
-            baDialog = BADialog(this@BAPitch, ba_list, this)
-
-            baDialog.window?.setBackgroundDrawableResource(R.color.transparent)
-            baDialog.show()
+            binding.editText2.visibility = View.VISIBLE
         }
 
 
@@ -152,15 +201,14 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 //Start Recording..
                 if (isBASelected) {
                     Log.d("RecordView", "onStart")
-                    recordFile = File(filesDir, "${baentity.baName}.mp3")
+                    recordFile = File(filesDir, "$brandAmbassador.mp3")
                     try {
                         audioRecorder!!.start(recordFile!!.path)
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
                     Log.d("RecordView", "onStart")
-                    Toast.makeText(this@BAPitch, "OnStartRecord", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this@BAPitch, "OnStartRecord", Toast.LENGTH_SHORT).show()
                 } else {
                     stopRecording(true);
                     Toast.makeText(this@BAPitch, "Select Brand Ambassador", Toast.LENGTH_SHORT)
@@ -184,18 +232,17 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 stopRecording(false);
                 val time: String = getHumanTimeText(recordTime)
                 Toast.makeText(
-                    this@BAPitch,
-                    "File saved at " + recordFile?.path,
-                    Toast.LENGTH_SHORT
+                    this@BAPitch, "File saved at " + recordFile?.path, Toast.LENGTH_SHORT
                 ).show();
 
-                var audioModel = AudioModel(recordFile?.name, recordFile?.path)
+                var audioModel = AudioModel(brandAmbassador, recordFile?.path)
                 list.add(audioModel)
-
+                var activitylogid = tinydb.getInt("activityLogID")
                 var baPitch = BaPitchEntity(
-                    baentity.id!!,
-                    baentity.id!!,
-                    baentity.id,
+                    0,
+                    0,
+                    activitylogid,
+                    brandAmbassador,
                     recordFile.toString(),
                     recordFile?.path.toString(),
                     recordFile?.name.toString(),
@@ -212,7 +259,10 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 recordButton.isEnabled = false
                 recordView.isEnabled = false
                 binding.blocker.visibility = View.VISIBLE
-                mbsDatabase.getMBSData().updatePitchCompleted(baentity.id!!, 1)
+                binding.editText2.visibility = View.GONE
+                brandAmbassador = ""
+                binding.editText2.text.clear()
+//                mbsDatabase.getMBSData().updatePitchCompleted(baentity.id!!, 1)
                 audioAdapter.notifyDataSetChanged()
                 Log.d("RecordView", "onFinish")
                 Log.d("RecordTime", time)
@@ -233,8 +283,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
 
         recordView.setOnBasketAnimationEndListener {
             Log.d(
-                "RecordView",
-                "Basket Animation Finished"
+                "RecordView", "Basket Animation Finished"
             )
         }
 
@@ -243,15 +292,13 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 return@RecordPermissionHandler true
             }
             val recordPermissionAvailable = ContextCompat.checkSelfPermission(
-                this@BAPitch,
-                Manifest.permission.RECORD_AUDIO
+                this@BAPitch, Manifest.permission.RECORD_AUDIO
             ) == PERMISSION_GRANTED
             if (recordPermissionAvailable) {
                 return@RecordPermissionHandler true
             }
             ActivityCompat.requestPermissions(
-                this@BAPitch, arrayOf<String>(Manifest.permission.RECORD_AUDIO),
-                0
+                this@BAPitch, arrayOf<String>(Manifest.permission.RECORD_AUDIO), 0
             )
             false
         })
@@ -262,8 +309,9 @@ class BAPitch : AppCompatActivity(), iSetBA {
         return java.lang.String.format(
             "%02d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-            TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds))
+            TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(
+                TimeUnit.MILLISECONDS.toMinutes(milliseconds)
+            )
         )
     }
 
@@ -275,13 +323,8 @@ class BAPitch : AppCompatActivity(), iSetBA {
     }
 
     override fun setBA(ba: BrandAmbassadorEntity) {
-        isBASelected = true
-        baentity = ba
-        binding.BASelect.setText("You are recording for ${ba.baName}")
-        recordButton.isEnabled = true
-        recordView.isEnabled = true
-        binding.blocker.visibility = View.GONE
-        baDialog.dismiss()
+
 
     }
+
 }

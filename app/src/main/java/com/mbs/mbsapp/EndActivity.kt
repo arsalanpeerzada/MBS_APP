@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.util.Util
@@ -88,7 +89,7 @@ class EndActivity : AppCompatActivity() {
         mediacount = mbsDatabase.getMBSData().getmedia().size
         var token = tinyDB.getString("token")
         binding.back.setOnClickListener {
-            openDialog()
+
 
         }
         activityMasterId = tinyDB.getInt("activitymasterid")
@@ -100,13 +101,9 @@ class EndActivity : AppCompatActivity() {
         storeId = tinyDB.getInt("storeId")
 
         binding.back.setOnClickListener {
-            selfiecount = 0
-            teamcount = 0
-            locationcount = 0
-            val intent = Intent(this, Dashboard::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.right2, R.anim.right);
-            this@EndActivity.finish()
+
+            openDialog()
+
         }
 
         binding.logout.setOnClickListener {
@@ -316,7 +313,7 @@ class EndActivity : AppCompatActivity() {
 
         apiInterface.SubmitProducts(
             token,
-            activitylogid,
+            newactivityLog,
             campaignID,
             producutId,
             producutCount
@@ -345,7 +342,7 @@ class EndActivity : AppCompatActivity() {
         var count = 0
         for (item in data) {
             count++
-            val activity_log_id = RequestBody.create(MultipartBody.FORM, activitylogid.toString())
+            val activity_log_id = RequestBody.create(MultipartBody.FORM, newactivityLog.toString())
             val form_id = RequestBody.create(MultipartBody.FORM, item.form_id.toString())
             val form_name = RequestBody.create(MultipartBody.FORM, item.form_name!!)
             val data_id = RequestBody.create(MultipartBody.FORM, item.data_id.toString())
@@ -356,8 +353,6 @@ class EndActivity : AppCompatActivity() {
             var file = FileUtil.from(this@EndActivity, uri)
 
             val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
-
-
             apiInterface.SubmitMediaData(
                 token,
                 activity_log_id,
@@ -383,7 +378,7 @@ class EndActivity : AppCompatActivity() {
         }
 
         if (count == data.size) {
-
+            tinyDB.putString("time", "")
             startActivity(Intent(this@EndActivity, SelectActivity::class.java))
             this@EndActivity.finish()
         }
@@ -434,7 +429,7 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
                 if (response.isSuccessful) {
-//
+                    Log.d("MSB", "data Inserted")
                 }
             }
 
@@ -511,6 +506,13 @@ class EndActivity : AppCompatActivity() {
             object : OnDialogClickListener {
                 override fun onDialogClick(callBack: String?) {
                     if (callBack == "Yes") {
+                        selfiecount = 0
+                        teamcount = 0
+                        locationcount = 0
+                        tinyDB.putString("time", "")
+                        val intent = Intent(this@EndActivity, Dashboard::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.right2, R.anim.right);
                         this@EndActivity.finish()
                     } else {
                     }

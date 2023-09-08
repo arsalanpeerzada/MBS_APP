@@ -42,7 +42,7 @@ class SplashActivity : AppCompatActivity() {
                         overridePendingTransition(R.anim.left, R.anim.left2);
                         finish()
                     } else {
-                        if (activityTime.isNullOrEmpty()) {
+                        if (activityTime.isNullOrEmpty() || activityTime == "") {
 
                             val intent = Intent(this@SplashActivity, SelectActivity::class.java)
                             startActivity(intent)

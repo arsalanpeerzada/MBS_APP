@@ -17,7 +17,7 @@ import com.mbs.mbsapp.Model.QuestionSectionModel
 import com.mbs.mbsapp.Model.QuestionnaireModel
 import com.mbs.mbsapp.Model.StoreModel
 import com.mbs.mbsapp.Model.UserModel
-import com.mbs.mbsapp.Model.myvalidation
+import com.mbs.mbsapp.Model.errors
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -194,8 +194,8 @@ public interface APIInterface {
         @SerializedName("validation")
         var validation: Boolean? = null
 
-        @SerializedName("validationErorrs")
-        var validation_erorrs: myvalidation? = null
+        @SerializedName("errors")
+        var errors: errors? = null
 
         @SerializedName("data")
         @Expose

@@ -35,10 +35,10 @@ class SelectActivity : AppCompatActivity() {
     var SELECTED_LOCATION_ID: Int = 0
     var SELECTED_STORE_ID: Int = 0
     var USER_ID: Int = 0
-    lateinit var getcampaign: List<CampaignEntity>
-    lateinit var getcity: List<CityEntity>
-    lateinit var getlocation: List<LocationEntity>
-    lateinit var getStore: List<StoreEntity>
+    var getcampaign: List<CampaignEntity> = ArrayList()
+    var getcity: List<CityEntity> = ArrayList()
+    var getlocation: List<LocationEntity> = ArrayList()
+    var getStore: List<StoreEntity> = ArrayList()
 
     lateinit var userdata: UserEntity
     lateinit var tinydb: TinyDB
