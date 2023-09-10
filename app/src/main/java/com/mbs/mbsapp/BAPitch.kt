@@ -54,6 +54,9 @@ class BAPitch : AppCompatActivity(), iSetBA {
     lateinit var recordView: RecordView
     lateinit var recordButton: RecordButton
     var brandAmbassador = ""
+    var activitylogid: Int = 0
+    var getbapitchs: List<BaPitchEntity> = ArrayList()
+    var listSize = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBapitchBinding.inflate(layoutInflater)
@@ -70,6 +73,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
         var activitymasterid = tinydb.getInt("activitymasterid")
         var activitydetailid = tinydb.getInt("activitydetailid")
 
+        activitylogid = tinydb.getInt("activityLogID")
 
 
         binding.back.setOnClickListener {
@@ -141,8 +145,8 @@ class BAPitch : AppCompatActivity(), iSetBA {
             }
         })
 
-        var getbapitchs = mbsDatabase.getMBSData().getBApitchesNew(activitydetailid)
-
+        getbapitchs = mbsDatabase.getMBSData().getBApitchesNew(activitylogid)
+        listSize = getbapitchs.size
         for (item in getbapitchs) {
             var audioModel = AudioModel(item.ba_name, item.bapPath)
             list.add(audioModel)
@@ -237,10 +241,10 @@ class BAPitch : AppCompatActivity(), iSetBA {
 
                 var audioModel = AudioModel(brandAmbassador, recordFile?.path)
                 list.add(audioModel)
-                var activitylogid = tinydb.getInt("activityLogID")
+
                 var baPitch = BaPitchEntity(
-                    0,
-                    0,
+                    listSize,
+                    listSize,
                     activitylogid,
                     brandAmbassador,
                     recordFile.toString(),
@@ -250,8 +254,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
                     1,
                     "",
                     "",
-
-                    )
+                )
 
                 mbsDatabase.getMBSData().insertBAPitch(baPitch)
                 isBASelected = false
@@ -262,8 +265,8 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 binding.editText2.visibility = View.GONE
                 brandAmbassador = ""
                 binding.editText2.text.clear()
-//                mbsDatabase.getMBSData().updatePitchCompleted(baentity.id!!, 1)
                 audioAdapter.notifyDataSetChanged()
+                listSize++
                 Log.d("RecordView", "onFinish")
                 Log.d("RecordTime", time)
             }

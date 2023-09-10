@@ -483,7 +483,7 @@ class EndActivity : AppCompatActivity() {
             ) {
                 newactivityLog = response.body()?.data?.activityLogId!!
                 SubmitAnswer()
-                SubmitMedia()
+//                SubmitMedia()
                 SubmitProducts()
             }
 

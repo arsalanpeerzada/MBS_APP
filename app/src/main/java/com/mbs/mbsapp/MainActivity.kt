@@ -74,6 +74,9 @@ class MainActivity : AppCompatActivity() {
         password: String?
     ) {
         binding.login.text = "Please Wait"
+        binding.message.visibility = View.GONE
+        binding.loading.visibility = View.VISIBLE
+        binding.transparentLoader.visibility = View.VISIBLE
         apiInterface.login(email, password)
             .enqueue(object : Callback<APIInterface.ApiResponse<UserModel>> {
                 override fun onResponse(
@@ -81,7 +84,6 @@ class MainActivity : AppCompatActivity() {
                     response: Response<APIInterface.ApiResponse<UserModel>>
                 ) {
                     if (response.isSuccessful) {
-                        binding.loading.visibility = View.VISIBLE
                         token = response.body()?.token.toString()
                         tinyDB.putString("User", response.body()?.user?.id.toString())
                         tinyDB.putString("token", token)
@@ -102,10 +104,16 @@ class MainActivity : AppCompatActivity() {
                         getBrandAmbassador(finaltoken)
 
                     } else {
+
+                        binding.loading.visibility = View.GONE
+                        loadingPercentageNo = 0
+                        binding.transparentLoader.visibility = View.GONE
+                        binding.message.text = response.raw().message.toString()
+                        binding.message.visibility = View.VISIBLE
                         binding.login.text = "Login"
                         Toast.makeText(
                             this@MainActivity,
-                            "Login Failed, Try Again",
+                            response.raw().message,
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -116,6 +124,11 @@ class MainActivity : AppCompatActivity() {
                     call: Call<APIInterface.ApiResponse<UserModel>>,
                     t: Throwable
                 ) {
+                    binding.loading.visibility = View.GONE
+                    loadingPercentageNo = 0
+                    binding.transparentLoader.visibility = View.GONE
+                    binding.message.text = t.message.toString()
+                    binding.message.visibility = View.VISIBLE
                     binding.login.text = "Login"
                     Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
                 }
@@ -885,10 +898,12 @@ class MainActivity : AppCompatActivity() {
 
             }
         } else {
-            binding.login.text = "Login"
             binding.loading.visibility = View.GONE
-            binding.loading.text = "Loading .....   0%"
             loadingPercentageNo = 0
+            binding.transparentLoader.visibility = View.GONE
+            binding.login.text = "Login"
+            binding.loading.text = "Loading .....   0%"
+
         }
     }
 

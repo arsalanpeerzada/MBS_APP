@@ -170,6 +170,9 @@ class Dashboard : AppCompatActivity() {
     private fun updateproducts(activityLogid: Int) {
         var products = mbsDatabase.getMBSData().getProductStocks(campaignid, activitydetailID)
 
+
+
+
         if (products.size > 0) {
             var productCount = 0
             for (item in products) {
@@ -178,6 +181,7 @@ class Dashboard : AppCompatActivity() {
                 }
             }
             if (productCount == products.size) {
+                binding.stockCount.text = "Completed"
                 mbsDatabase.getMBSData().updateStockPicture(1, activityLogid)
             }
         }
@@ -188,7 +192,10 @@ class Dashboard : AppCompatActivity() {
         var location =
             mbsDatabase.getMBSData().getmedia(activityLogid, Constants.store_location_pictures_num)
 
+        mbsDatabase.getMBSData().updateStorePicture(1, activityLogid)
+
         if (location.size > 0) {
+            binding.locationCount.text = "Completed"
             mbsDatabase.getMBSData().updateStorePicture(1, activityLogid)
         }
 

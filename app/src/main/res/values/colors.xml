@@ -15,4 +15,5 @@
     <color name="darkgreen">#BBFCC1</color>
     <color name="color_divider">#d1d1d1</color>
     <color name="transparent">#00DDDDDD</color>
+    <color name="blacktransparent">#66000000</color>
 </resources>

@@ -17,6 +17,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -62,6 +63,14 @@ class ClusterStartActivity : AppCompatActivity() {
     lateinit var URI_LOCATION: Uri
     lateinit var mbsDatabase: MBSDatabase
     var mediacount: Int = 0
+    val resultContracts =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+
+            if (result.resultCode == Activity.RESULT_OK) {
+
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -80,7 +89,8 @@ class ClusterStartActivity : AppCompatActivity() {
         var storeId = tinyDB.getInt("storeId")
         var time = tinyDB.getString("time")
         var user = mbsDatabase.getMBSData().getUser()
-
+        var activityName = tinyDB.getString("activityName")
+        binding.textView5.text = activityName
         if (storeId > 0) {
             var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
             tinyDB.putString("storeName", getStore.storeName)
@@ -208,10 +218,7 @@ class ClusterStartActivity : AppCompatActivity() {
 
         binding.cardview1.setOnClickListener {
 
-            if (!Permissions.Check_CAMERA(this@ClusterStartActivity) || !Permissions.Check_STORAGE(
-                    this@ClusterStartActivity
-                )
-            ) {
+            if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
             } else {
                 selfiecount = 0
@@ -320,8 +327,10 @@ class ClusterStartActivity : AppCompatActivity() {
 
     private fun dispatchTakePictureIntent(request: Int) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-        startActivityForResult(takePictureIntent, request)
+        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+        resultContracts.launch(takePictureIntent)
+        // startActivityForResult(takePictureIntent, request)
+
 
     }
 

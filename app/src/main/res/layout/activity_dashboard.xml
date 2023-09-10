@@ -278,6 +278,7 @@
                         android:src="@drawable/gift" />
 
                     <TextView
+                        android:id="@+id/stockCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
@@ -321,6 +322,7 @@
                         android:src="@drawable/location" />
 
                     <TextView
+                        android:id="@+id/locationCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
