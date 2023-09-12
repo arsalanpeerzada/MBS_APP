@@ -32,6 +32,7 @@ class StorePictureActivity : AppCompatActivity() {
     lateinit var mbsDatabase: MBSDatabase
     lateinit var tinyDB: TinyDB
     var activityLogId: Int = 0
+    var mediaSize = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStorePictureBinding.inflate(layoutInflater)
@@ -40,15 +41,18 @@ class StorePictureActivity : AppCompatActivity() {
         tinyDB = TinyDB(this@StorePictureActivity)
         var campaignid = tinyDB.getInt("campaignId")
         var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
-        activityLogId = activitylog[activitylog.size-1].id!!
+        activityLogId = activitylog[activitylog.size - 1].id!!
         binding.back.setOnClickListener {
             binding.submit.performClick()
         }
 
+        var data = mbsDatabase.getMBSData().getmedia()
+        mediaSize = data.size
+
         var picturesdata =
             mbsDatabase.getMBSData().getmedia(activityLogId, Constants.store_location_pictures_num)
 
-       // count = picturesdata.size
+        // count = picturesdata.size
         setdata(picturesdata)
 
         binding.logout.setOnClickListener {
@@ -369,9 +373,11 @@ class StorePictureActivity : AppCompatActivity() {
     }
 
     fun insertIntoDB(uri: Uri, requestCode: Int) {
+
+        var count = mediaSize + requestCode
         GlobalScope.launch {
             var mediaEntity = MediaEntity(
-                requestCode,
+                count,
                 Constants.store_location_pictures_num,
                 Constants.store_location_pictures_name,
                 activityLogId,

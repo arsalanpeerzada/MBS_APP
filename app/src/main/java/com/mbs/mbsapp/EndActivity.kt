@@ -141,10 +141,7 @@ class EndActivity : AppCompatActivity() {
 
         binding.cardview1.setOnClickListener {
 
-            if (!Permissions.Check_CAMERA(this@EndActivity) || !Permissions.Check_STORAGE(
-                    this@EndActivity
-                )
-            ) {
+            if (!Permissions.Check_CAMERA(this@EndActivity)) {
                 Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11)
             } else {
                 selfiecount = 0
@@ -156,10 +153,7 @@ class EndActivity : AppCompatActivity() {
 
         binding.cardview2.setOnClickListener {
 
-            if (!Permissions.Check_CAMERA(this@EndActivity) || !Permissions.Check_STORAGE(
-                    this@EndActivity
-                )
-            ) {
+            if (!Permissions.Check_CAMERA(this@EndActivity)) {
                 Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11)
             } else {
                 teamcount = 0
@@ -170,10 +164,7 @@ class EndActivity : AppCompatActivity() {
 
         binding.cardview3.setOnClickListener {
 
-            if (!Permissions.Check_CAMERA(this@EndActivity) || !Permissions.Check_STORAGE(
-                    this@EndActivity
-                )
-            ) {
+            if (!Permissions.Check_CAMERA(this@EndActivity)) {
                 Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11)
             } else {
                 locationcount = 0
@@ -323,7 +314,7 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
                 if (response.isSuccessful) {
-
+                    SubmitMedia()
                 }
             }
 
@@ -347,6 +338,8 @@ class EndActivity : AppCompatActivity() {
             val form_name = RequestBody.create(MultipartBody.FORM, item.form_name!!)
             val data_id = RequestBody.create(MultipartBody.FORM, item.data_id.toString())
             val data_name = RequestBody.create(MultipartBody.FORM, item.data_name!!)
+            val mobile_media_id = RequestBody.create(MultipartBody.FORM, item.mid!!.toString())
+
 
             var media = item.media_name
             var uri = Uri.parse(media)
@@ -357,7 +350,7 @@ class EndActivity : AppCompatActivity() {
                 token,
                 activity_log_id,
                 form_id,
-                form_name, data_id, data_name, mediaRequestBody
+                form_name, data_id, data_name, mediaRequestBody, mobile_media_id
             ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
                 override fun onResponse(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
@@ -430,6 +423,7 @@ class EndActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     Log.d("MSB", "data Inserted")
+                    SubmitProducts()
                 }
             }
 
@@ -483,8 +477,8 @@ class EndActivity : AppCompatActivity() {
             ) {
                 newactivityLog = response.body()?.data?.activityLogId!!
                 SubmitAnswer()
-//                SubmitMedia()
-                SubmitProducts()
+
+
             }
 
             override fun onFailure(
@@ -499,6 +493,7 @@ class EndActivity : AppCompatActivity() {
 
     private fun openDialog() {
         val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
+            true,
             this, "MSB APP",
             "Are you sure?, Your unsaved data will be lost",
             getString(android.R.string.yes),
@@ -509,7 +504,6 @@ class EndActivity : AppCompatActivity() {
                         selfiecount = 0
                         teamcount = 0
                         locationcount = 0
-                        tinyDB.putString("time", "")
                         val intent = Intent(this@EndActivity, Dashboard::class.java)
                         startActivity(intent)
                         overridePendingTransition(R.anim.right2, R.anim.right);

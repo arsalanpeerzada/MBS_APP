@@ -11,6 +11,7 @@ import com.mbs.mbsapp.Interfaces.OnDialogClickListener
 import com.mbs.mbsapp.R
 
 class TwoButtonDialog(
+    var tvcancel: Boolean,
     context: Context,
     var title: String,
     var description: String,
@@ -21,9 +22,9 @@ class TwoButtonDialog(
 
 
     lateinit var tvCancel: TextView
-    lateinit var tvConfirm:TextView
-    lateinit var tvTitle:TextView
-    lateinit var tvDescription:TextView
+    lateinit var tvConfirm: TextView
+    lateinit var tvTitle: TextView
+    lateinit var tvDescription: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,11 @@ class TwoButtonDialog(
         tvDescription.text = description
         tvConfirm.text = positive
         tvCancel.text = negative
+        if (tvcancel) {
+            tvCancel.visibility = View.VISIBLE
+        } else {
+            tvCancel.visibility = View.GONE
+        }
         tvCancel.setOnClickListener(View.OnClickListener {
             listener.onDialogClick("No")
             dismiss()

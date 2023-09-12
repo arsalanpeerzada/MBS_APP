@@ -54,6 +54,7 @@ public interface APIInterface {
         @Part("data_id") data_id: RequestBody,
         @Part("data_name") data_name: RequestBody,
         @Part("activity_media\"; filename=\"myfile.jpg") activity_media: RequestBody,
+        @Part("mobile_media_id") mobile_media_id: RequestBody,
     ): Call<ApiResponse<ActivitySubmitModel>>
 
     @FormUrlEncoded
@@ -195,7 +196,8 @@ public interface APIInterface {
         var validation: Boolean? = null
 
         @SerializedName("errors")
-        var errors: errors? = null
+        var errors: T? = null
+            private set
 
         @SerializedName("data")
         @Expose

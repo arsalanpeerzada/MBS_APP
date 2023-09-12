@@ -192,7 +192,7 @@ class Dashboard : AppCompatActivity() {
         var location =
             mbsDatabase.getMBSData().getmedia(activityLogid, Constants.store_location_pictures_num)
 
-        mbsDatabase.getMBSData().updateStorePicture(1, activityLogid)
+      //  mbsDatabase.getMBSData().updateStorePicture(1, activityLogid)
 
         if (location.size > 0) {
             binding.locationCount.text = "Completed"

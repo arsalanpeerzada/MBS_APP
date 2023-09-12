@@ -54,8 +54,6 @@ class SelectActivity : AppCompatActivity() {
 
 
         binding.next.setOnClickListener {
-
-
             if (getStore.size > 0) {
                 var activityName =
                     "${binding.selectActivity.text}"

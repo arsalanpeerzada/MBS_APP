@@ -26,6 +26,8 @@ import com.airbnb.lottie.utils.Utils
 import com.inksy.Database.MBSDatabase
 import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.MediaEntity
+import com.mbs.mbsapp.Dialog.TwoButtonDialog
+import com.mbs.mbsapp.Interfaces.OnDialogClickListener
 import com.mbs.mbsapp.Utils.Constants
 import com.mbs.mbsapp.Utils.Permissions
 import com.mbs.mbsapp.Utils.TinyDB
@@ -56,20 +58,20 @@ class ClusterStartActivity : AppCompatActivity() {
     var locationcount = 0
     var latitude: Double = 0.0
     var longitude: Double = 0.0
-    var activitydetailID: String = ""
+    var activityDetailCode: String = ""
     var activityCount = 0
     lateinit var URI_Selfie: Uri
     lateinit var URI_TEAM: Uri
     lateinit var URI_LOCATION: Uri
     lateinit var mbsDatabase: MBSDatabase
     var mediacount: Int = 0
-    val resultContracts =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-
-            if (result.resultCode == Activity.RESULT_OK) {
-
-            }
-        }
+//    val resultContracts =
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+//
+//            if (result.resultCode == Activity.RESULT_OK) {
+//
+//            }
+//        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,106 +96,104 @@ class ClusterStartActivity : AppCompatActivity() {
         if (storeId > 0) {
             var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
             tinyDB.putString("storeName", getStore.storeName)
-            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
+            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
         } else {
 
-            activitydetailID = "B$brandId-C$campaignid-ci$cityId-l$locationId"
+            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId"
         }
 
-        var getmasterid = mbsDatabase.getMBSData().getMasterId(activitydetailID)
+
+        var getmasterid = mbsDatabase.getMBSData().getMasterId(activityDetailCode)
         tinyDB.putInt("activitymasterid", getmasterid[0].activityMasterId!!)
         tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
 
         val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        var data = mbsDatabase.getMBSData().getactivitylogs()
-        activityCount = data.size
-
-        tinyDB.putInt("activityLogID", activityCount)
-
-        var activitylog = ActivityLog(
-            activityCount,
-            activityCount,
-            getmasterid[0].activityMasterId,
-            campaignid,
-            brandId,
-            user.id!!,
-            0,
-            activitydetailID,
-            currentDate,
-            currentTime,
-            latitude.toString(),
-            longitude.toString(),
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            "",
-            "",
-            "",
-            ""
-        )
-        var activitymaster = mbsDatabase.getMBSData().insertActivityLogs(activitylog)
-
-
-
-
         binding.startActivity.setOnClickListener {
-            mediacount = mbsDatabase.getMBSData().getmedia().size
-//            var activityLog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
-//            activityCount = activityLog[activityLog.size - 1].id!!
-            if (selfiecount == 1 && teamcount == 1 && locationcount == 1) {
 
-                for (i in 1..3) {
-                    when (i) {
-                        1 -> {
-                            insertIntoDB(URI_Selfie, mediacount)
-                            mediacount++
-                        }
+            var code = activityDetailCode
+            var list = mbsDatabase.getMBSData().checkActivityLog(activityDetailCode, currentDate)
+            if (list.size > 0) {
+                sendBack()
+            } else {
+                mediacount = mbsDatabase.getMBSData().getmedia().size
+                var data = mbsDatabase.getMBSData().getactivitylogs()
+                activityCount = data.size
 
-                        2 -> {
-                            insertIntoDB(URI_TEAM, mediacount)
-                            mediacount++
-                        }
+                if (selfiecount == 1 && teamcount == 1 && locationcount == 1) {
+                    tinyDB.putInt("activityLogID", activityCount)
 
-                        3 -> {
-                            insertIntoDB(URI_LOCATION, mediacount)
-                            mediacount++
+                    var activitylog = ActivityLog(
+                        activityCount,
+                        activityCount,
+                        getmasterid[0].activityMasterId,
+                        campaignid,
+                        brandId,
+                        user.id!!,
+                        0,
+                        activityDetailCode,
+                        currentDate,
+                        currentTime,
+                        latitude.toString(),
+                        longitude.toString(),
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                    var activitymaster = mbsDatabase.getMBSData().insertActivityLogs(activitylog)
 
-                            mbsDatabase.getMBSData().updateStartActivity(1, activityCount)
+                    for (i in 1..3) {
+                        when (i) {
+                            1 -> {
+                                insertIntoDB(URI_Selfie, mediacount)
+                                mediacount++
+                            }
+
+                            2 -> {
+                                insertIntoDB(URI_TEAM, mediacount)
+                                mediacount++
+                            }
+
+                            3 -> {
+                                insertIntoDB(URI_LOCATION, mediacount)
+                                mediacount++
+
+                                mbsDatabase.getMBSData().updateStartActivity(1, activityCount)
+                            }
                         }
                     }
-                }
 
-                Toast.makeText(this, "Activity Started", Toast.LENGTH_SHORT).show()
-                val currentTime: String =
-                    SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                tinyDB.putString("time", currentTime.toString())
-                val intent = Intent(this, Dashboard::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                overridePendingTransition(R.anim.left, R.anim.left2);
-                finish()
-            } else {
-                Toast.makeText(
-                    this@ClusterStartActivity,
-                    "Please Select All Picture",
-                    Toast.LENGTH_SHORT
-                ).show()
+                    Toast.makeText(this, "Activity Started", Toast.LENGTH_SHORT).show()
+                    val currentTime: String =
+                        SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    tinyDB.putString("time", currentTime.toString())
+                    val intent = Intent(this, Dashboard::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.left, R.anim.left2);
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@ClusterStartActivity,
+                        "Please Select All Picture",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
+
         binding.back.setOnClickListener {
-            selfiecount = 0
-            teamcount = 0
-            locationcount = 0
-            val intent = Intent(this, SelectActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.right2, R.anim.right);
+            openDialog()
         }
 
         binding.logout.setOnClickListener {
@@ -230,10 +230,7 @@ class ClusterStartActivity : AppCompatActivity() {
 
         binding.cardview2.setOnClickListener {
 
-            if (!Permissions.Check_CAMERA(this@ClusterStartActivity) || !Permissions.Check_STORAGE(
-                    this@ClusterStartActivity
-                )
-            ) {
+            if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
             } else {
                 teamcount = 0
@@ -244,10 +241,7 @@ class ClusterStartActivity : AppCompatActivity() {
 
         binding.cardview3.setOnClickListener {
 
-            if (!Permissions.Check_CAMERA(this@ClusterStartActivity) || !Permissions.Check_STORAGE(
-                    this@ClusterStartActivity
-                )
-            ) {
+            if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
             } else {
                 locationcount = 0
@@ -327,9 +321,9 @@ class ClusterStartActivity : AppCompatActivity() {
 
     private fun dispatchTakePictureIntent(request: Int) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-        resultContracts.launch(takePictureIntent)
-        // startActivityForResult(takePictureIntent, request)
+        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+        startActivityForResult(takePictureIntent, request)
+        // resultContracts.launch(takePictureIntent)
 
 
     }
@@ -390,5 +384,54 @@ class ClusterStartActivity : AppCompatActivity() {
             )
             var data = mbsDatabase.getMBSData().insertMedia(mediaEntity)
         }
+    }
+
+    private fun openDialog() {
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
+            true,
+            this, "MSB APP",
+            "Are you sure?, Your unsaved data will be lost",
+            getString(android.R.string.yes),
+            getString(android.R.string.no),
+            object : OnDialogClickListener {
+                override fun onDialogClick(callBack: String?) {
+                    if (callBack == "Yes") {
+                        selfiecount = 0
+                        teamcount = 0
+                        locationcount = 0
+                        val intent = Intent(this@ClusterStartActivity, SelectActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.right2, R.anim.right);
+                    } else {
+                    }
+                }
+            })
+        twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        twoButtonDialog.show()
+    }
+
+    private fun sendBack() {
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
+            false,
+            this, "MSB APP",
+            "You selected an existing activity, please go back and select new activity",
+            getString(android.R.string.yes),
+            getString(android.R.string.no),
+            object : OnDialogClickListener {
+                override fun onDialogClick(callBack: String?) {
+                    if (callBack == "Yes") {
+                        selfiecount = 0
+                        teamcount = 0
+                        locationcount = 0
+                        val intent = Intent(this@ClusterStartActivity, SelectActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.right2, R.anim.right);
+                    } else {
+
+                    }
+                }
+            })
+        twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        twoButtonDialog.show()
     }
 }

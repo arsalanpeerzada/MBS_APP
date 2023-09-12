@@ -163,6 +163,10 @@ interface iMBSSave {
     @Query("Select * from activity_logs where campaign_id = :campaignId")
     fun getactivityLogs(campaignId: Int): List<ActivityLog>
 
+
+    @Query("Select * from activity_logs where activity_detail_code = :activityDetailCode AND activity_start_date = :activityStartDate")
+    fun checkActivityLog(activityDetailCode: String, activityStartDate : String): List<ActivityLog>
+
     @Query("Select * from activity_detials where activity_detail_code = :activity_detail_Id")
     fun getMasterId(activity_detail_Id: String): List<ActivityDetailEntity>
 
