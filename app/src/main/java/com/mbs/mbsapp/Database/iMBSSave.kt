@@ -145,8 +145,11 @@ interface iMBSSave {
     @Query("Select * from activity_masters order by mid ASC")
     fun getAllActivityMasters(): List<ActivityMaster>
 
-    @Query("Select * from question_sections order by mid ASC")
-    fun getQuestionSection(): List<QuestionSectionEntity>
+//    @Query("Select * from question_sections order by mid ASC")
+//    fun getQuestionSection(): List<QuestionSectionEntity>
+
+    @Query("SELECT question_section_id AS id, question_section_name AS sectionName FROM questions where questionnaire_id = :questionnareId group by question_section_id")
+    fun getQuestionSection(questionnareId : Int): List<QuestionSectionEntity>
 
     @Query("Select * from questionnaire where campaign_id = :campaignId")
     fun getQuestionnaire(campaignId: Int): List<QuestionnaireEntity>
@@ -166,6 +169,9 @@ interface iMBSSave {
 
     @Query("Select * from activity_logs where activity_detail_code = :activityDetailCode AND activity_start_date = :activityStartDate")
     fun checkActivityLog(activityDetailCode: String, activityStartDate : String): List<ActivityLog>
+
+    @Query("Select * from activity_logs where user_id = :user AND all_task_completed = 0")
+    fun checkActivityASUSER(user: String): List<ActivityLog>
 
     @Query("Select * from activity_detials where activity_detail_code = :activity_detail_Id")
     fun getMasterId(activity_detail_Id: String): List<ActivityDetailEntity>

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
@@ -23,6 +24,8 @@ import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
+import com.mbs.mbsapp.Dialog.TwoButtonDialog
+import com.mbs.mbsapp.Interfaces.OnDialogClickListener
 import com.mbs.mbsapp.Model.ActivityModel
 import com.mbs.mbsapp.Model.BrandAmbassadorModel
 import com.mbs.mbsapp.Model.BrandsModel
@@ -58,8 +61,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         tinyDB = TinyDB(this@MainActivity)
         mbsDatabase = MBSDatabase.getInstance(this@MainActivity)!!
+        Glide.with(this).asGif().load(R.drawable.loader).into(binding.imageView3)
+
         binding.login.setOnClickListener {
-//
             if (Constants.isInternetConnected(this@MainActivity))
                 if (binding.email.text.isNullOrBlank() || binding.password.text.isNullOrBlank()) {
                     Toast.makeText(this@MainActivity, "Field is Empty", Toast.LENGTH_SHORT).show()
@@ -77,37 +81,31 @@ class MainActivity : AppCompatActivity() {
         binding.message.visibility = View.GONE
         binding.loading.visibility = View.VISIBLE
         binding.transparentLoader.visibility = View.VISIBLE
+        binding.imageView3.visibility = View.VISIBLE
         apiInterface.login(email, password)
             .enqueue(object : Callback<APIInterface.ApiResponse<UserModel>> {
                 override fun onResponse(
                     call: Call<APIInterface.ApiResponse<UserModel>>,
                     response: Response<APIInterface.ApiResponse<UserModel>>
                 ) {
+
                     if (response.isSuccessful) {
-                        token = response.body()?.token.toString()
-                        tinyDB.putString("User", response.body()?.user?.id.toString())
-                        tinyDB.putString("token", token)
-                        insertIntoUserTable(response)
-                        val finaltoken = "Bearer $token"
 
+                        var data = mbsDatabase.getMBSData()
+                            .checkActivityASUSER(response.body()?.user?.id.toString())
 
-                        getBrandsAPI(finaltoken)
-                        getCampaignAPI(finaltoken)
-                        getLocationAPI(finaltoken)
-                        getStoresAPI(finaltoken)
-                        getCitiesAPI(finaltoken)
-                        getActivitiesAPI(finaltoken)
-                        getQuestionnaire(finaltoken)
-                        getCampaignChannelAPI(finaltoken)
-                        getQuestionSection(finaltoken)
-                        getProductAPI(finaltoken)
-                        getBrandAmbassador(finaltoken)
+                        if (data.size > 0) {
+                            openDialog(response)
+                        } else {
+                            getRemainingAPIS(response)
+                        }
 
                     } else {
 
                         binding.loading.visibility = View.GONE
                         loadingPercentageNo = 0
                         binding.transparentLoader.visibility = View.GONE
+                        binding.imageView3.visibility = View.GONE
                         binding.message.text = response.raw().message.toString()
                         binding.message.visibility = View.VISIBLE
                         binding.login.text = "Login"
@@ -127,6 +125,7 @@ class MainActivity : AppCompatActivity() {
                     binding.loading.visibility = View.GONE
                     loadingPercentageNo = 0
                     binding.transparentLoader.visibility = View.GONE
+                    binding.imageView3.visibility = View.GONE
                     binding.message.text = t.message.toString()
                     binding.message.visibility = View.VISIBLE
                     binding.login.text = "Login"
@@ -901,6 +900,7 @@ class MainActivity : AppCompatActivity() {
             binding.loading.visibility = View.GONE
             loadingPercentageNo = 0
             binding.transparentLoader.visibility = View.GONE
+            binding.imageView3.visibility = View.GONE
             binding.login.text = "Login"
             binding.loading.text = "Loading .....   0%"
 
@@ -941,5 +941,77 @@ class MainActivity : AppCompatActivity() {
             Log.d("DB", "Success")
         }
     }
+
+    private fun openDialog(response: Response<APIInterface.ApiResponse<UserModel>>) {
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
+            true,
+            this, "MSB APP",
+            "You have unfinished activity, Press Yes for Continue or No for clear history.",
+            getString(android.R.string.yes),
+            getString(android.R.string.no),
+            object : OnDialogClickListener {
+                override fun onDialogClick(callBack: String?) {
+                    if (callBack == "Yes") {
+
+                        val intent = Intent(this@MainActivity, Dashboard::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.right2, R.anim.right);
+                        this@MainActivity.finish()
+                    } else {
+                        GlobalScope.launch {
+                            mbsDatabase.getMBSData().deleteAllUsers()
+                            mbsDatabase.getMBSData().deleteAllActivityMasters()
+                            mbsDatabase.getMBSData().deleteAllActivityDetails()
+                            mbsDatabase.getMBSData().deleteAllBrands()
+                            mbsDatabase.getMBSData().deleteAllCampaigns()
+                            mbsDatabase.getMBSData().deleteAllCities()
+                            mbsDatabase.getMBSData().deleteAllLocations()
+                            mbsDatabase.getMBSData().deleteAllStores()
+                            mbsDatabase.getMBSData().deleteAllQuestionnaires()
+                            mbsDatabase.getMBSData().deleteAllQuestions()
+                            mbsDatabase.getMBSData().deleteQuestionSection()
+                            mbsDatabase.getMBSData().deleteActivityLogs()
+                            mbsDatabase.getMBSData().deleteProducts()
+                            mbsDatabase.getMBSData().deleteAdetail()
+                            mbsDatabase.getMBSData().deleteAMaster()
+                            mbsDatabase.getMBSData().deletemedia()
+                            mbsDatabase.getMBSData().deleteProductStocks()
+                            mbsDatabase.getMBSData().deletebapitches()
+                            mbsDatabase.getMBSData().deletebrandambbassadors()
+                            mbsDatabase.getMBSData().deleteCampaignChannel()
+
+
+                            getRemainingAPIS(response)
+
+
+                        }
+                    }
+                }
+            })
+        twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        twoButtonDialog.show()
+    }
+
+    fun getRemainingAPIS(response: Response<APIInterface.ApiResponse<UserModel>>) {
+        token = response.body()?.token.toString()
+        tinyDB.putString("User", response.body()?.user?.id.toString())
+        tinyDB.putString("token", token)
+        insertIntoUserTable(response)
+        val finaltoken = "Bearer $token"
+
+
+        getBrandsAPI(finaltoken)
+        getCampaignAPI(finaltoken)
+        getLocationAPI(finaltoken)
+        getStoresAPI(finaltoken)
+        getCitiesAPI(finaltoken)
+        getActivitiesAPI(finaltoken)
+        getQuestionnaire(finaltoken)
+        getCampaignChannelAPI(finaltoken)
+        getQuestionSection(finaltoken)
+        getProductAPI(finaltoken)
+        getBrandAmbassador(finaltoken)
+    }
+
 
 }

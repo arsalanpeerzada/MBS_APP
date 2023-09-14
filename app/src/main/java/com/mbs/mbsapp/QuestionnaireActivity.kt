@@ -57,7 +57,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
 
         questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignId)
         questionList = mbsDatabase.getMBSData().getQuestion(questionnaireList[0].id!!)
-        section = mbsDatabase.getMBSData().getQuestionSection()
+        section = mbsDatabase.getMBSData().getQuestionSection(questionnaireList[0].id!!)
         superList = ArrayList<ArrayList<QuestionEntity>>()
 
         var answers =
@@ -180,22 +180,22 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
             if (requestCode == 1) {
                 superList[SectionId][questionId].media1 = uri.toString()
 
-                sectionadapter.notifyDataSetChanged()
+                sectionadapter.notifyItemChanged(SectionId)
             }
             if (requestCode == 2) {
                 superList[SectionId][questionId].media2 = uri.toString()
 
-                sectionadapter.notifyDataSetChanged()
+                sectionadapter.notifyItemChanged(SectionId)
             }
             if (requestCode == 3) {
                 superList[SectionId][questionId].media3 = uri.toString()
 
-                sectionadapter.notifyDataSetChanged()
+                sectionadapter.notifyItemChanged(SectionId)
             }
             if (requestCode == 4) {
                 superList[SectionId][questionId].media4 = uri.toString()
 
-                sectionadapter.notifyDataSetChanged()
+                sectionadapter.notifyItemChanged(SectionId)
             }
 
         }

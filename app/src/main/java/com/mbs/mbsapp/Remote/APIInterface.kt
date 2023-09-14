@@ -57,6 +57,20 @@ public interface APIInterface {
         @Part("mobile_media_id") mobile_media_id: RequestBody,
     ): Call<ApiResponse<ActivitySubmitModel>>
 
+    @Multipart
+    @Headers("Accept: application/json")
+    @POST("push/activity/media")
+    fun SubmitMediaDataA(
+        @Header("Authorization") token: String?,
+        @Part("activity_log_id") activity_log_id: RequestBody,
+        @Part("form_id") form_id: RequestBody,
+        @Part("form_name") form_name: RequestBody,
+        @Part("data_id") data_id: RequestBody,
+        @Part("data_name") data_name: RequestBody,
+        @Part("activity_media\"; filename=\"myfile.mp3") activity_media: RequestBody,
+        @Part("mobile_media_id") mobile_media_id: RequestBody,
+    ): Call<ApiResponse<ActivitySubmitModel>>
+
     @FormUrlEncoded
     @POST("push/activity/answere")
     @Headers("Accept: application/json")
@@ -196,8 +210,8 @@ public interface APIInterface {
         var validation: Boolean? = null
 
         @SerializedName("errors")
-        var errors: T? = null
-            private set
+        var errors: errors? = null
+
 
         @SerializedName("data")
         @Expose

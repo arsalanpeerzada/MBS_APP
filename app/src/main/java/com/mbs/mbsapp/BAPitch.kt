@@ -211,6 +211,16 @@ class BAPitch : AppCompatActivity(), iSetBA {
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
+//                    catch (e: IllegalStateException) {
+//                        stopRecording(true);
+//                        Toast.makeText(
+//                            this@BAPitch,
+//                            "Cant record less than 1 Sec, try Again",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        onCancel()
+//                        onFinish(0, false)
+//                    }
                     Log.d("RecordView", "onStart")
                     Toast.makeText(this@BAPitch, "OnStartRecord", Toast.LENGTH_SHORT).show()
                 } else {
@@ -232,7 +242,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 //Stop Recording..
                 //limitReached to determine if the Record was finished when time limit reached.
 
-
+//                if (!limitReached) {
                 stopRecording(false);
                 val time: String = getHumanTimeText(recordTime)
                 Toast.makeText(
@@ -270,6 +280,7 @@ class BAPitch : AppCompatActivity(), iSetBA {
                 Log.d("RecordView", "onFinish")
                 Log.d("RecordTime", time)
             }
+//            }
 
             override fun onLessThanSecond() {
                 //When the record time is less than One Second

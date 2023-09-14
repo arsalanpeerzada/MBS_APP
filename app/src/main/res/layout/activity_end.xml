@@ -95,10 +95,10 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:scaleType="centerCrop"
                 android:id="@+id/imageView5"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -138,10 +138,10 @@
         app:layout_constraintTop_toTopOf="@+id/teampicture">
 
         <ImageView
-            android:scaleType="centerCrop"
             android:id="@+id/imageView6"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/image" />
     </androidx.cardview.widget.CardView>
 
@@ -178,10 +178,10 @@
         app:layout_constraintTop_toTopOf="@+id/stepup">
 
         <ImageView
-            android:scaleType="centerCrop"
             android:id="@+id/imageView8"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/image" />
     </androidx.cardview.widget.CardView>
 
@@ -198,6 +198,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardview3" />
 
     <TextView
+        android:id="@+id/textView13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -211,7 +212,6 @@
         app:layout_constraintTop_toBottomOf="@+id/EndActivity" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/selfiecancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -220,11 +220,11 @@
         android:elevation="10dp"
         android:padding="5dp"
         android:src="@drawable/cancel_sphere"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/cardview1"
         app:layout_constraintTop_toTopOf="@+id/cardview1" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/teamcancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -233,11 +233,11 @@
         android:elevation="10dp"
         android:padding="5dp"
         android:src="@drawable/cancel_sphere"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/cardview2"
         app:layout_constraintTop_toTopOf="@+id/cardview2" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/setupcancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -246,8 +246,30 @@
         android:elevation="10dp"
         android:padding="5dp"
         android:src="@drawable/cancel_sphere"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/cardview3"
         app:layout_constraintTop_toTopOf="@+id/cardview3" />
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:elevation="11dp"
+        android:src="@drawable/loader"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+    <TextView
+        android:id="@+id/transparentLoader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blacktransparent"
+        android:elevation="10dp"
+        android:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

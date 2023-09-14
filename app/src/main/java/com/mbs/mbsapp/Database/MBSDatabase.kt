@@ -34,7 +34,7 @@ import com.mbs.mbsapp.Database.iMBSSave
         ActivityLog::class, QuestionSectionEntity::class, ProductEntity::class,
         AnswerMasterEntity::class, AnswerDetailEntity::class, MediaEntity::class, ProductStock::class,
         BaPitchEntity::class, BrandAmbassadorEntity::class],
-    version = 30,
+    version = 31,
     exportSchema = false
 )
 abstract class MBSDatabase : RoomDatabase() {

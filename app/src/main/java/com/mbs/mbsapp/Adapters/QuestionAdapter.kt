@@ -92,7 +92,7 @@ class QuestionAdapter(
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-                        if (!s.isNullOrEmpty()) {
+                    if (!s.isNullOrEmpty()) {
                         questionEntity[mypos].marksRecieved =
                             s.toString().toInt() // Update the data source
                     }
@@ -192,6 +192,7 @@ class QuestionAdapter(
                     iTakePicture.picture(position, 3, position, sectionid)
                 else if (questionEntity[position].media4 == "")
                     iTakePicture.picture(position, 4, position, sectionid)
+
 
             }
 

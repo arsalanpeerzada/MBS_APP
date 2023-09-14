@@ -81,9 +81,12 @@ class ClusterStartActivity : AppCompatActivity() {
         mbsDatabase = MBSDatabase.getInstance(this)!!
         tinyDB = TinyDB(this)
         cameraUri = createImageUri()!!
+
+        if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
+            Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+        }
         getlocation()
 
-        getlocation()
         var campaignid = tinyDB.getInt("campaignId")
         var brandId = tinyDB.getInt("brandId")
         var locationId = tinyDB.getInt("locationid")
@@ -223,6 +226,7 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 selfiecount = 0
                 dispatchTakePictureIntent(Selfie)
+                getlocation()
             }
 
 
@@ -235,6 +239,7 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 teamcount = 0
                 dispatchTakePictureIntent(Team)
+                getlocation()
             }
 
         }
@@ -246,6 +251,7 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 locationcount = 0
                 dispatchTakePictureIntent(Location)
+                getlocation()
             }
 
         }
@@ -335,19 +341,15 @@ class ClusterStartActivity : AppCompatActivity() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             // Get the last known location
             val lastKnownLocation: Location?
+
             if (ActivityCompat.checkSelfPermission(
-                    this, Manifest.permission.ACCESS_FINE_LOCATION
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this, Manifest.permission.ACCESS_COARSE_LOCATION
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return
             }
             lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)

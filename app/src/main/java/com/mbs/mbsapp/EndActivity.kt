@@ -10,8 +10,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.bumptech.glide.util.Util
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
@@ -32,10 +34,14 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okio.BufferedSink
+import okio.Okio
+import okio.source
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.io.IOException
 import java.io.OutputStream
 import java.net.URI
 import java.text.SimpleDateFormat
@@ -77,7 +83,9 @@ class EndActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tinyDB = TinyDB(this@EndActivity)
+        binding.logout.visibility = View.GONE
 
+        Glide.with(this).asGif().load(R.drawable.loader).into(binding.imageView3)
 
         currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
@@ -88,10 +96,6 @@ class EndActivity : AppCompatActivity() {
         mbsDatabase = MBSDatabase.getInstance(this@EndActivity)!!
         mediacount = mbsDatabase.getMBSData().getmedia().size
         var token = tinyDB.getString("token")
-        binding.back.setOnClickListener {
-
-
-        }
         activityMasterId = tinyDB.getInt("activitymasterid")
         activitylogid = tinyDB.getInt("activityLogID")
         campaignID = tinyDB.getInt("campaignId")
@@ -101,16 +105,16 @@ class EndActivity : AppCompatActivity() {
         storeId = tinyDB.getInt("storeId")
 
         binding.back.setOnClickListener {
-
             openDialog()
-
         }
 
+
+
         binding.logout.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.left, R.anim.left2);
-            this.finish()
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//            overridePendingTransition(R.anim.left, R.anim.left2);
+//            this.finish()
         }
 
         binding.EndActivity.setOnClickListener {
@@ -314,7 +318,8 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
                 if (response.isSuccessful) {
-                    SubmitMedia()
+                    SubmitAudioMedia()
+
                 }
             }
 
@@ -326,6 +331,134 @@ class EndActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    fun SubmitAudioMedia() {
+        var data = mbsDatabase.getMBSData().getBApitchesNew(activitylogid)
+        var count = 0
+        for (item in data) {
+            count++
+            val activity_log_id = RequestBody.create(MultipartBody.FORM, newactivityLog.toString())
+            val form_id = RequestBody.create(MultipartBody.FORM, Constants.ba_pitch_num.toString())
+            val form_name = RequestBody.create(MultipartBody.FORM, Constants.ba_pitch_name)
+            val data_id = RequestBody.create(MultipartBody.FORM, item.baId.toString())
+            val data_name = RequestBody.create(MultipartBody.FORM, item.ba_name!!)
+            val mobile_media_id = RequestBody.create(MultipartBody.FORM, item.mid!!.toString())
+
+            val audioMediaType = "audio/*".toMediaTypeOrNull()
+            var audio = item.bapPath
+            var audioFile = File(audio)
+
+            val requestBody = object : RequestBody() {
+                override fun contentType(): MediaType? {
+                    return audioMediaType
+                }
+
+                override fun contentLength(): Long {
+                    return audioFile.length()
+                }
+
+                @Throws(IOException::class)
+                override fun writeTo(sink: BufferedSink) {
+                    audioFile.source().use { source ->
+                        sink.writeAll(source)
+                    }
+                }
+            }
+
+            apiInterface.SubmitMediaDataA(
+                token,
+                activity_log_id,
+                form_id,
+                form_name, data_id, data_name, requestBody, mobile_media_id
+            ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                    response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                ) {
+                    if (response.isSuccessful) {
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+                }
+            })
+        }
+
+        if (count == data.size) {
+            SubmitMediaAnswer()
+        }
+    }
+
+
+
+
+    fun SubmitMediaAnswer() {
+        var questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignID)
+        var questiondata = mbsDatabase.getMBSData()
+            .getanswersbyID(activityDetailID, questionnaireList[0].id!!, activitylogid)
+
+        var data = questiondata
+        var count = 0
+        for (item in data) {
+            count++
+            val activity_log_id = RequestBody.create(MultipartBody.FORM, newactivityLog.toString())
+            val form_id = RequestBody.create(MultipartBody.FORM, Constants.questionnaire_num.toString())
+            val form_name = RequestBody.create(MultipartBody.FORM, Constants.questionnaire_name)
+            val data_id = RequestBody.create(MultipartBody.FORM, "0")
+            val data_name = RequestBody.create(MultipartBody.FORM, "null")
+            val mobile_media_id = RequestBody.create(MultipartBody.FORM, item.mid!!.toString())
+
+            for (i in 1..4){
+
+                var media: String? = ""
+                when(i){
+                    1 -> media = item.media1
+                    2 -> media = item.media2
+                    3 -> media = item.media3
+                    4 -> media = item.media4
+                }
+                var uri = Uri.parse(media)
+                var file = FileUtil.from(this@EndActivity, uri)
+
+                val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
+                apiInterface.SubmitMediaData(
+                    token,
+                    activity_log_id,
+                    form_id,
+                    form_name, data_id, data_name, mediaRequestBody, mobile_media_id
+                ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                    override fun onResponse(
+                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                        response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                    ) {
+                        if (response.isSuccessful) {
+
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                        t: Throwable
+                    ) {
+                        Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+                    }
+                })
+
+            }
+
+        }
+
+        if (count == data.size) {
+            SubmitMedia()
+
+
+        }
     }
 
     fun SubmitMedia() {
@@ -440,6 +573,8 @@ class EndActivity : AppCompatActivity() {
 
     fun SubmitData() {
 
+        binding.transparentLoader.visibility = View.VISIBLE
+        binding.imageView3.visibility = View.VISIBLE
 
         mbsDatabase.getMBSData().updateEndActivity(1, activitylogid)
 
@@ -478,7 +613,6 @@ class EndActivity : AppCompatActivity() {
                 newactivityLog = response.body()?.data?.activityLogId!!
                 SubmitAnswer()
 
-
             }
 
             override fun onFailure(
@@ -486,6 +620,8 @@ class EndActivity : AppCompatActivity() {
                 t: Throwable
             ) {
                 Toast.makeText(this@EndActivity, "Error", Toast.LENGTH_SHORT).show()
+                binding.transparentLoader.visibility = View.GONE
+                binding.imageView3.visibility = View.GONE
             }
 
         })
