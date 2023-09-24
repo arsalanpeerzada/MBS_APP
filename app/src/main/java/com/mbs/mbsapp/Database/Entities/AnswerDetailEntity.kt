@@ -26,7 +26,7 @@ data class AnswerDetailEntity(
     @ColumnInfo(name = "question_id")
     val question_id: Int?,
     @ColumnInfo(name = "answere")
-    val answer: String?,
+    var answer: String?,
     @ColumnInfo(name = "answere_comment")
     val answerComment: String?, // Convert to appropriate type if necessary
     @ColumnInfo(name = "is_media_attached")

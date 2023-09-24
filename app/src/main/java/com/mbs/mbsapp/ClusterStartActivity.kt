@@ -24,6 +24,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import com.airbnb.lottie.utils.Utils
 import com.inksy.Database.MBSDatabase
+import com.inksy.Remote.APIClient
+import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.MediaEntity
 import com.mbs.mbsapp.Dialog.TwoButtonDialog
@@ -56,8 +58,8 @@ class ClusterStartActivity : AppCompatActivity() {
     var selfiecount = 0
     var teamcount = 0
     var locationcount = 0
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
+    var latitude: String = "0.0"
+    var longitude: String = "0.0"
     var activityDetailCode: String = ""
     var activityCount = 0
     lateinit var URI_Selfie: Uri
@@ -65,6 +67,7 @@ class ClusterStartActivity : AppCompatActivity() {
     lateinit var URI_LOCATION: Uri
     lateinit var mbsDatabase: MBSDatabase
     var mediacount: Int = 0
+    var apiInterface: APIInterface = APIClient.createService(APIInterface::class.java)
 //    val resultContracts =
 //        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
 //
@@ -83,7 +86,7 @@ class ClusterStartActivity : AppCompatActivity() {
         cameraUri = createImageUri()!!
 
         if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
-            Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+            Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
         }
         getlocation()
 
@@ -138,8 +141,8 @@ class ClusterStartActivity : AppCompatActivity() {
                         activityDetailCode,
                         currentDate,
                         currentTime,
-                        latitude.toString(),
-                        longitude.toString(),
+                        latitude,
+                        longitude,
                         1,
                         0,
                         0,
@@ -186,9 +189,7 @@ class ClusterStartActivity : AppCompatActivity() {
                     finish()
                 } else {
                     Toast.makeText(
-                        this@ClusterStartActivity,
-                        "Please Select All Picture",
-                        Toast.LENGTH_SHORT
+                        this@ClusterStartActivity, "Please Select All Picture", Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -222,20 +223,17 @@ class ClusterStartActivity : AppCompatActivity() {
         binding.cardview1.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
             } else {
                 selfiecount = 0
                 dispatchTakePictureIntent(Selfie)
                 getlocation()
             }
-
-
         }
-
         binding.cardview2.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
             } else {
                 teamcount = 0
                 dispatchTakePictureIntent(Team)
@@ -247,7 +245,7 @@ class ClusterStartActivity : AppCompatActivity() {
         binding.cardview3.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11)
+                Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
             } else {
                 locationcount = 0
                 dispatchTakePictureIntent(Location)
@@ -262,9 +260,7 @@ class ClusterStartActivity : AppCompatActivity() {
     private fun createImageUri(): Uri? {
         val image = File(applicationContext.filesDir, "camera_photo.png")
         return FileProvider.getUriForFile(
-            applicationContext,
-            "com.mbs.mbsapp.fileprovider",
-            image
+            applicationContext, "com.mbs.mbsapp.fileprovider", image
         )
     }
 
@@ -335,36 +331,45 @@ class ClusterStartActivity : AppCompatActivity() {
     }
 
     fun getlocation() {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//
+//        // Check if the location provider is enabled
+//        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            // Get the last known location
+//            val lastKnownLocation: Location?
+//
+//            if (ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED
+//            ) {
+//                return
+//            }
+//            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+//
+//            // Check if the location is available
+//            if (lastKnownLocation != null) {
+//
+//                latitude = lastKnownLocation.latitude
+//
+//                longitude = lastKnownLocation.longitude
+//                // Now you have the latitude and longitude
+//            } else {
+//                // Location data not available
+//            }
+//        }
 
-        // Check if the location provider is enabled
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            // Get the last known location
-            val lastKnownLocation: Location?
+        var data = Constants.getlocation(this@ClusterStartActivity, apiInterface)
 
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
-            }
-            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-
-            // Check if the location is available
-            if (lastKnownLocation != null) {
-
-                latitude = lastKnownLocation.latitude
-
-                longitude = lastKnownLocation.longitude
-                // Now you have the latitude and longitude
-            } else {
-                // Location data not available
-            }
+        if (data.size == 2) {
+            latitude = data[0]
+            longitude = data[1]
         }
+
+
     }
 
     fun insertIntoDB(uri: Uri, mediacount: Int) {
@@ -389,9 +394,9 @@ class ClusterStartActivity : AppCompatActivity() {
     }
 
     private fun openDialog() {
-        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
-            true,
-            this, "MSB APP",
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(true,
+            this,
+            "MSB APP",
             "Are you sure?, Your unsaved data will be lost",
             getString(android.R.string.yes),
             getString(android.R.string.no),
@@ -413,9 +418,9 @@ class ClusterStartActivity : AppCompatActivity() {
     }
 
     private fun sendBack() {
-        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
-            false,
-            this, "MSB APP",
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(false,
+            this,
+            "MSB APP",
             "You selected an existing activity, please go back and select new activity",
             getString(android.R.string.yes),
             getString(android.R.string.no),

@@ -41,8 +41,6 @@ class QuestionAdapter(
         lateinit var imageView2: ImageView
         lateinit var imageView3: ImageView
         lateinit var imageView4: ImageView
-
-
         fun bind() {
             question = itemView.findViewById(R.id.question)
             marksOutof = itemView.findViewById(R.id.marksOutOf)
@@ -67,7 +65,6 @@ class QuestionAdapter(
 
         try {
             holder.bind()
-
             var mypos = position
             holder.question.text = questionEntity[position].question
             var marks = questionEntity[position].marks!!.toString()
@@ -76,8 +73,11 @@ class QuestionAdapter(
 
             holder.marks.removeTextChangedListener(holder.textWatcher) // Remove existing TextWatcher if any
             holder.marks.hint = marks
+
             holder.textWatcher = MaxInputTextWatcher(holder.marks, questionEntity[position].marks!!)
             holder.marks.addTextChangedListener(holder.textWatcher)
+
+            holder.marks.setText(questionEntity[position].marksRecieved!!.toString())
 
             holder.marks.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
@@ -89,6 +89,10 @@ class QuestionAdapter(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (!s.isNullOrEmpty()) {
+                        questionEntity[mypos].marksRecieved =
+                            s.toString().toInt() // Update the data source
+                    }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -201,7 +205,9 @@ class QuestionAdapter(
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show()
         }
 
-
+        if (holder.marks.text.toString() == "0") {
+            holder.marks.text.clear();
+        }
     }
 
     override fun getItemCount(): Int {

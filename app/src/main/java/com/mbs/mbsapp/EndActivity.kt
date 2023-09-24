@@ -146,7 +146,7 @@ class EndActivity : AppCompatActivity() {
         binding.cardview1.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@EndActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11)
+                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11,12)
             } else {
                 selfiecount = 0
                 dispatchTakePictureIntent(Selfie)
@@ -158,7 +158,7 @@ class EndActivity : AppCompatActivity() {
         binding.cardview2.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@EndActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11)
+                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11,12)
             } else {
                 teamcount = 0
                 dispatchTakePictureIntent(Team)
@@ -169,7 +169,7 @@ class EndActivity : AppCompatActivity() {
         binding.cardview3.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@EndActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11)
+                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11,12)
             } else {
                 locationcount = 0
                 dispatchTakePictureIntent(Location)
@@ -396,8 +396,6 @@ class EndActivity : AppCompatActivity() {
     }
 
 
-
-
     fun SubmitMediaAnswer() {
         var questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignID)
         var questiondata = mbsDatabase.getMBSData()
@@ -408,16 +406,17 @@ class EndActivity : AppCompatActivity() {
         for (item in data) {
             count++
             val activity_log_id = RequestBody.create(MultipartBody.FORM, newactivityLog.toString())
-            val form_id = RequestBody.create(MultipartBody.FORM, Constants.questionnaire_num.toString())
+            val form_id =
+                RequestBody.create(MultipartBody.FORM, Constants.questionnaire_num.toString())
             val form_name = RequestBody.create(MultipartBody.FORM, Constants.questionnaire_name)
             val data_id = RequestBody.create(MultipartBody.FORM, "0")
             val data_name = RequestBody.create(MultipartBody.FORM, "null")
             val mobile_media_id = RequestBody.create(MultipartBody.FORM, item.mid!!.toString())
 
-            for (i in 1..4){
+            for (i in 1..4) {
 
                 var media: String? = ""
-                when(i){
+                when (i) {
                     1 -> media = item.media1
                     2 -> media = item.media2
                     3 -> media = item.media3
@@ -650,6 +649,9 @@ class EndActivity : AppCompatActivity() {
             })
         twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         twoButtonDialog.show()
+
+
+
     }
 
 

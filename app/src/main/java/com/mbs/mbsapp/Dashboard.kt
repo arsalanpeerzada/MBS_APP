@@ -2,12 +2,15 @@ package com.mbs.mbsapp
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.inksy.Database.MBSDatabase
+import com.inksy.Remote.APIClient
+import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Utils.Constants
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityDashboardBinding
@@ -25,6 +28,8 @@ class Dashboard : AppCompatActivity() {
     var cityId: Int = 0
     var storeId: Int = 0
     var activitydetailID: Int = 0
+    var handler: Handler = Handler()
+    var apiInterface: APIInterface = APIClient.createService(APIInterface::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
@@ -165,6 +170,8 @@ class Dashboard : AppCompatActivity() {
             } else Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
 
         }
+
+        handler.post(apiRunnable);
     }
 
     private fun updateproducts(activityLogid: Int) {
@@ -192,7 +199,7 @@ class Dashboard : AppCompatActivity() {
         var location =
             mbsDatabase.getMBSData().getmedia(activityLogid, Constants.store_location_pictures_num)
 
-      //  mbsDatabase.getMBSData().updateStorePicture(1, activityLogid)
+        //  mbsDatabase.getMBSData().updateStorePicture(1, activityLogid)
 
         if (location.size > 0) {
             binding.locationCount.text = "Completed"
@@ -246,8 +253,13 @@ class Dashboard : AppCompatActivity() {
             var rawquestions = mbsDatabase.getMBSData().getQuestion(getquestionnaireid[0].id!!)
             binding.questionsCount.text = "$count/${rawquestions.size} Answered"
         }
+    }
 
-
+    var apiRunnable: Runnable = object : Runnable {
+        override fun run() {
+            var data = Constants.getlocation(this@Dashboard, apiInterface)
+            handler.postDelayed(this, 10 * 60 * 1000) // 10 minutes in milliseconds
+        }
     }
 
 

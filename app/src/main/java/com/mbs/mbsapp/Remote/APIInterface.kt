@@ -30,6 +30,16 @@ public interface APIInterface {
 //    ----------------------------------------------------------------------------------------
     // Login
 
+    @FormUrlEncoded
+    @POST("push/activity/track_user")
+    @Headers("Accept: application/json")
+    fun SubmitLocationPeriodically(
+        @Header("Authorization") token: String?,
+        @Field("latitude") latitude: String?,
+        @Field("longitude") longitude: String?,
+    ): Call<ApiResponse<ActivitySubmitModel>>
+
+
 
     @FormUrlEncoded
     @POST("push/activity/products")

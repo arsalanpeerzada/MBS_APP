@@ -15,7 +15,7 @@ import com.mbs.mbsapp.Interfaces.iTakePicture
 
 class SectionAdapter(
     var context: Context,
-    var sectionHeaders: List<QuestionSectionEntity>,
+    var sectionHeaders: List<QuestionEntity>,
     var superList: ArrayList<ArrayList<QuestionEntity>>,
     var answers: List<AnswerDetailEntity>,
     var iTakePicture: iTakePicture
@@ -45,9 +45,9 @@ class SectionAdapter(
 
             var list = ArrayList<AnswerDetailEntity>()
             var data = answers
-            holder.sectionHeader.text = sectionHeaders[position].sectionName
+            holder.sectionHeader.text = sectionHeaders[position].questionSectionName
             for (item in data) {
-                if (sectionHeaders[position].id == item.section_id) {
+                if (sectionHeaders[position].questionSectionId == item.section_id) {
                     list.add(item)
                 }
             }

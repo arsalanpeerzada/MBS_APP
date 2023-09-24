@@ -189,10 +189,6 @@ class BAPitch : AppCompatActivity(), iSetBA {
 
             binding.editText2.visibility = View.VISIBLE
         }
-
-
-
-
         binding.audioRecycler.adapter = audioAdapter
         recordButton.isEnabled = false
         recordView.isEnabled = false

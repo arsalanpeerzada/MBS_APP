@@ -1,13 +1,24 @@
 package com.mbs.mbsapp.Utils
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
+import androidx.core.app.ActivityCompat
+import com.inksy.Remote.APIInterface
+import com.mbs.mbsapp.Model.ActivitySubmitModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Constants {
 
-    companion object{
+    companion object {
         var baseURL = "https://msb.count-square.com/api/"
         var baseURLforPicture = "https://msb.count-square.com"
 
@@ -39,11 +50,83 @@ class Constants {
                 val network = connectivityManager.activeNetwork ?: return false
                 val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
                 return networkCapabilities != null && networkCapabilities.hasCapability(
-                    NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    NetworkCapabilities.NET_CAPABILITY_INTERNET
+                )
             } else {
                 val activeNetworkInfo = connectivityManager.activeNetworkInfo
                 return activeNetworkInfo != null && activeNetworkInfo.isConnected
             }
+        }
+
+
+        fun getlocation(context: Context, apiInterface: APIInterface): ArrayList<String> {
+            var data = ArrayList<String>()
+            val locationManager =
+                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+            // Check if the location provider is enabled
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                // Get the last known location
+                val lastKnownLocation: Location?
+
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(
+                        context, Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+
+                } else {
+                    lastKnownLocation =
+                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+
+                    // Check if the location is available
+                    if (lastKnownLocation != null) {
+
+                        var latitude = lastKnownLocation.latitude.toString()
+                        var longitude = lastKnownLocation.longitude.toString()
+
+                        if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+
+
+                            data.add(latitude)
+                            data.add(longitude)
+                            var tinyDB = TinyDB(context)
+                            var token = tinyDB.getString("token")
+                            val finaltoken = "Bearer $token"
+
+                            apiInterface.SubmitLocationPeriodically(finaltoken, data[0], data[1])
+                                .enqueue(object :
+                                    Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                                    override fun onResponse(
+                                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                                        response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                                    ) {
+                                        Log.d("LiveLocation", response.message());
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                                        t: Throwable
+                                    ) {
+                                        Log.d("LiveLocation", t.message.toString());
+                                    }
+
+                                })
+
+                        }
+                        // Now you have the latitude and longitude
+                    } else {
+                        // Location data not available
+                    }
+                }
+
+            }
+
+            return data;
         }
     }
 

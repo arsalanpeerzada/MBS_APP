@@ -10,20 +10,34 @@ class Permissions {
 
     companion object {
         //Request Permisson
-        fun Request_CAMERA_STORAGE(act: Activity?, code: Int) {
-            ActivityCompat.requestPermissions(
-                act!!, arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_AUDIO,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
+        fun Request_CAMERA_STORAGE(act: Activity?, code: Int, version: Int) {
+
+            if (version > 12) {
+                ActivityCompat.requestPermissions(
+                    act!!, arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                        Manifest.permission.READ_MEDIA_AUDIO,
+                        Manifest.permission.READ_MEDIA_VIDEO,
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+
                     ), code
-            )
+                )
+            } else {
+                ActivityCompat.requestPermissions(
+                    act!!, arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                    ), code
+                )
+            }
+
+
         }
 
         fun Request_STORAGE(act: Activity?, code: Int) {
@@ -87,11 +101,11 @@ class Permissions {
             return result == PackageManager.PERMISSION_GRANTED
         }
 
-//        fun Check_FINE_LOCATION(act: Activity?): Boolean {
-//            val result =
-//                ContextCompat.checkSelfPermission(act!!, Manifest.permission.ACCESS_FINE_LOCATION)
-//            return result == PackageManager.PERMISSION_GRANTED
-//        }
+        fun Check_FINE_LOCATION(act: Activity?): Boolean {
+            val result =
+                ContextCompat.checkSelfPermission(act!!, Manifest.permission.ACCESS_FINE_LOCATION)
+            return result == PackageManager.PERMISSION_GRANTED
+        }
 
 //        fun Check_READ_SMS(act: Activity?): Boolean {
 //            val result = ContextCompat.checkSelfPermission(act!!, Manifest.permission.READ_SMS)

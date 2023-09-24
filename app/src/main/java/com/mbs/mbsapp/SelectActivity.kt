@@ -18,6 +18,7 @@ import com.mbs.mbsapp.Dialog.OnSearchItemSelected
 import com.mbs.mbsapp.Dialog.SearchListItem
 import com.mbs.mbsapp.Dialog.SearchableDialog
 import com.mbs.mbsapp.Utils.Constants
+import com.mbs.mbsapp.Utils.Permissions
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivitySelectBinding
 import kotlinx.coroutines.GlobalScope
@@ -51,6 +52,10 @@ class SelectActivity : AppCompatActivity() {
         tinydb = TinyDB(this)
 
         userdata = mbsDatabase.getMBSData().getUser()
+
+        Permissions.Check_FINE_LOCATION(this)
+        Permissions.Check_CAMERA(this)
+        Permissions.Check_STORAGE(this)
 
 
         binding.next.setOnClickListener {

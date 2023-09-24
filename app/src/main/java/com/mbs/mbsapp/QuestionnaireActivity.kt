@@ -33,7 +33,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
     lateinit var tinydb: TinyDB
     lateinit var questionnaireList: List<QuestionnaireEntity>
     lateinit var questionList: List<QuestionEntity>
-    lateinit var section: List<QuestionSectionEntity>
+    lateinit var section: List<QuestionEntity>
     lateinit var superList: ArrayList<ArrayList<QuestionEntity>>
     lateinit var answerlist: ArrayList<AnswerDetailEntity>
 
@@ -67,7 +67,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         for (item in section.indices) {
             var list = ArrayList<QuestionEntity>()
             for (qitem in questionList.indices) {
-                if (section[item].id == questionList[qitem].questionSectionId) {
+                if (section[item].questionSectionId == questionList[qitem].questionSectionId) {
                     list.add(questionList[qitem])
                 }
             }

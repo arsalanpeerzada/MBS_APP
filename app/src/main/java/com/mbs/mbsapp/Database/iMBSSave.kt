@@ -24,6 +24,7 @@ import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Database.Entities.StoreEntity
 import com.mbs.mbsapp.Database.Entities.UserEntity
+import com.mbs.mbsapp.QuestionnaireActivity
 
 @Dao
 interface iMBSSave {
@@ -148,8 +149,8 @@ interface iMBSSave {
 //    @Query("Select * from question_sections order by mid ASC")
 //    fun getQuestionSection(): List<QuestionSectionEntity>
 
-    @Query("SELECT question_section_id AS id, question_section_name AS sectionName FROM questions where questionnaire_id = :questionnareId group by question_section_id")
-    fun getQuestionSection(questionnareId : Int): List<QuestionSectionEntity>
+    @Query("SELECT question_section_id, question_section_name FROM questions where questionnaire_id = :questionnareId group by question_section_id")
+    fun getQuestionSection(questionnareId : Int): List<QuestionEntity>
 
     @Query("Select * from questionnaire where campaign_id = :campaignId")
     fun getQuestionnaire(campaignId: Int): List<QuestionnaireEntity>
