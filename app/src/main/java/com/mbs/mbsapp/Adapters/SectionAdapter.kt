@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
-import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
-import com.mbs.mbsapp.R
 import com.mbs.mbsapp.Interfaces.iTakePicture
+import com.mbs.mbsapp.R
+
 
 class SectionAdapter(
     var context: Context,
@@ -30,6 +31,16 @@ class SectionAdapter(
             sectionHeader = itemView.findViewById(R.id.sectionHeader)
             recyclerView = itemView.findViewById(R.id.recyclerview)
         }
+
+        fun scrollChildRecyclerViewToEnd() {
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+            if (layoutManager != null) {
+                val itemCount = layoutManager.itemCount
+                if (itemCount > 0) {
+                    layoutManager.scrollToPositionWithOffset(itemCount - 1, 0)
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,6 +53,8 @@ class SectionAdapter(
 
         try {
             holder.bind()
+
+
 
             var list = ArrayList<AnswerDetailEntity>()
             var data = answers
@@ -86,4 +99,5 @@ class SectionAdapter(
     override fun getItemCount(): Int {
         return sectionHeaders.size
     }
+
 }

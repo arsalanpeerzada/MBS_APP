@@ -17,13 +17,10 @@ import com.mbs.mbsapp.Adapters.SectionAdapter
 import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
 import com.mbs.mbsapp.Database.Entities.AnswerMasterEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
-import com.mbs.mbsapp.Database.Entities.QuestionSectionEntity
 import com.mbs.mbsapp.Database.Entities.QuestionnaireEntity
 import com.mbs.mbsapp.Interfaces.iTakePicture
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityQuestionnaireBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.OutputStream
 
 
@@ -62,7 +59,11 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
 
         var answers =
             mbsDatabase.getMBSData()
-                .getanswersbyID(activitydetailid, questionnaireList[questionnaireList.size - 1].id!!, activityLogID)
+                .getanswersbyID(
+                    activitydetailid,
+                    questionnaireList[questionnaireList.size - 1].id!!,
+                    activityLogID
+                )
 
         for (item in section.indices) {
             var list = ArrayList<QuestionEntity>()
@@ -78,8 +79,13 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
             SectionAdapter(this@QuestionnaireActivity, section, superList, answers, this)
 
 
-        binding.recyclerview.adapter = sectionadapter
 
+
+        binding.recyclerview.adapter = sectionadapter
+        //binding.recyclerview.scrollToPosition(sectionadapter.itemCount - 1)
+        // binding.recyclerview.scrollToPosition(0)
+
+        //scrollToChildRecyclerViewEnd()
 
         binding.back.setOnClickListener {
             binding.submit.performClick()
@@ -98,6 +104,8 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         }
 
         binding.submit.setOnClickListener {
+
+
             backfromQuestionActivity(
                 questionnaireList[0].id!!, campaignId, activityId, activitydetailid
             )
@@ -114,8 +122,6 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
     fun backfromQuestionActivity(
         questionnaireId: Int, campaignId: Int, activityId: Int, activitydetailid: Int
     ) {
-
-
         var answermaster = AnswerMasterEntity(
             0, questionnaireId, campaignId, activityLogID, activityId, 0, "", "", "", ""
         )
@@ -126,6 +132,27 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         var count = 0
         for (section in data) {
             for (question in section) {
+
+                var isMediaAttached = 0
+                var attachedMediaCount = 0
+
+                if (question.media1 != "") {
+                    attachedMediaCount++
+                }
+                if (question.media2 != "") {
+                    attachedMediaCount++
+                }
+                if (question.media3 != "") {
+                    attachedMediaCount++
+                }
+                if (question.media4 != "") {
+                    attachedMediaCount++
+                }
+
+                if (attachedMediaCount > 0) {
+                    isMediaAttached = 1
+                }
+
 
                 var answerDetailEntity = AnswerDetailEntity(
                     count,
@@ -139,8 +166,8 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
                     question.id,
                     question.marksRecieved.toString(),
                     question.answerComment,
-                    0,
-                    0,
+                    isMediaAttached,
+                    attachedMediaCount,
                     0,
                     "",
                     "",
@@ -220,5 +247,17 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         }
 
         return imageUri
+    }
+
+    private fun scrollToChildRecyclerViewEnd() {
+        // Replace 0 with the position of the parent item whose child RecyclerView you want to scroll
+        val parentViewHolder: SectionAdapter.ViewHolder? =
+            binding.recyclerview.findViewHolderForAdapterPosition(sectionadapter.itemCount - 1) as? SectionAdapter.ViewHolder
+
+        if (parentViewHolder != null) {
+            parentViewHolder.scrollChildRecyclerViewToEnd()
+        } else {
+            // Handle the case when the ViewHolder is not available yet
+        }
     }
 }

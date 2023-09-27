@@ -119,13 +119,10 @@ class EndActivity : AppCompatActivity() {
 
         binding.EndActivity.setOnClickListener {
 
-            if (selfiecount == 1 && teamcount == 1 && locationcount == 1)
-                endActivity()
+            if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
             else {
                 Toast.makeText(
-                    this@EndActivity,
-                    "Please Select All Picture",
-                    Toast.LENGTH_SHORT
+                    this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
                 ).show()
             }
 
@@ -146,7 +143,7 @@ class EndActivity : AppCompatActivity() {
         binding.cardview1.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@EndActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11,12)
+                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11, 12)
             } else {
                 selfiecount = 0
                 dispatchTakePictureIntent(Selfie)
@@ -158,7 +155,7 @@ class EndActivity : AppCompatActivity() {
         binding.cardview2.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@EndActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11,12)
+                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11, 12)
             } else {
                 teamcount = 0
                 dispatchTakePictureIntent(Team)
@@ -169,7 +166,7 @@ class EndActivity : AppCompatActivity() {
         binding.cardview3.setOnClickListener {
 
             if (!Permissions.Check_CAMERA(this@EndActivity)) {
-                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11,12)
+                Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11, 12)
             } else {
                 locationcount = 0
                 dispatchTakePictureIntent(Location)
@@ -267,8 +264,7 @@ class EndActivity : AppCompatActivity() {
 
         var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
         var finalUpdate =
-            mbsDatabase.getMBSData()
-                .updateFinal(1, activitylogid, currentDate, currentTime)
+            mbsDatabase.getMBSData().updateFinal(1, activitylogid, currentDate, currentTime)
         SubmitData()
 
     }
@@ -307,11 +303,7 @@ class EndActivity : AppCompatActivity() {
 
 
         apiInterface.SubmitProducts(
-            token,
-            newactivityLog,
-            campaignID,
-            producutId,
-            producutCount
+            token, newactivityLog, campaignID, producutId, producutCount
         ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
             override fun onResponse(
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
@@ -324,8 +316,7 @@ class EndActivity : AppCompatActivity() {
             }
 
             override fun onFailure(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                t: Throwable
+                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
                 Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT)
             }
@@ -370,7 +361,11 @@ class EndActivity : AppCompatActivity() {
                 token,
                 activity_log_id,
                 form_id,
-                form_name, data_id, data_name, requestBody, mobile_media_id
+                form_name,
+                data_id,
+                data_name,
+                requestBody,
+                mobile_media_id
             ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
                 override fun onResponse(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
@@ -380,10 +375,8 @@ class EndActivity : AppCompatActivity() {
 
                     }
                 }
-
                 override fun onFailure(
-                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                    t: Throwable
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
                     Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
                 }
@@ -409,7 +402,7 @@ class EndActivity : AppCompatActivity() {
             val form_id =
                 RequestBody.create(MultipartBody.FORM, Constants.questionnaire_num.toString())
             val form_name = RequestBody.create(MultipartBody.FORM, Constants.questionnaire_name)
-            val data_id = RequestBody.create(MultipartBody.FORM, "0")
+            val data_id = RequestBody.create(MultipartBody.FORM, item.question_id.toString())
             val data_name = RequestBody.create(MultipartBody.FORM, "null")
             val mobile_media_id = RequestBody.create(MultipartBody.FORM, item.mid!!.toString())
 
@@ -430,7 +423,11 @@ class EndActivity : AppCompatActivity() {
                     token,
                     activity_log_id,
                     form_id,
-                    form_name, data_id, data_name, mediaRequestBody, mobile_media_id
+                    form_name,
+                    data_id,
+                    data_name,
+                    mediaRequestBody,
+                    mobile_media_id
                 ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
                     override fun onResponse(
                         call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
@@ -442,8 +439,7 @@ class EndActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(
-                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                        t: Throwable
+                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                     ) {
                         Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
                     }
@@ -482,7 +478,11 @@ class EndActivity : AppCompatActivity() {
                 token,
                 activity_log_id,
                 form_id,
-                form_name, data_id, data_name, mediaRequestBody, mobile_media_id
+                form_name,
+                data_id,
+                data_name,
+                mediaRequestBody,
+                mobile_media_id
             ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
                 override fun onResponse(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
@@ -494,8 +494,7 @@ class EndActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(
-                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                    t: Throwable
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
                     Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
                 }
@@ -560,8 +559,7 @@ class EndActivity : AppCompatActivity() {
             }
 
             override fun onFailure(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                t: Throwable
+                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
                 Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT)
             }
@@ -603,8 +601,7 @@ class EndActivity : AppCompatActivity() {
             finaldata.endActivityTasksCompleted,
             finaldata.activityEndDate,
             finaldata.activityEndTime,
-        ).enqueue(object :
-            Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+        ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
             override fun onResponse(
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
@@ -615,8 +612,7 @@ class EndActivity : AppCompatActivity() {
             }
 
             override fun onFailure(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                t: Throwable
+                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
                 Toast.makeText(this@EndActivity, "Error", Toast.LENGTH_SHORT).show()
                 binding.transparentLoader.visibility = View.GONE
@@ -627,9 +623,9 @@ class EndActivity : AppCompatActivity() {
     }
 
     private fun openDialog() {
-        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(
-            true,
-            this, "MSB APP",
+        val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(true,
+            this,
+            "MSB APP",
             "Are you sure?, Your unsaved data will be lost",
             getString(android.R.string.yes),
             getString(android.R.string.no),
@@ -649,7 +645,6 @@ class EndActivity : AppCompatActivity() {
             })
         twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         twoButtonDialog.show()
-
 
 
     }
