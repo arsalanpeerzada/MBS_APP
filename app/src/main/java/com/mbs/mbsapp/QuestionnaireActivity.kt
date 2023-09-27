@@ -65,6 +65,22 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
                     activityLogID
                 )
 
+        for (questions in questionList) {
+            for (answer in answers) {
+                if (questions.mid == answer.mid) {
+                    if (!answer.answer.isNullOrEmpty() && !answer.answer.equals("0")) {
+                        questions.marksRecieved = answer.answer?.toInt()
+                        questions.answerComment = answer.answerComment.toString()
+                        questions.media1 = answer.media1
+                        questions.media2 = answer.media2
+                        questions.media3 = answer.media3
+                        questions.media4 = answer.media4
+                    }
+                }
+            }
+        }
+
+
         for (item in section.indices) {
             var list = ArrayList<QuestionEntity>()
             for (qitem in questionList.indices) {

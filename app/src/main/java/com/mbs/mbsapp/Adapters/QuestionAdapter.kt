@@ -90,15 +90,15 @@ class QuestionAdapter(
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (!s.isNullOrEmpty()) {
-                        questionEntity[mypos].marksRecieved =
-                            s.toString().toInt() // Update the data source
+                        questionEntity[mypos].marksRecieved = s.toString().toInt() // Update the data source
+                        list[position].answer = s.toString()
                     }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
                     if (!s.isNullOrEmpty()) {
-                        questionEntity[mypos].marksRecieved =
-                            s.toString().toInt() // Update the data source
+                        questionEntity[mypos].marksRecieved = s.toString().toInt() // Update the data source
+                        list[position].answer = s.toString()
                     }
                 }
             })
