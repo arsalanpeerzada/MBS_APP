@@ -10,6 +10,12 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Model.ActivitySubmitModel
 import retrofit2.Call
@@ -60,71 +66,119 @@ class Constants {
 
 
         fun getlocation(context: Context, apiInterface: APIInterface): ArrayList<String> {
+
+            var fusedLocationClient: FusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(context)
             var data = ArrayList<String>()
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+
+
+            }else {
+                val locationRequest = LocationRequest.create().apply {
+                    interval = 10000 // Update interval in milliseconds
+                    fastestInterval = 5000 // Fastest update interval
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                }
+
+                val locationCallback = object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        if (locationResult.lastLocation != null) {
+                            val location: Location = locationResult.lastLocation!!
+                            // Handle the location here
+                            val latitude = location.latitude.toString()
+                            val longitude = location.longitude.toString()
+                            // Do something with latitude and longitude
+
+                            if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+
+
+                                data.add(latitude)
+                                data.add(longitude)
+                                var tinyDB = TinyDB(context)
+                                var token = tinyDB.getString("token")
+                                val finaltoken = "Bearer $token"
+
+                                apiInterface.SubmitLocationPeriodically(
+                                    finaltoken,
+                                    data[0],
+                                    data[1]
+                                )
+                                    .enqueue(object :
+                                        Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                                        override fun onResponse(
+                                            call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                                            response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                                        ) {
+                                            Log.d("LiveLocation", response.message());
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                                            t: Throwable
+                                        ) {
+                                            Log.d("LiveLocation", t.message.toString());
+                                        }
+
+                                    })
+
+                            }
+                        }
+                    }
+                }
+
+                fusedLocationClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    null
+                )
+            }
+
+
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
             // Check if the location provider is enabled
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                // Get the last known location
-                val lastKnownLocation: Location?
+            /* if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                 // Get the last known location
+                 val lastKnownLocation: Location?
 
-                if (ActivityCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(
-                        context, Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
+                 if (ActivityCompat.checkSelfPermission(
+                         context,
+                         Manifest.permission.ACCESS_FINE_LOCATION
+                     ) != PackageManager.PERMISSION_GRANTED &&
+                     ActivityCompat.checkSelfPermission(
+                         context, Manifest.permission.ACCESS_COARSE_LOCATION
+                     ) != PackageManager.PERMISSION_GRANTED
+                 ) {
 
-                } else {
-                    lastKnownLocation =
-                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-
-
-                    // Check if the location is available
-                    if (lastKnownLocation != null) {
-
-                        var latitude = lastKnownLocation.latitude.toString()
-                        var longitude = lastKnownLocation.longitude.toString()
-
-                        if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+                 } else {
+                     lastKnownLocation =
+                         locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
 
-                            data.add(latitude)
-                            data.add(longitude)
-                            var tinyDB = TinyDB(context)
-                            var token = tinyDB.getString("token")
-                            val finaltoken = "Bearer $token"
+                     // Check if the location is available
+                     if (lastKnownLocation != null) {
 
-                            apiInterface.SubmitLocationPeriodically(finaltoken, data[0], data[1])
-                                .enqueue(object :
-                                    Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
-                                    override fun onResponse(
-                                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                                        response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
-                                    ) {
-                                        Log.d("LiveLocation", response.message());
-                                    }
+                         var latitude = lastKnownLocation.latitude.toString()
+                         var longitude = lastKnownLocation.longitude.toString()
 
-                                    override fun onFailure(
-                                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                                        t: Throwable
-                                    ) {
-                                        Log.d("LiveLocation", t.message.toString());
-                                    }
 
-                                })
+                         // Now you have the latitude and longitude
+                     } else {
+                         // Location data not available
+                     }
+                 }
 
-                        }
-                        // Now you have the latitude and longitude
-                    } else {
-                        // Location data not available
-                    }
-                }
-
-            }
+             }*/
 
             return data;
         }

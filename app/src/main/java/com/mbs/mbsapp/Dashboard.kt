@@ -1,5 +1,8 @@
 package com.mbs.mbsapp
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -16,6 +19,7 @@ import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityDashboardBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class Dashboard : AppCompatActivity() {
 
@@ -258,9 +262,31 @@ class Dashboard : AppCompatActivity() {
     var apiRunnable: Runnable = object : Runnable {
         override fun run() {
             var data = Constants.getlocation(this@Dashboard, apiInterface)
-            handler.postDelayed(this, 10 * 60 * 1000) // 10 minutes in milliseconds
+            handler.postDelayed(this, 1 * 60 * 1000) // 10 minutes in milliseconds
         }
     }
+
+    private fun setupAlarmForService() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val serviceIntent = Intent(this, MyJobIntentService::class.java)
+        val pendingIntent = PendingIntent.getService(this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        // Set the start time to 8 PM
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 20)
+            set(Calendar.MINUTE, 0)
+        }
+
+        // Schedule the service to run every 20 minutes between 8 PM and 10 PM
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            20 * 60 * 1000, // 20 minutes in milliseconds
+            pendingIntent
+        )
+    }
+
 
 
 }
