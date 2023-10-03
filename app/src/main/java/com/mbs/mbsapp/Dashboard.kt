@@ -10,6 +10,12 @@ import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
@@ -20,6 +26,7 @@ import com.mbs.mbsapp.databinding.ActivityDashboardBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class Dashboard : AppCompatActivity() {
 
@@ -176,6 +183,33 @@ class Dashboard : AppCompatActivity() {
         }
 
         handler.post(apiRunnable);
+
+
+        val workManager = WorkManager.getInstance(applicationContext)
+        val workRequest = createWorkRequest()
+
+        workManager.enqueue(workRequest)
+
+        // Observe the work status if needed
+        workManager.getWorkInfoByIdLiveData(workRequest.id)
+            .observe(this, Observer { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            // Work has been successfully completed
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            // Work failed (e.g., due to no internet connectivity)
+                        }
+
+                        else -> {
+                            // Work is still in progress
+                        }
+                    }
+                }
+            })
+
     }
 
     private fun updateproducts(activityLogid: Int) {
@@ -266,27 +300,37 @@ class Dashboard : AppCompatActivity() {
         }
     }
 
-    private fun setupAlarmForService() {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val serviceIntent = Intent(this, MyJobIntentService::class.java)
-        val pendingIntent = PendingIntent.getService(this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    fun createWorkRequest(): OneTimeWorkRequest {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-        // Set the start time to 8 PM
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 20)
-            set(Calendar.MINUTE, 0)
-        }
-
-        // Schedule the service to run every 20 minutes between 8 PM and 10 PM
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            20 * 60 * 1000, // 20 minutes in milliseconds
-            pendingIntent
-        )
+        return OneTimeWorkRequest.Builder(MyWorker::class.java)
+            .setConstraints(constraints)
+            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+            .addTag("api_work")
+            .build()
     }
 
+    private fun calculateInitialDelay(): Long {
+        val currentTimeMillis = System.currentTimeMillis()
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentTimeMillis
+        calendar.set(Calendar.HOUR_OF_DAY, 20) // 8 PM
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+
+        val startTimeMillis = calendar.timeInMillis
+        val endTimeMillis = startTimeMillis + 2 * 60 * 60 * 1000 // 2 hours (8 PM to 10 PM)
+
+        return if (currentTimeMillis in startTimeMillis until endTimeMillis) {
+            // Within the 8 PM to 10 PM window, schedule the first execution in 20 minutes
+            startTimeMillis + 20 * 60 * 1000 - currentTimeMillis
+        } else {
+            // Outside the window, schedule for the next day at 8 PM
+            startTimeMillis + 24 * 60 * 60 * 1000 - currentTimeMillis
+        }
+    }
 
 
 }

@@ -388,7 +388,6 @@ class EndActivity : AppCompatActivity() {
         }
     }
 
-
     fun SubmitMediaAnswer() {
         var questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignID)
         var questiondata = mbsDatabase.getMBSData()

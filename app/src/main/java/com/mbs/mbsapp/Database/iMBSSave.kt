@@ -106,6 +106,10 @@ interface iMBSSave {
     @Query("Select * from media where activity_log_id = :activityLogid ")
     fun getmediabyID(activityLogid: Int): List<MediaEntity>
 
+
+    @Query("Select * from media where is_sync = :isSync ")
+    fun getAllMediaForSync(isSync: Int): List<MediaEntity>
+
     @Query("Select * from users order by mid ASC")
     fun getUser(): UserEntity
 
