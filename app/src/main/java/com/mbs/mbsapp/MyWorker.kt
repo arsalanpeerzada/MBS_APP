@@ -37,6 +37,8 @@ class MyWorker(var context: Context, var workerParams: WorkerParameters) :
             // You can use libraries like Retrofit or Volley to make the API request
             // Handle the API response accordingly
 
+            SubmitMedia()
+
             return Result.success()
         } else {
             return Result.retry()
@@ -52,6 +54,7 @@ class MyWorker(var context: Context, var workerParams: WorkerParameters) :
     fun SubmitMedia() {
         mbsDatabase = MBSDatabase.getInstance(context)!!
         var data = mbsDatabase.getMBSData().getAllMediaForSync(0)
+
         var count = 0
         var tinyDB = TinyDB(context)
         var stoken = tinyDB.getString("token")!!
@@ -59,7 +62,12 @@ class MyWorker(var context: Context, var workerParams: WorkerParameters) :
 
         for (item in data) {
             count++
-            val activity_log_id = RequestBody.create(MultipartBody.FORM, "newactivityLog.toString()")
+            var activityLog = mbsDatabase.getMBSData().getactivitylogsById(item.mid!!)
+            var newActivityLogId = activityLog.serverid
+
+
+            val activity_log_id =
+                RequestBody.create(MultipartBody.FORM, newActivityLogId.toString())
             val form_id = RequestBody.create(MultipartBody.FORM, item.form_id.toString())
             val form_name = RequestBody.create(MultipartBody.FORM, item.form_name!!)
             val data_id = RequestBody.create(MultipartBody.FORM, item.data_id.toString())

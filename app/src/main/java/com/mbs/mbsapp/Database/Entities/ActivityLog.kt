@@ -13,6 +13,9 @@ data class ActivityLog(
     @ColumnInfo(name = "id")
     val id: Int?,
 
+    @ColumnInfo(name = "serverid")
+    val serverid: Int?,
+
     @ColumnInfo(name = "activity_id")
     val activityId: Int?,
 

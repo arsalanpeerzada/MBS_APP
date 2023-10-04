@@ -375,6 +375,7 @@ class EndActivity : AppCompatActivity() {
 
                     }
                 }
+
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
@@ -488,7 +489,9 @@ class EndActivity : AppCompatActivity() {
                     response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
                 ) {
                     if (response.isSuccessful) {
-
+                        var mobileid = response.body()?.mobile_media_id
+                        if (mobileid?.isNotEmpty() == true)
+                            mbsDatabase.getMBSData().updateMediaSync(mobileid.toInt(), 1)
                     }
                 }
 
@@ -606,6 +609,7 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
                 newactivityLog = response.body()?.data?.activityLogId!!
+                mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
                 SubmitAnswer()
 
             }

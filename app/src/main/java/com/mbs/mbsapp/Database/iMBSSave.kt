@@ -106,6 +106,8 @@ interface iMBSSave {
     @Query("Select * from media where activity_log_id = :activityLogid ")
     fun getmediabyID(activityLogid: Int): List<MediaEntity>
 
+    @Query("Select * from activity_logs where mid = :mid")
+    fun getactivitylogsById(mid:Int): ActivityLog
 
     @Query("Select * from media where is_sync = :isSync ")
     fun getAllMediaForSync(isSync: Int): List<MediaEntity>
@@ -154,7 +156,7 @@ interface iMBSSave {
 //    fun getQuestionSection(): List<QuestionSectionEntity>
 
     @Query("SELECT question_section_id, question_section_name FROM questions where questionnaire_id = :questionnareId group by question_section_id")
-    fun getQuestionSection(questionnareId : Int): List<QuestionEntity>
+    fun getQuestionSection(questionnareId: Int): List<QuestionEntity>
 
     @Query("Select * from questionnaire where campaign_id = :campaignId")
     fun getQuestionnaire(campaignId: Int): List<QuestionnaireEntity>
@@ -173,7 +175,7 @@ interface iMBSSave {
 
 
     @Query("Select * from activity_logs where activity_detail_code = :activityDetailCode AND activity_start_date = :activityStartDate")
-    fun checkActivityLog(activityDetailCode: String, activityStartDate : String): List<ActivityLog>
+    fun checkActivityLog(activityDetailCode: String, activityStartDate: String): List<ActivityLog>
 
     @Query("Select * from activity_logs where user_id = :user AND all_task_completed = 0")
     fun checkActivityASUSER(user: String): List<ActivityLog>
@@ -275,6 +277,12 @@ interface iMBSSave {
 
     @Query("UPDATE brand_ambassadors SET pitchCompleted = :pitchCompleted WHERE id = :id")
     fun updatePitchCompleted(id: Int, pitchCompleted: Int)
+
+    @Query("UPDATE activity_logs SET serverid = :serverid WHERE mid = :mid")
+    fun updateServerId(mid: Int, serverid: Int)
+
+    @Query("UPDATE media SET is_sync = :isSync WHERE mid = :mid")
+    fun updateMediaSync(mid: Int, isSync: Int)
 
     @Query("UPDATE activity_logs SET is_questionnaire_completed = :is_questionnaire_completed WHERE id = :id")
     fun updateQuestionnaire(is_questionnaire_completed: Int, id: Int)

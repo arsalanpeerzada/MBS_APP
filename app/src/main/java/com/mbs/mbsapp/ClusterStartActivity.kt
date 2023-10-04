@@ -133,6 +133,7 @@ class ClusterStartActivity : AppCompatActivity() {
                     var activitylog = ActivityLog(
                         activityCount,
                         activityCount,
+                        0,
                         getmasterid[0].activityMasterId,
                         campaignid,
                         brandId,

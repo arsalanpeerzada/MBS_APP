@@ -222,6 +222,14 @@ public interface APIInterface {
         @SerializedName("errors")
         var errors: errors? = null
 
+        @SerializedName("mobile_media_id")
+        var mobile_media_id: String? = ""
+
+        @SerializedName("log_id")
+        var log_id: Int? = 0
+
+
+
 
         @SerializedName("data")
         @Expose

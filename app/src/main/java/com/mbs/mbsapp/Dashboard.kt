@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -20,11 +21,19 @@ import com.bumptech.glide.Glide
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
+import com.mbs.mbsapp.Model.ActivitySubmitModel
 import com.mbs.mbsapp.Utils.Constants
+import com.mbs.mbsapp.Utils.FileUtil
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityDashboardBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -210,6 +219,10 @@ class Dashboard : AppCompatActivity() {
                 }
             })
 
+        binding.refresh.setOnClickListener {
+            SubmitMedia()
+        }
+
     }
 
     private fun updateproducts(activityLogid: Int) {
@@ -329,6 +342,66 @@ class Dashboard : AppCompatActivity() {
         } else {
             // Outside the window, schedule for the next day at 8 PM
             startTimeMillis + 24 * 60 * 60 * 1000 - currentTimeMillis
+        }
+    }
+
+    fun SubmitMedia() {
+        mbsDatabase = MBSDatabase.getInstance(this@Dashboard)!!
+        var data = mbsDatabase.getMBSData().getAllMediaForSync(0)
+
+        var count = 0
+        var tinyDB = TinyDB(this@Dashboard)
+        var stoken = tinyDB.getString("token")!!
+        var token = "Bearer $stoken"
+
+        for (item in data) {
+            count++
+            var activityLog = mbsDatabase.getMBSData().getactivitylogsById(item.mid!!)
+            var newActivityLogId = activityLog.serverid
+
+
+            val activity_log_id =
+                RequestBody.create(MultipartBody.FORM, newActivityLogId.toString())
+            val form_id = RequestBody.create(MultipartBody.FORM, item.form_id.toString())
+            val form_name = RequestBody.create(MultipartBody.FORM, item.form_name!!)
+            val data_id = RequestBody.create(MultipartBody.FORM, item.data_id.toString())
+            val data_name = RequestBody.create(MultipartBody.FORM, item.data_name!!)
+            val mobile_media_id = RequestBody.create(MultipartBody.FORM, item.mid!!.toString())
+
+
+            var media = item.media_name
+            var uri = Uri.parse(media)
+            var file = FileUtil.from(this@Dashboard, uri)
+
+            val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
+            apiInterface.SubmitMediaData(
+                token,
+                activity_log_id,
+                form_id,
+                form_name,
+                data_id,
+                data_name,
+                mediaRequestBody,
+                mobile_media_id
+            ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                    response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                ) {
+                    if (response.isSuccessful) {
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
+                ) {
+                    Toast.makeText(this@Dashboard, "Error in Media", Toast.LENGTH_SHORT)
+                }
+            })
+        }
+
+        if (count == data.size) {
         }
     }
 
