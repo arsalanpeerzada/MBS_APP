@@ -42,11 +42,11 @@ data class AnswerDetailEntity(
     @ColumnInfo(name = "updated_at")
     val updatedAt: String?, // Convert to appropriate type if necessary
     @ColumnInfo(name = "media1")
-    val media1: String?,
+    var media1: String?,
     @ColumnInfo(name = "media2")
-    val media2: String?,
+    var media2: String?,
     @ColumnInfo(name = "media3")
-    val media3: String?,
+    var media3: String?,
     @ColumnInfo(name = "media4")
-    val media4: String?
+    var media4: String?
 )
