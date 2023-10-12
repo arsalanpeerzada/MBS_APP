@@ -206,25 +206,29 @@ class QuestionAdapter(
             holder.imageView1.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView1)
                 questionEntity[position].media1 = ""
-                list[position].media1 = ""
+                if (list.size > 0)
+                    list[position].media1 = ""
             }
 
             holder.imageView2.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView2)
                 questionEntity[position].media2 = ""
-                list[position].media2 = ""
+                if (list.size > 0)
+                    list[position].media2 = ""
             }
 
             holder.imageView3.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView3)
                 questionEntity[position].media3 = ""
-                list[position].media3 = ""
+                if (list.size > 0)
+                    list[position].media3 = ""
             }
 
             holder.imageView4.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView4)
                 questionEntity[position].media4 = ""
-                list[position].media4 = ""
+                if (list.size > 0)
+                    list[position].media4 = ""
             }
 
 
