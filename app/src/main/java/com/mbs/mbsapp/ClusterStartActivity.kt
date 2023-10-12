@@ -88,7 +88,7 @@ class ClusterStartActivity : AppCompatActivity() {
         if (!Permissions.Check_CAMERA(this@ClusterStartActivity)) {
             Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
         }
-        getlocation()
+        getlocation(0)
 
         var campaignid = tinyDB.getInt("campaignId")
         var brandId = tinyDB.getInt("brandId")
@@ -99,29 +99,37 @@ class ClusterStartActivity : AppCompatActivity() {
         var user = mbsDatabase.getMBSData().getUser()
         var activityName = tinyDB.getString("activityName")
         binding.textView5.text = activityName
+        val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+        val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val currentDateforCode: String = SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(Date())
+
+
+
         if (storeId > 0) {
             var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
             tinyDB.putString("storeName", getStore.storeName)
-            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId"
+            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId-D$currentDateforCode"
         } else {
-
-            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId"
+            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId-D$currentDateforCode"
         }
 
 
         var getmasterid = mbsDatabase.getMBSData().getMasterId(activityDetailCode)
-        tinyDB.putInt("activitymasterid", getmasterid[0].activityMasterId!!)
-        tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
-
-        val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        if (getmasterid.size > 0) {
+            tinyDB.putInt("activitymasterid", getmasterid[0].activityMasterId!!)
+            tinyDB.putInt("activitydetailid", getmasterid[0].id!!)
+        } else {
+            Toast.makeText(this@ClusterStartActivity, "No Activity Assigned", Toast.LENGTH_SHORT)
+                .show()
+            sendBack("No Activity Assigned.")
+        }
 
         binding.startActivity.setOnClickListener {
 
             var code = activityDetailCode
             var list = mbsDatabase.getMBSData().checkActivityLog(activityDetailCode, currentDate)
             if (list.size > 0) {
-                sendBack()
+                sendBack("You selected an existing activity, please go back and select new activity")
             } else {
                 mediacount = mbsDatabase.getMBSData().getmedia().size
                 var data = mbsDatabase.getMBSData().getactivitylogs()
@@ -228,7 +236,7 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 selfiecount = 0
                 dispatchTakePictureIntent(Selfie)
-                getlocation()
+                getlocation(0)
             }
         }
         binding.cardview2.setOnClickListener {
@@ -238,7 +246,7 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 teamcount = 0
                 dispatchTakePictureIntent(Team)
-                getlocation()
+                getlocation(0)
             }
 
         }
@@ -250,7 +258,7 @@ class ClusterStartActivity : AppCompatActivity() {
             } else {
                 locationcount = 0
                 dispatchTakePictureIntent(Location)
-                getlocation()
+                getlocation(0)
             }
 
         }
@@ -331,7 +339,7 @@ class ClusterStartActivity : AppCompatActivity() {
 
     }
 
-    fun getlocation() {
+    fun getlocation(activityLogid : Int) {
 //        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 //
 //        // Check if the location provider is enabled
@@ -363,7 +371,7 @@ class ClusterStartActivity : AppCompatActivity() {
 //            }
 //        }
 
-        var data = Constants.getlocation(this@ClusterStartActivity, apiInterface)
+        var data = Constants.getlocation(this@ClusterStartActivity, apiInterface, activityLogid)
 
         if (data.size == 2) {
             latitude = data[0]
@@ -418,11 +426,11 @@ class ClusterStartActivity : AppCompatActivity() {
         twoButtonDialog.show()
     }
 
-    private fun sendBack() {
+    private fun sendBack(description :String) {
         val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(false,
             this,
             "MSB APP",
-            "You selected an existing activity, please go back and select new activity",
+            description,
             getString(android.R.string.yes),
             getString(android.R.string.no),
             object : OnDialogClickListener {

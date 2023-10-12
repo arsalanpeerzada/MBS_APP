@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIInterface
 import com.mbs.mbsapp.Model.ActivitySubmitModel
 import retrofit2.Call
@@ -64,7 +65,11 @@ class Constants {
         }
 
 
-        fun getlocation(context: Context, apiInterface: APIInterface): ArrayList<String> {
+        fun getlocation(
+            context: Context,
+            apiInterface: APIInterface,
+            activityLogId: Int
+        ): ArrayList<String> {
 
             var fusedLocationClient: FusedLocationProviderClient =
                 LocationServices.getFusedLocationProviderClient(context)
@@ -79,8 +84,7 @@ class Constants {
             ) {
 
 
-
-            }else {
+            } else {
                 val locationRequest = LocationRequest.create().apply {
                     interval = 10000 // Update interval in milliseconds
                     fastestInterval = 5000 // Fastest update interval
@@ -102,6 +106,16 @@ class Constants {
 
                                 data.add(latitude)
                                 data.add(longitude)
+
+                                var mbsDatabase = MBSDatabase.getInstance(context)!!
+
+                                if (activityLogId != 0) {
+                                    var update = mbsDatabase.getMBSData().updateLocation(
+                                        latitude.toString(),
+                                        longitude.toString(),
+                                        activityLogId
+                                    )
+                                }
                                 var tinyDB = TinyDB(context)
                                 var token = tinyDB.getString("token")
                                 val finaltoken = "Bearer $token"

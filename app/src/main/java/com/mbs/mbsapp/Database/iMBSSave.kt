@@ -299,6 +299,9 @@ interface iMBSSave {
     @Query("UPDATE activity_logs SET start_activity_tasks_completed = :start_activity_tasks_completed WHERE id = :id")
     fun updateStartActivity(start_activity_tasks_completed: Int, id: Int)
 
+    @Query("UPDATE activity_logs SET device_location_lat = :latitude,device_location_long = :longitude WHERE id = :id")
+    fun updateLocation(latitude: String, longitude : String , id: Int)
+
     @Query("UPDATE activity_logs SET end_activity_tasks_completed = :end_activity_tasks_completed WHERE id = :id")
     fun updateEndActivity(end_activity_tasks_completed: Int, id: Int)
 

@@ -661,10 +661,11 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     Toast.makeText(
                         this@MainActivity,
-                        "Brands Data Loading Failed",
+                        "You don't have any activity assigned today",
                         Toast.LENGTH_SHORT
                     ).show()
                     checkAPI(false)
+                    tinyDB.putString("token", "")
                 }
 
             })
@@ -868,7 +869,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
 
-                9 -> {
+                10 -> {
                     binding.loading.text = "Loading .....   100%"
                     loadingPercentageNo++
 

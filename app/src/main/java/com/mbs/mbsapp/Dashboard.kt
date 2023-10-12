@@ -50,6 +50,7 @@ class Dashboard : AppCompatActivity() {
     var activitydetailID: Int = 0
     var handler: Handler = Handler()
     var apiInterface: APIInterface = APIClient.createService(APIInterface::class.java)
+    var activityLogid: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
@@ -98,7 +99,10 @@ class Dashboard : AppCompatActivity() {
         binding.textView5.text = activityName
 
         var activityLog = mbsDatabase.getMBSData().getactivityLogs(campaignid)
-        var activityLogid = activityLog[activityLog.size - 1].id!!
+
+        activityLogid = activityLog[activityLog.size - 1].id!!
+
+
         var datamedia = mbsDatabase.getMBSData().getmediabyID(activityLogid)
         updateQuestions(activityLogid)
         updateproducts(activityLogid)
@@ -308,7 +312,7 @@ class Dashboard : AppCompatActivity() {
 
     var apiRunnable: Runnable = object : Runnable {
         override fun run() {
-            var data = Constants.getlocation(this@Dashboard, apiInterface)
+            var data = Constants.getlocation(this@Dashboard, apiInterface,activityLogid)
             handler.postDelayed(this, 1 * 60 * 1000) // 10 minutes in milliseconds
         }
     }
