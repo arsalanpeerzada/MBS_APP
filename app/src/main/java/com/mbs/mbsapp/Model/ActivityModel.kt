@@ -3,8 +3,8 @@ package com.mbs.mbsapp.Model
 import com.google.gson.annotations.SerializedName
 
 data class ActivityModel(
-    @SerializedName("activity_master"  ) var activityMaster  : ArrayList<ActivityMaster>  = arrayListOf(),
-    @SerializedName("activity_detials" ) var activityDetials : ArrayList<ActivityDetials> = arrayListOf()
+    @SerializedName("activity_master"  ) var activityMaster  : ArrayList<ActivityMaster>             = arrayListOf(),
+    @SerializedName("activity_detials" ) var activityDetials : ArrayList<ArrayList<ActivityDetials>> = arrayListOf()
 ){
     data class ActivityMaster (
 

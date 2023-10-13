@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         email: String?,
         password: String?
     ) {
+        loadingPercentageNo = 0
         binding.login.text = "Please Wait"
         binding.message.visibility = View.GONE
         binding.loading.visibility = View.VISIBLE
@@ -602,23 +603,26 @@ class MainActivity : AppCompatActivity() {
 //                            "Brands Loaded Successfully",
 //                            Toast.LENGTH_SHORT
 //                        ).show()
-                        checkAPI(true)
 
-                        GlobalScope.launch {
+                        if (response.body()?.data != null) {
+                            checkAPI(true)
+
+
                             var id = 0
                             for (item in response.body()?.data?.activityDetials!!) {
                                 var activityDetailEntity = ActivityDetailEntity(
                                     id,
-                                    item.id,
-                                    item.activityMasterId,
-                                    item.activityDetailCode,
-                                    item.cityId,
-                                    item.locationId,
-                                    item.storeId,
-                                    item.createdAt,
-                                    item.updatedAt
+                                    item[0].id,
+                                    item[0].activityMasterId,
+                                    item[0].activityDetailCode,
+                                    item[0].cityId,
+                                    item[0].locationId,
+                                    item[0].storeId,
+                                    item[0].createdAt,
+                                    item[0].updatedAt
                                 )
-                                mbsDatabase.getMBSData().insertActivityDetails(activityDetailEntity)
+                                mbsDatabase.getMBSData()
+                                    .insertActivityDetails(activityDetailEntity)
                                 id++
                             }
 
@@ -644,7 +648,17 @@ class MainActivity : AppCompatActivity() {
                                 mbsDatabase.getMBSData().insertActivityMaster(activityMaster)
                                 idd++
                             }
+
+
+                        } else {
+                            checkAPI(false)
+                            Toast.makeText(
+                                this@MainActivity,
+                                response.body()?.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
+
 
                     } else {
                         Toast.makeText(
@@ -652,6 +666,7 @@ class MainActivity : AppCompatActivity() {
                             response.message().toString(),
                             Toast.LENGTH_SHORT
                         ).show()
+                        checkAPI(false)
                     }
                 }
 
@@ -869,7 +884,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
 
-                10 -> {
+                9 -> {
                     binding.loading.text = "Loading .....   100%"
                     loadingPercentageNo++
 
@@ -904,6 +919,7 @@ class MainActivity : AppCompatActivity() {
             binding.imageView3.visibility = View.GONE
             binding.login.text = "Login"
             binding.loading.text = "Loading .....   0%"
+            tinyDB.putString("token", "")
 
         }
     }

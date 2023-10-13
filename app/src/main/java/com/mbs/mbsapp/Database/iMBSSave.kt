@@ -58,10 +58,10 @@ interface iMBSSave {
     suspend fun insertStores(storeEntity: StoreEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertActivityDetails(activityDetailEntity: ActivityDetailEntity?)
+    fun insertActivityDetails(activityDetailEntity: ActivityDetailEntity?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertActivityMaster(activityMaster: ActivityMaster?)
+    fun insertActivityMaster(activityMaster: ActivityMaster?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuestionnaire(questionnaireEntity: QuestionnaireEntity?)

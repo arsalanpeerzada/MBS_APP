@@ -158,7 +158,8 @@ class SelectActivity : AppCompatActivity() {
 
         binding.selectCity.setOnClickListener {
             searchListItems.clear()
-            for (i in getcity.indices) {
+            var indices = getcity.indices
+            for (i in indices) {
 
                 var campaignSelected = SearchListItem(
                     getcity[i].id!!, getcity[i].cityName!!, Constants.CITY
@@ -281,9 +282,9 @@ class SelectActivity : AppCompatActivity() {
                         USER_ID = userdata.id!!
 
 
-                        getcity = mbsDatabase.getMBSData()
+                        var city  = mbsDatabase.getMBSData()
                             .getCitybyCampaign(SELECTED_CAMPAIGN_ID, USER_ID)
-
+                        getcity = city
 
                     }
 
