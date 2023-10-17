@@ -116,11 +116,16 @@ class EndActivity : AppCompatActivity() {
 
         binding.EndActivity.setOnClickListener {
 
-            if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
-            else {
-                Toast.makeText(
-                    this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
-                ).show()
+
+            if (Constants.isInternetConnected(this@EndActivity)) {
+                if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
+                else {
+                    Toast.makeText(
+                        this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }else {
+                Toast.makeText(this@EndActivity, "Internet not Connected, please connect Internet", Toast.LENGTH_SHORT).show()
             }
 
         }
