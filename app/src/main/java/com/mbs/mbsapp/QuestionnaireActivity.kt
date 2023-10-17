@@ -22,6 +22,7 @@ import com.mbs.mbsapp.Interfaces.iTakePicture
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityQuestionnaireBinding
 import java.io.OutputStream
+import java.util.ArrayList
 
 
 class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
@@ -32,11 +33,12 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
     lateinit var questionList: List<QuestionEntity>
     lateinit var section: List<QuestionEntity>
     lateinit var superList: ArrayList<ArrayList<QuestionEntity>>
-    lateinit var answerlist: ArrayList<AnswerDetailEntity>
+    var answerlist: List<AnswerDetailEntity> = ArrayList()
 
     var itemNumber: Int = 0
     var questionId: Int = 0
     var SectionId: Int = 0
+    var Position: Int = 0
     var activityLogID: Int = 0
     lateinit var sectionadapter: SectionAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,21 +66,21 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
                     questionnaireList[questionnaireList.size - 1].id!!,
                     activityLogID
                 )
-
-        for (questions in questionList) {
-            for (answer in answers) {
-                if (questions.mid == answer.mid) {
-                    if (!answer.answer.isNullOrEmpty() && !answer.answer.equals("0")) {
-                        questions.marksRecieved = answer.answer?.toInt()
-                        questions.answerComment = answer.answerComment.toString()
-                        questions.media1 = answer.media1
-                        questions.media2 = answer.media2
-                        questions.media3 = answer.media3
-                        questions.media4 = answer.media4
-                    }
-                }
-            }
-        }
+        answerlist = answers
+//        for (questions in questionList) {
+//            for (answer in answers) {
+//                if (questions.mid == answer.mid) {
+//                    if (!answer.answer.isNullOrEmpty() && !answer.answer.equals("0")) {
+//                        questions.marksRecieved = answer.answer?.toInt()
+//                        questions.answerComment = answer.answerComment.toString()
+//                        questions.media1 = answer.media1
+//                        questions.media2 = answer.media2
+//                        questions.media3 = answer.media3
+//                        questions.media4 = answer.media4
+//                    }
+//                }
+//            }
+//        }
 
 
         for (item in section.indices) {
@@ -144,10 +146,68 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         mbsDatabase.getMBSData().insertAnswerMaster(answermaster)
 
 
-        var data = superList
-        var count = 0
-        for (section in data) {
-            for (question in section) {
+        var datasecond = answerlist
+
+        if (datasecond.size == 0) {
+
+            var data = superList
+            var count = 0
+            for (section in data) {
+                for (question in section) {
+
+                    var isMediaAttached = 0
+                    var attachedMediaCount = 0
+
+                    if (question.media1 != "") {
+                        attachedMediaCount++
+                    }
+                    if (question.media2 != "") {
+                        attachedMediaCount++
+                    }
+                    if (question.media3 != "") {
+                        attachedMediaCount++
+                    }
+                    if (question.media4 != "") {
+                        attachedMediaCount++
+                    }
+
+                    if (attachedMediaCount > 0) {
+                        isMediaAttached = 1
+                    }
+
+
+                    var answerDetailEntity = AnswerDetailEntity(
+                        count,
+                        question.mid,
+                        0,
+                        activityId,
+                        question.questionSectionId,
+                        activitydetailid,
+                        activityLogID,
+                        questionnaireId,
+                        question.id,
+                        question.marksRecieved.toString(),
+                        question.answerComment,
+                        isMediaAttached,
+                        attachedMediaCount,
+                        0,
+                        "",
+                        "",
+                        "",
+                        question.media1,
+                        question.media2,
+                        question.media3,
+                        question.media4
+
+                    )
+                    count++
+                    mbsDatabase.getMBSData().insertAnswerDetail(answerDetailEntity)
+                }
+            }
+        } else {
+            var count = 0
+            for (question in datasecond) {
+//                for (question in section) {
 
                 var isMediaAttached = 0
                 var attachedMediaCount = 0
@@ -172,15 +232,15 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
 
                 var answerDetailEntity = AnswerDetailEntity(
                     count,
-                    0,
+                    questionList[count].mid,
                     0,
                     activityId,
-                    question.questionSectionId,
+                    question.section_id,
                     activitydetailid,
                     activityLogID,
                     questionnaireId,
                     question.id,
-                    question.marksRecieved.toString(),
+                    question.answer.toString(),
                     question.answerComment,
                     isMediaAttached,
                     attachedMediaCount,
@@ -199,7 +259,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
             }
         }
 
-        Toast.makeText(this@QuestionnaireActivity, "$count", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this@QuestionnaireActivity, "$count", Toast.LENGTH_SHORT).show()
     }
 
     override fun picture(position: Int, _itemNumber: Int, _questionId: Int, _SectionId: Int) {
@@ -210,6 +270,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         itemNumber = _itemNumber
         questionId = _questionId
         SectionId = _SectionId
+        Position = position
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -221,23 +282,40 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
             val uri =
                 saveBitmapToGallery(this@QuestionnaireActivity, imageBitmap!!, displayName)
             if (requestCode == 1) {
-                superList[SectionId][questionId].media1 = uri.toString()
+                superList[SectionId][Position].media1 = uri.toString()
+                for (item in answerlist) {
+                    if (item.id == questionId) {
+                        item.media1 = uri.toString()
+                    }
+                }
 
                 sectionadapter.notifyItemChanged(SectionId)
             }
             if (requestCode == 2) {
-                superList[SectionId][questionId].media2 = uri.toString()
-
+                superList[SectionId][Position].media2 = uri.toString()
+                for (item in answerlist) {
+                    if (item.id == questionId) {
+                        item.media2 = uri.toString()
+                    }
+                }
                 sectionadapter.notifyItemChanged(SectionId)
             }
             if (requestCode == 3) {
-                superList[SectionId][questionId].media3 = uri.toString()
-
+                superList[SectionId][Position].media3 = uri.toString()
+                for (item in answerlist) {
+                    if (item.id == questionId) {
+                        item.media3 = uri.toString()
+                    }
+                }
                 sectionadapter.notifyItemChanged(SectionId)
             }
             if (requestCode == 4) {
-                superList[SectionId][questionId].media4 = uri.toString()
-
+                superList[SectionId][Position].media4 = uri.toString()
+                for (item in answerlist) {
+                    if (item.id == questionId) {
+                        item.media4 = uri.toString()
+                    }
+                }
                 sectionadapter.notifyItemChanged(SectionId)
             }
 

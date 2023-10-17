@@ -14,7 +14,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.util.Util
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
@@ -22,12 +21,12 @@ import com.mbs.mbsapp.Database.Entities.MediaEntity
 import com.mbs.mbsapp.Dialog.TwoButtonDialog
 import com.mbs.mbsapp.Interfaces.OnDialogClickListener
 import com.mbs.mbsapp.Model.ActivitySubmitModel
-import com.mbs.mbsapp.Model.AnswerModel
 import com.mbs.mbsapp.Utils.Constants
 import com.mbs.mbsapp.Utils.FileUtil
 import com.mbs.mbsapp.Utils.Permissions
 import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityEndBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -35,7 +34,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
-import okio.Okio
 import okio.source
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,7 +41,6 @@ import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
-import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -385,11 +382,11 @@ class EndActivity : AppCompatActivity() {
         }
 
         if (count == data.size) {
-            SubmitMediaAnswer()
+            GlobalScope.launch { SubmitMediaAnswer() }
         }
     }
 
-    fun SubmitMediaAnswer() {
+    suspend fun SubmitMediaAnswer() {
         var questionnaireList = mbsDatabase.getMBSData().getQuestionnaire(campaignID)
         var questiondata = mbsDatabase.getMBSData()
             .getanswersbyID(activityDetailID, questionnaireList[0].id!!, activitylogid)
@@ -419,7 +416,7 @@ class EndActivity : AppCompatActivity() {
                 var file = FileUtil.from(this@EndActivity, uri)
 
                 val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
-                apiInterface.SubmitMediaData(
+                var call = apiInterface.SubmitMediaData(
                     token,
                     activity_log_id,
                     form_id,
@@ -428,36 +425,31 @@ class EndActivity : AppCompatActivity() {
                     data_name,
                     mediaRequestBody,
                     mobile_media_id
-                ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
-                    override fun onResponse(
-                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                        response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
-                    ) {
-                        if (response.isSuccessful) {
+                )
 
-                        }
-                    }
+                val response = executeCallAsync(call)
 
-                    override fun onFailure(
-                        call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
-                    ) {
-                        Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
-                    }
-                })
+                if (response.isSuccessful) {
+
+                } else {
+                    Log.d("MediaSync", count.toString() + " Failed")
+                    // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+                }
 
             }
 
         }
 
         if (count == data.size) {
-            SubmitMedia()
+            var data = mbsDatabase.getMBSData().getmediabyID(activitylogid)
+            GlobalScope.launch { SubmitMedia(data) }
 
 
         }
     }
 
-    fun SubmitMedia() {
-        var data = mbsDatabase.getMBSData().getmediabyID(activitylogid)
+    suspend fun SubmitMedia(data: List<MediaEntity>) {
+
         var count = 0
         for (item in data) {
             count++
@@ -474,7 +466,7 @@ class EndActivity : AppCompatActivity() {
             var file = FileUtil.from(this@EndActivity, uri)
 
             val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
-            apiInterface.SubmitMediaData(
+            var call = apiInterface.SubmitMediaData(
                 token,
                 activity_log_id,
                 form_id,
@@ -483,30 +475,34 @@ class EndActivity : AppCompatActivity() {
                 data_name,
                 mediaRequestBody,
                 mobile_media_id
-            ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
-                override fun onResponse(
-                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                    response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
-                ) {
-                    if (response.isSuccessful) {
-                        var mobileid = response.body()?.mobile_media_id
-                        if (mobileid?.isNotEmpty() == true)
-                            mbsDatabase.getMBSData().updateMediaSync(mobileid.toInt(), 1)
-                    }
-                }
+            )
 
-                override fun onFailure(
-                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
-                ) {
-                    Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+            val response = executeCallAsync(call)
+
+            if (response.isSuccessful) {
+                if (response.isSuccessful) {
+
+                    Log.d("MediaSync", count.toString() + " Done")
+                    var mobileid = response.body()?.mobile_media_id
+                    if (mobileid?.isNotEmpty() == true) mbsDatabase.getMBSData()
+                        .updateMediaSync(mobileid.toInt(), 1)
                 }
-            })
+            } else {
+                Log.d("MediaSync", count.toString() + " Failed")
+                // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+            }
         }
 
         if (count == data.size) {
             tinyDB.putString("time", "")
             startActivity(Intent(this@EndActivity, SelectActivity::class.java))
             this@EndActivity.finish()
+        }
+    }
+
+    private suspend fun <T> executeCallAsync(call: Call<T>): Response<T> {
+        return kotlinx.coroutines.withContext(Dispatchers.IO) {
+            call.execute()
         }
     }
 

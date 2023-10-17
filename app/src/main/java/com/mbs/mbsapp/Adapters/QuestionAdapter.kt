@@ -20,6 +20,7 @@ import com.mbs.mbsapp.Database.Entities.AnswerDetailEntity
 import com.mbs.mbsapp.Database.Entities.QuestionEntity
 import com.mbs.mbsapp.R
 import com.mbs.mbsapp.Interfaces.iTakePicture
+import java.util.ArrayList
 
 class QuestionAdapter(
     var context: Context,
@@ -71,6 +72,8 @@ class QuestionAdapter(
             holder.marksOutof.text = marks
 
 
+
+
             holder.marks.removeTextChangedListener(holder.textWatcher) // Remove existing TextWatcher if any
             holder.marks.hint = marks
 
@@ -89,18 +92,26 @@ class QuestionAdapter(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
                     if (!s.isNullOrEmpty()) {
                         questionEntity[mypos].marksRecieved =
                             s.toString().toInt() // Update the data source
+
+
                         if (list.size > 0)
                             list[position].answer = s.toString()
+
+
                     }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
+                    var stringecheck = s.toString()
                     if (!s.isNullOrEmpty()) {
                         questionEntity[mypos].marksRecieved =
                             s.toString().toInt() // Update the data source
+
+
                         if (list.size > 0)
                             list[position].answer = s.toString()
                     }
@@ -138,7 +149,7 @@ class QuestionAdapter(
                 holder.upload.visibility = View.VISIBLE
             }
 
-            if (list.isNotEmpty()) {
+            if (list.size > 0) {
                 holder.marks.setText(list[position].answer)
                 holder.comments.setText(list[position].answerComment)
 
@@ -169,18 +180,21 @@ class QuestionAdapter(
                 var uri = Uri.parse(questionEntity[position].media1!!)
 
                 Glide.with(context).load(uri).into(holder.imageView1)
+
             }
 
             if (!questionEntity[position].media2.isNullOrEmpty()) {
                 var uri = Uri.parse(questionEntity[position].media2!!)
 
                 Glide.with(context).load(uri).into(holder.imageView2)
+
             }
 
             if (!questionEntity[position].media3.isNullOrEmpty()) {
                 var uri = Uri.parse(questionEntity[position].media3!!)
 
                 Glide.with(context).load(uri).into(holder.imageView3)
+
             }
 
             if (!questionEntity[position].media4.isNullOrEmpty()) {
@@ -193,13 +207,13 @@ class QuestionAdapter(
             holder.upload.setOnClickListener {
 
                 if (questionEntity[position].media1 == "") {
-                    iTakePicture.picture(position, 1, position, sectionid)
+                    iTakePicture.picture(position, 1, questionEntity[position].mid!!, sectionid)
                 } else if (questionEntity[position].media2 == "")
-                    iTakePicture.picture(position, 2, position, sectionid)
+                    iTakePicture.picture(position, 2, questionEntity[position].mid!!, sectionid)
                 else if (questionEntity[position].media3 == "")
-                    iTakePicture.picture(position, 3, position, sectionid)
+                    iTakePicture.picture(position, 3, questionEntity[position].mid!!, sectionid)
                 else if (questionEntity[position].media4 == "")
-                    iTakePicture.picture(position, 4, position, sectionid)
+                    iTakePicture.picture(position, 4, questionEntity[position].mid!!, sectionid)
             }
 
 
