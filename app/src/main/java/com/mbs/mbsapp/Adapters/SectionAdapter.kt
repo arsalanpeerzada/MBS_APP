@@ -55,7 +55,6 @@ class SectionAdapter(
             holder.bind()
 
 
-
             var list = ArrayList<AnswerDetailEntity>()
             var data = answers
             holder.sectionHeader.text = sectionHeaders[position].questionSectionName
@@ -64,6 +63,16 @@ class SectionAdapter(
                     list.add(item)
                 }
             }
+
+//            for (item in superList){
+//                for (item2 in item){
+//
+//                }
+//            }
+
+
+
+
 
             holder.recyclerView.adapter =
                 QuestionAdapter(

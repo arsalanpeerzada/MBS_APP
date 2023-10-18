@@ -1,28 +1,24 @@
 package com.mbs.mbsapp
 
-import android.Manifest
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.location.Location
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import com.airbnb.lottie.utils.Utils
+import androidx.lifecycle.Observer
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
@@ -36,14 +32,13 @@ import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivityClusterStartBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.OutputStream
-import java.net.URI
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 
 class ClusterStartActivity : AppCompatActivity() {
@@ -68,13 +63,8 @@ class ClusterStartActivity : AppCompatActivity() {
     lateinit var mbsDatabase: MBSDatabase
     var mediacount: Int = 0
     var apiInterface: APIInterface = APIClient.createService(APIInterface::class.java)
-//    val resultContracts =
-//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-//
-//            if (result.resultCode == Activity.RESULT_OK) {
-//
-//            }
-//        }
+    private val CAMERA_ACTIVITY_REQUEST_CODE = 100
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,16 +91,19 @@ class ClusterStartActivity : AppCompatActivity() {
         binding.textView5.text = activityName
         val currentTime: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        val currentDateforCode: String = SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(Date())
+        val currentDateforCode: String =
+            SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(Date())
 
 
 
         if (storeId > 0) {
             var getStore = mbsDatabase.getMBSData().getStoresByID(storeId)
             tinyDB.putString("storeName", getStore.storeName)
-            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId-D$currentDateforCode"
+            activityDetailCode =
+                "B$brandId-C$campaignid-ci$cityId-l$locationId-s$storeId-D$currentDateforCode"
         } else {
-            activityDetailCode = "B$brandId-C$campaignid-ci$cityId-l$locationId-D$currentDateforCode"
+            activityDetailCode =
+                "B$brandId-C$campaignid-ci$cityId-l$locationId-D$currentDateforCode"
         }
 
 
@@ -235,7 +228,10 @@ class ClusterStartActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
             } else {
                 selfiecount = 0
-                dispatchTakePictureIntent(Selfie)
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, Selfie)
+                // startActivity(Intent(this@ClusterStartActivity, CameraActivity::class.java))
+                // dispatchTakePictureIntent(Selfie)
                 getlocation(0)
             }
         }
@@ -245,7 +241,10 @@ class ClusterStartActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
             } else {
                 teamcount = 0
-                dispatchTakePictureIntent(Team)
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, Team)
+//                startActivity(Intent(this@ClusterStartActivity, CameraActivity::class.java))
+                //dispatchTakePictureIntent(Team)
                 getlocation(0)
             }
 
@@ -257,14 +256,18 @@ class ClusterStartActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@ClusterStartActivity, 11, 12)
             } else {
                 locationcount = 0
-                dispatchTakePictureIntent(Location)
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, Location)
+                //startActivity(Intent(this@ClusterStartActivity, CameraActivity::class.java))
+                // dispatchTakePictureIntent(Location)
                 getlocation(0)
             }
 
         }
 
-
     }
+
+
 
     private fun createImageUri(): Uri? {
         val image = File(applicationContext.filesDir, "camera_photo.png")
@@ -301,28 +304,36 @@ class ClusterStartActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             val displayName = "image_${System.currentTimeMillis()}"
             if (requestCode == Selfie) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+                val bitmap: Bitmap? = uriToBitmap(URI)
+                binding.imageView5.setImageBitmap(bitmap)
+                URI_Selfie = saveBitmapToGallery(this, bitmap!!, displayName)!!
 
-                binding.imageView5.setImageBitmap(imageBitmap)
-                URI_Selfie = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
+
                 selfiecount = 1
 
 
             }
             if (requestCode == Team) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+                val bitmap: Bitmap? = uriToBitmap(URI)
+                binding.imageView6.setImageBitmap(bitmap)
+                URI_TEAM = saveBitmapToGallery(this, bitmap!!, displayName)!!
 
-                binding.imageView6.setImageBitmap(imageBitmap)
-                URI_TEAM = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
                 teamcount = 1
 
             }
 
             if (requestCode == Location) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+                val bitmap: Bitmap? = uriToBitmap(URI)
+                binding.imageView8.setImageBitmap(bitmap)
+                URI_LOCATION = saveBitmapToGallery(this, bitmap!!, displayName)!!
 
-                binding.imageView8.setImageBitmap(imageBitmap)
-                URI_LOCATION = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
+
                 locationcount = 1
 
             }
@@ -339,7 +350,7 @@ class ClusterStartActivity : AppCompatActivity() {
 
     }
 
-    fun getlocation(activityLogid : Int) {
+    fun getlocation(activityLogid: Int) {
 //        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 //
 //        // Check if the location provider is enabled
@@ -397,6 +408,7 @@ class ClusterStartActivity : AppCompatActivity() {
                 "",
                 "",
                 "",
+                ""
             )
             var data = mbsDatabase.getMBSData().insertMedia(mediaEntity)
         }
@@ -426,7 +438,7 @@ class ClusterStartActivity : AppCompatActivity() {
         twoButtonDialog.show()
     }
 
-    private fun sendBack(description :String) {
+    private fun sendBack(description: String) {
         val twoButtonDialog: TwoButtonDialog = TwoButtonDialog(false,
             this,
             "MSB APP",
@@ -450,4 +462,18 @@ class ClusterStartActivity : AppCompatActivity() {
         twoButtonDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         twoButtonDialog.show()
     }
+
+    fun uriToBitmap(uri: Uri): Bitmap? {
+        try {
+            // Use content resolver to open the input stream from the URI
+            val inputStream = contentResolver.openInputStream(uri)
+            // Decode the input stream into a Bitmap
+            return BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+
 }

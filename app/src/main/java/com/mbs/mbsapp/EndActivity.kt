@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -124,8 +125,12 @@ class EndActivity : AppCompatActivity() {
                         this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
                     ).show()
                 }
-            }else {
-                Toast.makeText(this@EndActivity, "Internet not Connected, please connect Internet", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    this@EndActivity,
+                    "Internet not Connected, please connect Internet",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         }
@@ -148,7 +153,9 @@ class EndActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11, 12)
             } else {
                 selfiecount = 0
-                dispatchTakePictureIntent(Selfie)
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, Selfie)
+//                dispatchTakePictureIntent(Selfie)
             }
 
 
@@ -160,7 +167,9 @@ class EndActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11, 12)
             } else {
                 teamcount = 0
-                dispatchTakePictureIntent(Team)
+//                dispatchTakePictureIntent(Team)
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, Team)
             }
 
         }
@@ -171,7 +180,9 @@ class EndActivity : AppCompatActivity() {
                 Permissions.Request_CAMERA_STORAGE(this@EndActivity, 11, 12)
             } else {
                 locationcount = 0
-                dispatchTakePictureIntent(Location)
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, Location)
+//                dispatchTakePictureIntent(Location)
             }
 
         }
@@ -206,28 +217,36 @@ class EndActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             val displayName = "image_${System.currentTimeMillis()}"
             if (requestCode == Selfie) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+                val bitmap: Bitmap? = uriToBitmap(URI)
+                binding.imageView5.setImageBitmap(bitmap)
+                URI_Selfie = saveBitmapToGallery(this, bitmap!!, displayName)!!
 
-                binding.imageView5.setImageBitmap(imageBitmap)
-                URI_Selfie = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
+
                 selfiecount = 1
 
 
             }
             if (requestCode == Team) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+                val bitmap: Bitmap? = uriToBitmap(URI)
+                binding.imageView6.setImageBitmap(bitmap)
+                URI_TEAM = saveBitmapToGallery(this, bitmap!!, displayName)!!
 
-                binding.imageView6.setImageBitmap(imageBitmap)
-                URI_TEAM = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
                 teamcount = 1
 
             }
 
             if (requestCode == Location) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+                val bitmap: Bitmap? = uriToBitmap(URI)
+                binding.imageView8.setImageBitmap(bitmap)
+                URI_LOCATION = saveBitmapToGallery(this, bitmap!!, displayName)!!
 
-                binding.imageView8.setImageBitmap(imageBitmap)
-                URI_LOCATION = saveBitmapToGallery(this, imageBitmap!!, displayName)!!
+
                 locationcount = 1
 
             }
@@ -287,6 +306,7 @@ class EndActivity : AppCompatActivity() {
                 "",
                 "",
                 "",
+                ""
             )
             var data = mbsDatabase.getMBSData().insertMedia(mediaEntity)
         }
@@ -312,7 +332,16 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
                 if (response.isSuccessful) {
-                    SubmitAudioMedia()
+
+
+                    if (response.body()?.validation == false){
+                        SubmitAudioMedia()
+                        Log.d("MSB", "Products data Inserted")
+                    }else {
+                        Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT).show()
+                        binding.transparentLoader.visibility = View.GONE
+                        binding.imageView3.visibility = View.GONE
+                    }
 
                 }
             }
@@ -398,6 +427,8 @@ class EndActivity : AppCompatActivity() {
 
         var data = questiondata
         var count = 0
+
+        Log.d("MSB", "${data.size} Answers Media")
         for (item in data) {
             count++
             val activity_log_id = RequestBody.create(MultipartBody.FORM, newactivityLog.toString())
@@ -417,29 +448,34 @@ class EndActivity : AppCompatActivity() {
                     3 -> media = item.media3
                     4 -> media = item.media4
                 }
-                var uri = Uri.parse(media)
-                var file = FileUtil.from(this@EndActivity, uri)
+                if (media != "") {
+                    var uri = Uri.parse(media)
+                    var file = FileUtil.from(this@EndActivity, uri)
 
-                val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
-                var call = apiInterface.SubmitMediaData(
-                    token,
-                    activity_log_id,
-                    form_id,
-                    form_name,
-                    data_id,
-                    data_name,
-                    mediaRequestBody,
-                    mobile_media_id
-                )
+                    val mediaRequestBody = RequestBody.create(".png".toMediaTypeOrNull(), file)
+                    var call = apiInterface.SubmitMediaData(
+                        token,
+                        activity_log_id,
+                        form_id,
+                        form_name,
+                        data_id,
+                        data_name,
+                        mediaRequestBody,
+                        mobile_media_id
+                    )
 
-                val response = executeCallAsync(call)
+                    val response = executeCallAsync(call)
 
-                if (response.isSuccessful) {
-
+                    if (response.isSuccessful) {
+                        Log.d("MSB", count.toString() + " Answer Media Done")
+                    } else {
+                        Log.d("MSB", count.toString() + " Answer Media Failed")
+                        // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+                    }
                 } else {
-                    Log.d("MediaSync", count.toString() + " Failed")
-                    // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+
                 }
+
 
             }
 
@@ -456,6 +492,7 @@ class EndActivity : AppCompatActivity() {
     suspend fun SubmitMedia(data: List<MediaEntity>) {
 
         var count = 0
+        Log.d("MSB", "${data.size} Media")
         for (item in data) {
             count++
             val activity_log_id = RequestBody.create(MultipartBody.FORM, newactivityLog.toString())
@@ -487,13 +524,13 @@ class EndActivity : AppCompatActivity() {
             if (response.isSuccessful) {
                 if (response.isSuccessful) {
 
-                    Log.d("MediaSync", count.toString() + " Done")
+                    Log.d("MSB", count.toString() + "Media Done")
                     var mobileid = response.body()?.mobile_media_id
                     if (mobileid?.isNotEmpty() == true) mbsDatabase.getMBSData()
                         .updateMediaSync(mobileid.toInt(), 1)
                 }
             } else {
-                Log.d("MediaSync", count.toString() + " Failed")
+                Log.d("MSB", count.toString() + " Media Failed")
                 // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
             }
         }
@@ -556,8 +593,16 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
                 if (response.isSuccessful) {
-                    Log.d("MSB", "data Inserted")
-                    SubmitProducts()
+
+                    if (response.body()?.validation == false){
+                        Log.d("MSB", "Answers data Inserted")
+                        SubmitProducts()
+                    }else {
+                        Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT).show()
+                        binding.transparentLoader.visibility = View.GONE
+                        binding.imageView3.visibility = View.GONE
+                    }
+
                 }
             }
 
@@ -609,16 +654,27 @@ class EndActivity : AppCompatActivity() {
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
-                newactivityLog = response.body()?.data?.activityLogId!!
-                mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
-                SubmitAnswer()
+
+                if (response.body()?.validation == false){
+                    Log.d("MSB", "Main Data Inserted")
+                    newactivityLog = response.body()?.data?.activityLogId!!
+                    mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
+                    mbsDatabase.getMBSData().updateMedia(newactivityLog, activitylogid)
+                    SubmitAnswer()
+                }else {
+                    Toast.makeText(this@EndActivity, "Error In Log Data", Toast.LENGTH_SHORT).show()
+                    binding.transparentLoader.visibility = View.GONE
+                    binding.imageView3.visibility = View.GONE
+                }
+
+
 
             }
 
             override fun onFailure(
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
-                Toast.makeText(this@EndActivity, "Error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@EndActivity, "Error In Log Data", Toast.LENGTH_SHORT).show()
                 binding.transparentLoader.visibility = View.GONE
                 binding.imageView3.visibility = View.GONE
             }
@@ -653,5 +709,22 @@ class EndActivity : AppCompatActivity() {
 
     }
 
+    fun uriToBitmap(uri: Uri): Bitmap? {
+        try {
+            // Use content resolver to open the input stream from the URI
+            val inputStream = contentResolver.openInputStream(uri)
+            // Decode the input stream into a Bitmap
+            return BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
 
 }
+
+
+// Store Location Picture
+// Picture orientation
+// API response handle

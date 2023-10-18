@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -239,7 +240,7 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
                     activitydetailid,
                     activityLogID,
                     questionnaireId,
-                    question.id,
+                    question.question_id,
                     question.answer.toString(),
                     question.answerComment,
                     isMediaAttached,
@@ -263,9 +264,12 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
     }
 
     override fun picture(position: Int, _itemNumber: Int, _questionId: Int, _SectionId: Int) {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-        startActivityForResult(takePictureIntent, _itemNumber)
+//        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+//        startActivityForResult(takePictureIntent, _itemNumber)
+
+        val intent = Intent(this, CameraActivity::class.java)
+        startActivityForResult(intent, _itemNumber)
 
         itemNumber = _itemNumber
         questionId = _questionId
@@ -277,10 +281,15 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap?
+            var imageUri = data?.getStringExtra("imageUri")
+            var URI = Uri.parse(imageUri)
+
+            val imageBitmap  = uriToBitmap(URI)
             val displayName = "image_${System.currentTimeMillis()}"
             val uri =
                 saveBitmapToGallery(this@QuestionnaireActivity, imageBitmap!!, displayName)
+
+
             if (requestCode == 1) {
                 superList[SectionId][Position].media1 = uri.toString()
                 for (item in answerlist) {
@@ -353,5 +362,17 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         } else {
             // Handle the case when the ViewHolder is not available yet
         }
+    }
+
+    fun uriToBitmap(uri: Uri): Bitmap? {
+        try {
+            // Use content resolver to open the input stream from the URI
+            val inputStream = contentResolver.openInputStream(uri)
+            // Decode the input stream into a Bitmap
+            return BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

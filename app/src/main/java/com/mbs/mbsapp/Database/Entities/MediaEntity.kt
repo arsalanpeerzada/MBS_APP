@@ -33,6 +33,8 @@ data class MediaEntity(
     val create_date: String?,
     @ColumnInfo(name = "sync_id")
     val sync_id: String?,
+    @ColumnInfo(name = "new_activity_log_id")
+    val new_activity_log_id: String?,
 
 
     )

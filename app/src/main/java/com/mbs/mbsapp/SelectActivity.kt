@@ -7,6 +7,12 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.inksy.Database.MBSDatabase
 import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
@@ -23,6 +29,7 @@ import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivitySelectBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 
 class SelectActivity : AppCompatActivity() {
@@ -344,7 +351,63 @@ class SelectActivity : AppCompatActivity() {
 
 
             }
+
+
         })
 
+        var isSyncCheck = mbsDatabase.getMBSData().getAllMediaForSync(0)
+
+
+        if (isSyncCheck.size > 0) {
+            val workManager = WorkManager.getInstance(applicationContext)
+            val workRequest = createWorkRequest()
+            workManager.enqueue(workRequest)
+
+            // Observe the work status if needed
+            workManager.getWorkInfoByIdLiveData(workRequest.id)
+                .observe(this, Observer { workInfo: WorkInfo? ->
+                    if (workInfo != null) {
+                        when (workInfo.state) {
+                            WorkInfo.State.SUCCEEDED -> {
+                                // Work has been successfully completed
+                            }
+
+                            WorkInfo.State.FAILED -> {
+                                // Work failed (e.g., due to no internet connectivity)
+                            }
+
+                            else -> {
+                                // Work is still in progress
+                            }
+                        }
+                    }
+                })
+        }
+
+
+    }
+
+    fun createWorkRequest(): OneTimeWorkRequest {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        return OneTimeWorkRequest.Builder(MyWorker::class.java)
+            .setConstraints(constraints)
+            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+            .addTag("api_work")
+            .build()
+    }
+
+    fun calculateInitialDelay(): Long {
+        // Calculate the initial delay in milliseconds for the service to run every 10 minutes
+        val tenMinutesInMilliseconds = 2 * 60 * 1000
+        val currentTimeMillis = System.currentTimeMillis()
+
+        // Calculate the next time the service should run
+        val nextRunTime = currentTimeMillis + tenMinutesInMilliseconds
+
+        // Calculate the initial delay
+        return nextRunTime - currentTimeMillis
     }
 }

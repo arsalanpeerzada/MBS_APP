@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -84,8 +85,9 @@ class StorePictureActivity : AppCompatActivity() {
                     this@StorePictureActivity, "Can't Upload More Photos", Toast.LENGTH_SHORT
                 ).show()
             }
-            when (count) {
 
+
+            when (count) {
                 1 -> dispatchTakePictureIntent(1)
                 2 -> dispatchTakePictureIntent(2)
                 3 -> dispatchTakePictureIntent(3)
@@ -103,14 +105,19 @@ class StorePictureActivity : AppCompatActivity() {
                 15 -> dispatchTakePictureIntent(15)
                 16 -> dispatchTakePictureIntent(16)
             }
+
+
         }
     }
 
 
     private fun dispatchTakePictureIntent(request: Int) {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-        startActivityForResult(takePictureIntent, request)
+//        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+//        startActivityForResult(takePictureIntent, request)
+
+        val intent = Intent(this, CameraActivity::class.java)
+        startActivityForResult(intent, request)
 
     }
 
@@ -119,7 +126,12 @@ class StorePictureActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -136,7 +148,11 @@ class StorePictureActivity : AppCompatActivity() {
 
             }
             if (requestCode == 2) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -154,7 +170,11 @@ class StorePictureActivity : AppCompatActivity() {
             }
 
             if (requestCode == 3) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -168,7 +188,11 @@ class StorePictureActivity : AppCompatActivity() {
             }
 
             if (requestCode == 4) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -181,7 +205,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 5) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -193,7 +221,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 6) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -205,7 +237,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 7) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -217,7 +253,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 8) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -229,7 +269,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 9) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -241,7 +285,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 10) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -253,7 +301,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 11) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -265,7 +317,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 12) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -277,7 +333,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 13) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -289,7 +349,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 14) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -301,7 +365,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 15) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -313,7 +381,11 @@ class StorePictureActivity : AppCompatActivity() {
                 count++
             }
             if (requestCode == 16) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap?
+                var imageUri = data?.getStringExtra("imageUri")
+                var URI = Uri.parse(imageUri)
+
+
+                val imageBitmap = uriToBitmap(URI)
 
                 val displayName = "image_${System.currentTimeMillis()}"
                 val uri = saveBitmapToGallery(this@StorePictureActivity, imageBitmap!!, displayName)
@@ -390,8 +462,8 @@ class StorePictureActivity : AppCompatActivity() {
                 "",
                 "",
                 "",
-
-                )
+                ""
+            )
 
             var data = mbsDatabase.getMBSData().insertMedia(mediaEntity)
         }
@@ -498,6 +570,18 @@ class StorePictureActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun uriToBitmap(uri: Uri): Bitmap? {
+        try {
+            // Use content resolver to open the input stream from the URI
+            val inputStream = contentResolver.openInputStream(uri)
+            // Decode the input stream into a Bitmap
+            return BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1022193586848",
+    "project_id": "msb-ams",
+    "storage_bucket": "msb-ams.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022193586848:android:e68ebcd27fee17aa266fc5",
+        "android_client_info": {
+          "package_name": "com.mbs.mbsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022193586848-02rr6merh2sg1o3h7ses1ou0kqagm9ov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzy96gKo-vUZRGN0An99u05urN9ISFMeg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022193586848-02rr6merh2sg1o3h7ses1ou0kqagm9ov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

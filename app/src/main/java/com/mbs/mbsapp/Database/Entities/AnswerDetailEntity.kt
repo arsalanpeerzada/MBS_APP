@@ -24,7 +24,7 @@ data class AnswerDetailEntity(
     @ColumnInfo(name = "questionnaire_id")
     val questionnaire_id: Int?,
     @ColumnInfo(name = "question_id")
-    val question_id: Int?,
+    var question_id: Int?,
     @ColumnInfo(name = "answere")
     var answer: String?,
     @ColumnInfo(name = "answere_comment")

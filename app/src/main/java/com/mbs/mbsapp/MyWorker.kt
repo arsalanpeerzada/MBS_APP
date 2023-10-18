@@ -62,8 +62,8 @@ class MyWorker(var context: Context, var workerParams: WorkerParameters) :
 
         for (item in data) {
             count++
-            var activityLog = mbsDatabase.getMBSData().getactivitylogsById(item.mid!!)
-            var newActivityLogId = activityLog.serverid
+
+            var newActivityLogId = data[count].new_activity_log_id
 
 
             val activity_log_id =

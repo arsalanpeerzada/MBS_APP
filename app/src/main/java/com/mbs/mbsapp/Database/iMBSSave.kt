@@ -281,6 +281,9 @@ interface iMBSSave {
     @Query("UPDATE activity_logs SET serverid = :serverid WHERE mid = :mid")
     fun updateServerId(mid: Int, serverid: Int)
 
+    @Query("UPDATE Media SET new_activity_log_id = :new_activity_log_id WHERE activity_log_id = :oldactivityLog")
+    fun updateMedia(new_activity_log_id: Int, oldactivityLog: Int)
+
     @Query("UPDATE media SET is_sync = :isSync WHERE mid = :mid")
     fun updateMediaSync(mid: Int, isSync: Int)
 
