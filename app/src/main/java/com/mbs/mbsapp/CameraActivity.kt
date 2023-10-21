@@ -2,11 +2,15 @@ package com.mbs.mbsapp
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
-import android.util.Size
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
@@ -17,13 +21,14 @@ import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import com.mbs.mbsapp.databinding.ActivityCameraBinding
 import java.io.File
-import java.util.concurrent.ExecutionException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.concurrent.Executors
 
 
@@ -34,6 +39,7 @@ class CameraActivity : AppCompatActivity() {
     var flipCamera: ImageButton? = null
     var previewView: PreviewView? = null
     var cameraFacing = CameraSelector.LENS_FACING_BACK
+    lateinit var cameraController: LifecycleCameraController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
@@ -64,6 +70,10 @@ class CameraActivity : AppCompatActivity() {
             startCamera(cameraFacing)
         })
 
+        capture!!.setOnClickListener {
+            takePicture()
+        }
+
     }
 
 
@@ -75,54 +85,82 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    fun startCamera(cameraFacing: Int) {
-        val aspectRatio = aspectRatio(previewView!!.width, previewView!!.height)
-        val listenableFuture = ProcessCameraProvider.getInstance(this)
-        listenableFuture.addListener({
-            try {
-                val cameraProvider =
-                    listenableFuture.get() as ProcessCameraProvider
-                val preview =
-                    Preview.Builder().setTargetAspectRatio(aspectRatio).build()
-                val imageCapture =
-                    ImageCapture.Builder()
-                        .setTargetResolution(Size(1080,1920 ))
-                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                        //.setTargetRotation(windowManager.defaultDisplay.rotation)
-                        .build()
-                val cameraSelector = CameraSelector.Builder()
-                    .requireLensFacing(cameraFacing).build()
-                cameraProvider.unbindAll()
-                val camera: Camera =
-                    cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-                capture!!.setOnClickListener {
+    /*    fun startCamera(cameraFacing: Int) {
+            val aspectRatio = aspectRatio(previewView!!.width, previewView!!.height)
+            val listenableFuture = ProcessCameraProvider.getInstance(this)
+            listenableFuture.addListener({
+                try {
+                    val cameraProvider =
+                        listenableFuture.get() as ProcessCameraProvider
+                    val preview =
+                        Preview.Builder().build()
+                    preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+                    val cameraSelector = CameraSelector.Builder()
+                        .requireLensFacing(cameraFacing).build()
 
-                    takePicture(imageCapture)
+                    val imageCapture =
+                        ImageCapture.Builder()
+                            .setTargetResolution(Size(1080,1920 ))
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setTargetRotation(getImageCaptureRotation(cameraProvider, cameraSelector,cameraFacing))
+                            .build()
 
+                    cameraProvider.unbindAll()
+                    val camera: Camera =
+                        cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+                    capture!!.setOnClickListener {
+
+                        takePicture(imageCapture)
+
+                    }
+                    toggleFlash!!.setOnClickListener { setFlashIcon(camera) }
+                    preview.setSurfaceProvider(previewView!!.surfaceProvider)
+                } catch (e: ExecutionException) {
+                    e.printStackTrace()
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
                 }
-                toggleFlash!!.setOnClickListener { setFlashIcon(camera) }
-                preview.setSurfaceProvider(previewView!!.surfaceProvider)
-            } catch (e: ExecutionException) {
-                e.printStackTrace()
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
-        }, ContextCompat.getMainExecutor(this))
+            }, ContextCompat.getMainExecutor(this))
+        }*/
+
+    fun startCamera(cameraFacing: Int) {
+
+        var preview: PreviewView = binding.cameraPreview
+        cameraController = LifecycleCameraController(baseContext)
+        cameraController.bindToLifecycle(this)
+        if (cameraFacing == CameraSelector.LENS_FACING_BACK)
+            cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        else
+            cameraController.cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+        preview.controller = cameraController
     }
 
 
-
-    fun takePicture(imageCapture: ImageCapture) {
+    fun takePicture() {
         val file = File(getExternalFilesDir(null), System.currentTimeMillis().toString() + ".jpg")
         val outputFileOptions: ImageCapture.OutputFileOptions =
             ImageCapture.OutputFileOptions.Builder(file).build()
-        imageCapture.takePicture(
+        cameraController.takePicture(
             outputFileOptions,
-            Executors.newCachedThreadPool(),
+            ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
 
-                    val photoUri = outputFileResults.savedUri ?: Uri.fromFile(File(outputFileResults.savedUri!!.path))
+                    val photoUri1 = outputFileResults.savedUri
+                        ?: Uri.fromFile(File(outputFileResults.savedUri!!.path))
+
+                    val inputStream = contentResolver.openInputStream(photoUri1)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+
+// Rotate the image
+                    val rotationDegrees = 90 // Specify the desired rotation angle
+                    val matrix = Matrix()
+                    matrix.postRotate(rotationDegrees.toFloat())
+                    val rotatedBitmap =
+                        Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                    var photoUri = bitmapToUri(this@CameraActivity, rotatedBitmap)
+
                     val resultIntent = Intent()
                     resultIntent.putExtra("imageUri", photoUri.toString())
                     setResult(Activity.RESULT_OK, resultIntent)
@@ -172,24 +210,31 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun aspectRatio(width: Int, height: Int): Int {
-        val previewRatio = Math.max(width, height).toDouble() / Math.min(width, height)
-        return if (Math.abs(previewRatio - 4.0 / 3.0) <= Math.abs(previewRatio - 16.0 / 9.0)) {
-            AspectRatio.RATIO_4_3
-        } else AspectRatio.RATIO_16_9
+    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
+        // Get the application's internal storage directory (or any other directory you prefer)
+        val cw = ContextWrapper(context)
+        val directory = cw.getDir("images", Context.MODE_PRIVATE)
+
+        // Create a unique filename for the image
+        val fileName = "image_${System.currentTimeMillis()}.jpg"
+
+        // Create a new file in the directory
+        val file = File(directory, fileName)
+
+        try {
+            // Open a file output stream and save the Bitmap to the file
+            val fos = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            fos.close()
+
+            // Return the Uri of the saved image
+            return Uri.fromFile(file)
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return null
     }
 
-
-//    private fun aspectRatio(width: Int, height: Int): Int {
-//        val portraitRatio = Math.max(height, width).toDouble() / Math.min(height, width)
-//        return if (Math.abs(portraitRatio - 3.0 / 4.0) <= Math.abs(portraitRatio - 9.0 / 16.0)) {
-//            AspectRatio.RATIO_4_3
-//        } else AspectRatio.RATIO_16_9
-//    }
-
-//    fun rotateImage(source: Bitmap, angle: Float): Bitmap {
-//        val matrix = Matrix()
-//        matrix.postRotate(angle)
-//        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
-//    }
 }
