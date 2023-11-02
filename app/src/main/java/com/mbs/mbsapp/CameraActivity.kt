@@ -16,12 +16,10 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
@@ -29,7 +27,6 @@ import com.mbs.mbsapp.databinding.ActivityCameraBinding
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.concurrent.Executors
 
 
 class CameraActivity : AppCompatActivity() {
@@ -209,6 +206,16 @@ class CameraActivity : AppCompatActivity() {
             }
         }
     }
+
+
+//    override fun onPause() {
+//        super.onPause()
+//        if (camera != null) {
+//            camera.stopPreview()
+//            camera.release()
+//            camera = null
+//        }
+//    }
 
     fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
         // Get the application's internal storage directory (or any other directory you prefer)
