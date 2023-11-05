@@ -59,4 +59,5 @@ class BAAdapter(
     override fun getItemCount(): Int {
         return balist.size
     }
+
 }

@@ -337,4 +337,8 @@ class BAPitch : AppCompatActivity(), iSetBA {
 
     }
 
+    override fun onBackPressed() {
+
+    }
+
 }

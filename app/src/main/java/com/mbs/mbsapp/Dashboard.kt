@@ -110,6 +110,8 @@ class Dashboard : AppCompatActivity() {
         updateLocation(activityLogid)
 
 
+
+
         binding.dashboardImage.setOnClickListener {
             var data = mbsDatabase.getMBSData().getBAaa()
             var data2 = data
@@ -233,20 +235,17 @@ class Dashboard : AppCompatActivity() {
         var products = mbsDatabase.getMBSData().getProductStocks(campaignid, activitydetailID)
 
 
-
-
-        if (products.size > 0) {
-            var productCount = 0
-            for (item in products) {
-                if (item.count != 0) {
-                    productCount++
-                }
-            }
-            if (productCount == products.size) {
-                binding.stockCount.text = "Completed"
-                mbsDatabase.getMBSData().updateStockPicture(1, activityLogid)
+        var productCount = 0
+        for (item in products) {
+            if (item.count != 0) {
+                productCount++
             }
         }
+        if (productCount == products.size) {
+            binding.stockCount.text = "Completed"
+            mbsDatabase.getMBSData().updateStockPicture(1, activityLogid)
+        }
+
 
     }
 
@@ -265,18 +264,12 @@ class Dashboard : AppCompatActivity() {
 
 
     private fun updateBA(activityLogid: Int) {
-        var ba_list = mbsDatabase.getMBSData().getBA(activitydetailID, campaignid, activitydetailID)
+        var ba_list = mbsDatabase.getMBSData().getBApitchesNew(activityLogid)
 
-
-//        var isPitchCompleted = 0
-//        for (item in ba_list) {
-//            if (isPitchCompleted != 0) {
-//                isPitchCompleted++
-//            }
-//        }
-
-        if (ba_list.size == 0) {
-            mbsDatabase.getMBSData().updateBA(1, activityLogid)
+        mbsDatabase.getMBSData().updateBA(1, activityLogid)
+        var isPitchCompleted = 0
+        if (ba_list.size > 0) {
+            binding.BAPitchPending.text = "BA Pitch Count : ${ba_list.size}"
         }
 
 
@@ -312,20 +305,17 @@ class Dashboard : AppCompatActivity() {
 
     var apiRunnable: Runnable = object : Runnable {
         override fun run() {
-            var data = Constants.getlocation(this@Dashboard, apiInterface,activityLogid)
+            var data = Constants.getlocation(this@Dashboard, apiInterface, activityLogid)
             handler.postDelayed(this, 1 * 60 * 1000) // 10 minutes in milliseconds
         }
     }
 
     fun createWorkRequest(): OneTimeWorkRequest {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        val constraints =
+            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
-        return OneTimeWorkRequest.Builder(MyWorker::class.java)
-            .setConstraints(constraints)
-            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
-            .addTag("api_work")
+        return OneTimeWorkRequest.Builder(MyWorker::class.java).setConstraints(constraints)
+            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS).addTag("api_work")
             .build()
     }
 
@@ -407,6 +397,10 @@ class Dashboard : AppCompatActivity() {
 
         if (count == data.size) {
         }
+    }
+
+    override fun onBackPressed() {
+
     }
 
 

@@ -109,13 +109,13 @@ class Constants {
 
                                 var mbsDatabase = MBSDatabase.getInstance(context)!!
 
-                                if (activityLogId != 0) {
-                                    var update = mbsDatabase.getMBSData().updateLocation(
-                                        latitude.toString(),
-                                        longitude.toString(),
-                                        activityLogId
-                                    )
-                                }
+
+                                var update = mbsDatabase.getMBSData().updateLocation(
+                                    latitude.toString(),
+                                    longitude.toString(),
+                                    activityLogId
+                                )
+
                                 var tinyDB = TinyDB(context)
                                 var token = tinyDB.getString("token")
                                 val finaltoken = "Bearer $token"

@@ -57,8 +57,8 @@ class QuestionAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_questionnaire, parent, false)
+        val v =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_questionnaire, parent, false)
         return ViewHolder(v)
     }
 
@@ -84,56 +84,65 @@ class QuestionAdapter(
 
             holder.marks.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
+                    s: CharSequence?, start: Int, count: Int, after: Int
                 ) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    var maxInput = questionEntity[mypos].marks!!
                     if (!s.isNullOrEmpty()) {
+                        var enteredValue = s.toString()
+                        if (!enteredValue.isEmpty()) {
+                            var value = enteredValue.toIntOrNull()
+                            if (value != null && value > maxInput) {
+                                enteredValue = maxInput.toString()
+                            }
+                        }
                         questionEntity[mypos].marksRecieved =
-                            s.toString().toInt() // Update the data source
+                            enteredValue.toInt() // Update the data source
 
-
-                        if (list.size > 0)
-                            list[position].answer = s.toString()
-
-
+                        if (list.size > 0) list[position].answer = enteredValue
                     }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-                    var stringecheck = s.toString()
+                    var maxInput = questionEntity[mypos].marks!!
                     if (!s.isNullOrEmpty()) {
+                        var enteredValue = s.toString()
+                        if (!enteredValue.isEmpty()) {
+                            var value = enteredValue.toIntOrNull()
+                            if (value != null && value > maxInput) {
+                                enteredValue = maxInput.toString()
+                            }
+                        }
                         questionEntity[mypos].marksRecieved =
-                            s.toString().toInt() // Update the data source
+                            enteredValue.toInt() // Update the data source
 
-
-                        if (list.size > 0)
-                            list[position].answer = s.toString()
+                        if (list.size > 0) list[position].answer = enteredValue
                     }
                 }
             })
 
             holder.comments.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
+                    s: CharSequence?, start: Int, count: Int, after: Int
                 ) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (!s.isNullOrEmpty()) {
+                        questionEntity[mypos].answerComment = s.toString()
+                    }// Update the data source
+
+                    if (list.size > 0) list[position].answerComment = s.toString()
                 }
 
                 override fun afterTextChanged(s: Editable?) {
                     if (!s.isNullOrEmpty()) {
                         questionEntity[mypos].answerComment = s.toString()
                     }// Update the data source
+
+                    if (list.size > 0) list[position].answerComment = s.toString()
                 }
             })
 
@@ -208,41 +217,49 @@ class QuestionAdapter(
 
                 if (questionEntity[position].media1 == "") {
                     iTakePicture.picture(position, 1, questionEntity[position].mid!!, sectionid)
-                } else if (questionEntity[position].media2 == "")
-                    iTakePicture.picture(position, 2, questionEntity[position].mid!!, sectionid)
-                else if (questionEntity[position].media3 == "")
-                    iTakePicture.picture(position, 3, questionEntity[position].mid!!, sectionid)
-                else if (questionEntity[position].media4 == "")
-                    iTakePicture.picture(position, 4, questionEntity[position].mid!!, sectionid)
+                } else if (questionEntity[position].media2 == "") iTakePicture.picture(
+                    position,
+                    2,
+                    questionEntity[position].mid!!,
+                    sectionid
+                )
+                else if (questionEntity[position].media3 == "") iTakePicture.picture(
+                    position,
+                    3,
+                    questionEntity[position].mid!!,
+                    sectionid
+                )
+                else if (questionEntity[position].media4 == "") iTakePicture.picture(
+                    position,
+                    4,
+                    questionEntity[position].mid!!,
+                    sectionid
+                )
             }
 
 
             holder.imageView1.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView1)
                 questionEntity[position].media1 = ""
-                if (list.size > 0)
-                    list[position].media1 = ""
+                if (list.size > 0) list[position].media1 = ""
             }
 
             holder.imageView2.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView2)
                 questionEntity[position].media2 = ""
-                if (list.size > 0)
-                    list[position].media2 = ""
+                if (list.size > 0) list[position].media2 = ""
             }
 
             holder.imageView3.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView3)
                 questionEntity[position].media3 = ""
-                if (list.size > 0)
-                    list[position].media3 = ""
+                if (list.size > 0) list[position].media3 = ""
             }
 
             holder.imageView4.setOnClickListener() {
                 Glide.with(context).load(R.drawable.image).into(holder.imageView4)
                 questionEntity[position].media4 = ""
-                if (list.size > 0)
-                    list[position].media4 = ""
+                if (list.size > 0) list[position].media4 = ""
             }
 
 

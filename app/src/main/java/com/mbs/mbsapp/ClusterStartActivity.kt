@@ -351,36 +351,6 @@ class ClusterStartActivity : AppCompatActivity() {
     }
 
     fun getlocation(activityLogid: Int) {
-//        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//
-//        // Check if the location provider is enabled
-//        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-//            // Get the last known location
-//            val lastKnownLocation: Location?
-//
-//            if (ActivityCompat.checkSelfPermission(
-//                    this,
-//                    Manifest.permission.ACCESS_FINE_LOCATION
-//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                    this,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION
-//                ) != PackageManager.PERMISSION_GRANTED
-//            ) {
-//                return
-//            }
-//            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-//
-//            // Check if the location is available
-//            if (lastKnownLocation != null) {
-//
-//                latitude = lastKnownLocation.latitude
-//
-//                longitude = lastKnownLocation.longitude
-//                // Now you have the latitude and longitude
-//            } else {
-//                // Location data not available
-//            }
-//        }
 
         var data = Constants.getlocation(this@ClusterStartActivity, apiInterface, activityLogid)
 
@@ -388,8 +358,6 @@ class ClusterStartActivity : AppCompatActivity() {
             latitude = data[0]
             longitude = data[1]
         }
-
-
     }
 
     fun insertIntoDB(uri: Uri, mediacount: Int) {
@@ -473,6 +441,10 @@ class ClusterStartActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return null
+    }
+
+    override fun onBackPressed() {
+
     }
 
 

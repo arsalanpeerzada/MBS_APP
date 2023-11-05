@@ -375,4 +375,8 @@ class QuestionnaireActivity : AppCompatActivity(), iTakePicture {
         }
         return null
     }
+
+    override fun onBackPressed() {
+
+    }
 }

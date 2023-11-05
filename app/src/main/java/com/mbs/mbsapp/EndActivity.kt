@@ -315,44 +315,65 @@ class EndActivity : AppCompatActivity() {
     fun SubmitProducts() {
         var products = mbsDatabase.getMBSData().getProductStocks(campaignID, activityDetailID)
 
-        var producutId = ArrayList<String>()
-        var producutCount = ArrayList<String>()
 
-        for (item in products) {
-            producutId.add(item.productId.toString())
-            producutCount.add(item.count.toString())
-        }
+        if (products.size == 0) {
+            SubmitAudioMedia()
 
-
-        apiInterface.SubmitProducts(
-            token, newactivityLog, campaignID, producutId, producutCount
-        ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
-            override fun onResponse(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
-            ) {
-                if (response.isSuccessful) {
+        }else {
+            var producutId = ArrayList<String>()
+            var producutCount = ArrayList<String>()
 
 
-                    if (response.body()?.validation == false){
-                        SubmitAudioMedia()
-                        Log.d("MSB", "Products data Inserted")
-                    }else {
-                        Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT).show()
-                        binding.transparentLoader.visibility = View.GONE
-                        binding.imageView3.visibility = View.GONE
+            for (item in products) {
+                producutId.add(item.productId.toString())
+                producutCount.add(item.count.toString())
+            }
+
+
+            apiInterface.SubmitProducts(
+                token, newactivityLog, campaignID, producutId, producutCount
+            ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                    response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                ) {
+                    if (response.isSuccessful) {
+
+
+                        if (response.body()?.validation == false) {
+                            SubmitAudioMedia()
+                            Log.d("MSB", "Products data Inserted")
+                            Toast.makeText(
+                                this@EndActivity,
+                                "Products data Inserted",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        } else {
+                            Toast.makeText(
+                                this@EndActivity,
+                                "Error in Products",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                            binding.transparentLoader.visibility = View.GONE
+                            binding.imageView3.visibility = View.GONE
+                        }
+
                     }
+                }
+
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
+                ) {
+                    Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT).show()
+                    binding.transparentLoader.visibility = View.GONE
+                    binding.imageView3.visibility = View.GONE
 
                 }
-            }
 
-            override fun onFailure(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
-            ) {
-                Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT)
-            }
-
-        })
+            })
+        }
     }
 
     fun SubmitAudioMedia() {
@@ -410,7 +431,10 @@ class EndActivity : AppCompatActivity() {
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
-                    Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT).show()
+                    binding.transparentLoader.visibility = View.GONE
+                    binding.imageView3.visibility = View.GONE
+
                 }
             })
         }
@@ -594,11 +618,18 @@ class EndActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
 
-                    if (response.body()?.validation == false){
+                    if (response.body()?.validation == false) {
                         Log.d("MSB", "Answers data Inserted")
+                        Toast.makeText(
+                            this@EndActivity,
+                            "Answers data Inserted",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
                         SubmitProducts()
-                    }else {
-                        Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT)
+                            .show()
                         binding.transparentLoader.visibility = View.GONE
                         binding.imageView3.visibility = View.GONE
                     }
@@ -609,7 +640,9 @@ class EndActivity : AppCompatActivity() {
             override fun onFailure(
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
-                Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT)
+                Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT).show()
+                binding.transparentLoader.visibility = View.GONE
+                binding.imageView3.visibility = View.GONE
             }
 
 
@@ -655,18 +688,24 @@ class EndActivity : AppCompatActivity() {
                 response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
             ) {
 
-                if (response.body()?.validation == false){
-                    Log.d("MSB", "Main Data Inserted")
+                if (response.body()?.validation == false) {
+                    Toast.makeText(this@EndActivity, "Initial Data Inserted", Toast.LENGTH_SHORT)
+                        .show()
                     newactivityLog = response.body()?.data?.activityLogId!!
                     mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
                     mbsDatabase.getMBSData().updateMedia(newactivityLog, activitylogid)
                     SubmitAnswer()
-                }else {
-                    Toast.makeText(this@EndActivity, "Error In Log Data", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@EndActivity,
+                        "${response.errorBody().toString()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Toast.makeText(this@EndActivity, "Error In Initial Data", Toast.LENGTH_SHORT)
+                        .show()
                     binding.transparentLoader.visibility = View.GONE
                     binding.imageView3.visibility = View.GONE
                 }
-
 
 
             }
@@ -674,7 +713,12 @@ class EndActivity : AppCompatActivity() {
             override fun onFailure(
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
-                Toast.makeText(this@EndActivity, "Error In Log Data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@EndActivity,
+                    "${t.message.toString()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Toast.makeText(this@EndActivity, "Error In Initial Data", Toast.LENGTH_SHORT).show()
                 binding.transparentLoader.visibility = View.GONE
                 binding.imageView3.visibility = View.GONE
             }
@@ -721,10 +765,9 @@ class EndActivity : AppCompatActivity() {
         return null
     }
 
+    override fun onBackPressed() {
+
+    }
+
 
 }
-
-
-// Store Location Picture
-// Picture orientation
-// API response handle

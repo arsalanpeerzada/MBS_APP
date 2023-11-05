@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         mbsDatabase = MBSDatabase.getInstance(this@MainActivity)!!
         Glide.with(this).asGif().load(R.drawable.loader).into(binding.imageView3)
 
+
         binding.login.setOnClickListener {
             if (Constants.isInternetConnected(this@MainActivity))
                 if (binding.email.text.isNullOrBlank() || binding.password.text.isNullOrBlank()) {
@@ -1028,6 +1029,10 @@ class MainActivity : AppCompatActivity() {
         getQuestionSection(finaltoken)
         getProductAPI(finaltoken)
         getBrandAmbassador(finaltoken)
+    }
+
+    override fun onBackPressed() {
+
     }
 
 

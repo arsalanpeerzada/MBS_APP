@@ -39,13 +39,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:maxLines="1"
-        android:ellipsize="end"
         android:id="@+id/textView5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
+        android:ellipsize="end"
         android:fontFamily="@font/poppins_regular"
+        android:maxLines="1"
         android:text="Knorr Cluster Activity "
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/view"
@@ -279,20 +279,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="15dp"
-                        android:text="Stock/Gift Count" />
+                        android:text="Stock/KPI \nAchievement" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:src="@drawable/gift" />
 
                     <TextView
                         android:id="@+id/stockCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="15dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="10dp"
                         android:text="Pending" />
 
                 </LinearLayout>
@@ -357,12 +358,12 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:ellipsize="end"
-                        android:maxLines="2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
                         android:layout_marginTop="15dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
                         android:text="Brand Ambassador Pitch" />
 
                     <ImageView
@@ -373,10 +374,11 @@
                         android:src="@drawable/ba" />
 
                     <TextView
+                        android:id="@+id/BAPitch_Pending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:text="Pending" />
 
                 </LinearLayout>
@@ -391,7 +393,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
 
 
                 <LinearLayout
@@ -432,14 +433,14 @@
                     android:layout_weight="1" />
 
                 <LinearLayout
-                    android:visibility="invisible"
                     android:id="@+id/EndsActivity"
                     android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:layout_weight="4.5"
                     android:background="@drawable/curve_edittext"
                     android:backgroundTint="@color/dashboardgreen"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
                     <TextView
                         android:layout_width="wrap_content"

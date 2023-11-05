@@ -472,7 +472,7 @@ class StorePictureActivity : AppCompatActivity() {
     private fun setdata(picturesdata: List<MediaEntity>) {
 
         for (item in picturesdata) {
-            when (item.mid) {
+            when (item.mid?.minus(3)){
                 1 -> {
                     var uri = Uri.parse(item.media_name)
                     Glide.with(this@StorePictureActivity).load(uri).into(binding.imageView1)
@@ -582,6 +582,11 @@ class StorePictureActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return null
+    }
+
+
+    override fun onBackPressed() {
+
     }
 
 

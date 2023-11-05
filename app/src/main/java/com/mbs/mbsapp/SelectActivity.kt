@@ -65,6 +65,8 @@ class SelectActivity : AppCompatActivity() {
         Permissions.Check_STORAGE(this)
 
 
+
+
         binding.next.setOnClickListener {
             if (getStore.size > 0) {
                 var activityName =
@@ -409,5 +411,9 @@ class SelectActivity : AppCompatActivity() {
 
         // Calculate the initial delay
         return nextRunTime - currentTimeMillis
+    }
+
+    override fun onBackPressed() {
+
     }
 }

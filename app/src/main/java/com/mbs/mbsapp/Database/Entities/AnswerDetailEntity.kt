@@ -28,7 +28,7 @@ data class AnswerDetailEntity(
     @ColumnInfo(name = "answere")
     var answer: String?,
     @ColumnInfo(name = "answere_comment")
-    val answerComment: String?, // Convert to appropriate type if necessary
+    var answerComment: String?, // Convert to appropriate type if necessary
     @ColumnInfo(name = "is_media_attached")
     val isMediaAttached: Int?,
     @ColumnInfo(name = "attached_media_count")

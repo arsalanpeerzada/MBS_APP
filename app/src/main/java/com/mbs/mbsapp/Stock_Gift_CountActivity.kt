@@ -100,4 +100,8 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onBackPressed() {
+
+    }
 }
