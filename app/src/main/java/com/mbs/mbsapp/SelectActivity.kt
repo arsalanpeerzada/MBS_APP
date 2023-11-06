@@ -291,7 +291,7 @@ class SelectActivity : AppCompatActivity() {
                         USER_ID = userdata.id!!
 
 
-                        var city  = mbsDatabase.getMBSData()
+                        var city = mbsDatabase.getMBSData()
                             .getCitybyCampaign(SELECTED_CAMPAIGN_ID, USER_ID)
                         getcity = city
 
@@ -357,48 +357,29 @@ class SelectActivity : AppCompatActivity() {
 
         })
 
-        var isSyncCheck = mbsDatabase.getMBSData().getAllMediaForSync(0)
 
-
-        if (isSyncCheck.size > 0) {
-            val workManager = WorkManager.getInstance(applicationContext)
-            val workRequest = createWorkRequest()
-            workManager.enqueue(workRequest)
-
-            // Observe the work status if needed
-            workManager.getWorkInfoByIdLiveData(workRequest.id)
-                .observe(this, Observer { workInfo: WorkInfo? ->
-                    if (workInfo != null) {
-                        when (workInfo.state) {
-                            WorkInfo.State.SUCCEEDED -> {
-                                // Work has been successfully completed
-                            }
-
-                            WorkInfo.State.FAILED -> {
-                                // Work failed (e.g., due to no internet connectivity)
-                            }
-
-                            else -> {
-                                // Work is still in progress
-                            }
-                        }
-                    }
-                })
+        binding.refresh.setOnClickListener {
+            var isSyncCheck = mbsDatabase.getMBSData().getAllMediaForSync(0)
+            if (isSyncCheck.size > 0) {
+                val workManager = WorkManager.getInstance(applicationContext)
+                createWorkRequest()
+            }
         }
+
 
 
     }
 
-    fun createWorkRequest(): OneTimeWorkRequest {
+    fun createWorkRequest() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        return OneTimeWorkRequest.Builder(MyWorker::class.java)
+        val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
             .setConstraints(constraints)
-            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
-            .addTag("api_work")
             .build()
+
+        WorkManager.getInstance(this@SelectActivity).enqueue(workRequest)
     }
 
     fun calculateInitialDelay(): Long {

@@ -201,29 +201,7 @@ class Dashboard : AppCompatActivity() {
 
 
         val workManager = WorkManager.getInstance(applicationContext)
-        val workRequest = createWorkRequest()
-
-        workManager.enqueue(workRequest)
-
-        // Observe the work status if needed
-        workManager.getWorkInfoByIdLiveData(workRequest.id)
-            .observe(this, Observer { workInfo: WorkInfo? ->
-                if (workInfo != null) {
-                    when (workInfo.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            // Work has been successfully completed
-                        }
-
-                        WorkInfo.State.FAILED -> {
-                            // Work failed (e.g., due to no internet connectivity)
-                        }
-
-                        else -> {
-                            // Work is still in progress
-                        }
-                    }
-                }
-            })
+        createWorkRequest()
 
         binding.refresh.setOnClickListener {
             SubmitMedia()
@@ -310,13 +288,16 @@ class Dashboard : AppCompatActivity() {
         }
     }
 
-    fun createWorkRequest(): OneTimeWorkRequest {
-        val constraints =
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        return OneTimeWorkRequest.Builder(MyWorker::class.java).setConstraints(constraints)
-            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS).addTag("api_work")
+    fun createWorkRequest() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+
+        val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this@Dashboard).enqueue(workRequest)
     }
 
     private fun calculateInitialDelay(): Long {
