@@ -49,6 +49,7 @@ class StorePictureActivity : AppCompatActivity() {
 
         var data = mbsDatabase.getMBSData().getmedia()
         mediaSize = data.size
+        count = mediaSize
 
         var picturesdata =
             mbsDatabase.getMBSData().getmedia(activityLogId, Constants.store_location_pictures_num)
@@ -472,7 +473,7 @@ class StorePictureActivity : AppCompatActivity() {
     private fun setdata(picturesdata: List<MediaEntity>) {
 
         for (item in picturesdata) {
-            when (item.mid?.minus(3)){
+            when (item.mid?.minus(3)) {
                 1 -> {
                     var uri = Uri.parse(item.media_name)
                     Glide.with(this@StorePictureActivity).load(uri).into(binding.imageView1)

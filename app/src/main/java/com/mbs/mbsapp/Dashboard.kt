@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -57,7 +58,7 @@ class Dashboard : AppCompatActivity() {
         setContentView(binding.root)
         mbsDatabase = MBSDatabase.getInstance(this)!!
         tinydb = TinyDB(this)
-
+        Glide.with(this).asGif().load(R.drawable.loading).into(binding.loading)
         if (Constants.isInternetConnected(this@Dashboard)) {
 
         } else {
@@ -200,11 +201,25 @@ class Dashboard : AppCompatActivity() {
         handler.post(apiRunnable);
 
 
-        val workManager = WorkManager.getInstance(applicationContext)
-        createWorkRequest()
+
 
         binding.refresh.setOnClickListener {
-            SubmitMedia()
+
+            binding.refresh.visibility = View.GONE
+            binding.loading.visibility = View.VISIBLE
+
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed({
+                // Your code to be executed after the delay
+                // This is where you can perform actions after the delay has finished.
+                // Add your logic here.
+
+                binding.refresh.visibility = View.VISIBLE
+                binding.loading.visibility = View.GONE
+            }, 60000)
+
+            val workManager = WorkManager.getInstance(applicationContext)
+            createWorkRequest()
         }
 
     }
@@ -284,9 +299,10 @@ class Dashboard : AppCompatActivity() {
     var apiRunnable: Runnable = object : Runnable {
         override fun run() {
             var data = Constants.getlocation(this@Dashboard, apiInterface, activityLogid)
-            handler.postDelayed(this, 1 * 60 * 1000) // 10 minutes in milliseconds
+            handler.postDelayed(this, 120000) // 1 minutes in milliseconds
         }
     }
+
 
     fun createWorkRequest() {
         val constraints = Constraints.Builder()
@@ -320,7 +336,7 @@ class Dashboard : AppCompatActivity() {
         }
     }
 
-    fun SubmitMedia() {
+    /*fun SubmitMedia() {
         mbsDatabase = MBSDatabase.getInstance(this@Dashboard)!!
         var data = mbsDatabase.getMBSData().getAllMediaForSync(0)
 
@@ -378,7 +394,7 @@ class Dashboard : AppCompatActivity() {
 
         if (count == data.size) {
         }
-    }
+    }*/
 
     override fun onBackPressed() {
 

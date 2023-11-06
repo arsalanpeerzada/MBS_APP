@@ -3,6 +3,8 @@ package com.mbs.mbsapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -360,9 +362,27 @@ class SelectActivity : AppCompatActivity() {
 
         binding.refresh.setOnClickListener {
             var isSyncCheck = mbsDatabase.getMBSData().getAllMediaForSync(0)
+            var data = mbsDatabase.getMBSData().getmediabyID(0)
             if (isSyncCheck.size > 0) {
+
+
+                binding.refresh.visibility = View.GONE
+                binding.loading.visibility = View.VISIBLE
+
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed({
+                    // Your code to be executed after the delay
+                    // This is where you can perform actions after the delay has finished.
+                    // Add your logic here.
+
+                    binding.refresh.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
+                }, 60000)
+
                 val workManager = WorkManager.getInstance(applicationContext)
                 createWorkRequest()
+            }else {
+                Toast.makeText(this@SelectActivity, "No Data to sync", Toast.LENGTH_SHORT).show()
             }
         }
 
