@@ -18,6 +18,7 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
     var campaignId: Int = 0
     var activityId: Int = 0
     var activityDetailId: Int = 0
+    var activityLogId : Int = 0
     lateinit var productlist: List<ProductEntity>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +30,11 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
         campaignId = tinydb.getInt("campaignId")
         activityId = tinydb.getInt("activitymasterid")
         activityDetailId = tinydb.getInt("activitydetailid")
+        activityLogId = tinydb.getInt("activityLogID")
 
 
-        var getproducts = mbsDatabase.getMBSData().getProductStocks(campaignId, activityDetailId)
+
+        var getproducts = mbsDatabase.getMBSData().getProductStocksbyID(activityLogId)
 
 
 
@@ -82,6 +85,7 @@ class Stock_Gift_CountActivity : AppCompatActivity() {
                 productCount,
                 campaignId,
                 activityId,
+                activityLogId,
                 activityDetailId,
                 item.id,
                 item.productAnswer,

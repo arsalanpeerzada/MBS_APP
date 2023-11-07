@@ -225,7 +225,7 @@ class Dashboard : AppCompatActivity() {
     }
 
     private fun updateproducts(activityLogid: Int) {
-        var products = mbsDatabase.getMBSData().getProductStocks(campaignid, activitydetailID)
+        var products = mbsDatabase.getMBSData().getProductStocksbyID(activitydetailID)
 
 
         var productCount = 0
@@ -305,15 +305,27 @@ class Dashboard : AppCompatActivity() {
 
 
     fun createWorkRequest() {
+
+        var activitylogid = mbsDatabase.getMBSData().getUnSyncActivityLogID()
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
-            .setConstraints(constraints)
-            .build()
+        if (activitylogid.size > 0) {
+            val workRequest = OneTimeWorkRequest.Builder(FullWorker::class.java)
+                .setConstraints(constraints)
+                .build()
 
-        WorkManager.getInstance(this@Dashboard).enqueue(workRequest)
+            WorkManager.getInstance(this@Dashboard).enqueue(workRequest)
+        } else {
+            val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(this@Dashboard).enqueue(workRequest)
+        }
+
     }
 
     private fun calculateInitialDelay(): Long {

@@ -140,6 +140,9 @@ class ClusterStartActivity : AppCompatActivity() {
                         brandId,
                         user.id!!,
                         0,
+                        cityId,
+                        locationId,
+                        storeId,
                         activityDetailCode,
                         currentDate,
                         currentTime,
@@ -266,7 +269,6 @@ class ClusterStartActivity : AppCompatActivity() {
         }
 
     }
-
 
 
     private fun createImageUri(): Uri? {
@@ -446,8 +448,6 @@ class ClusterStartActivity : AppCompatActivity() {
     override fun onBackPressed() {
 
     }
-
-
 
 
 }

@@ -5,18 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.inksy.Database.MBSDatabase
-import com.mbs.mbsapp.Database.Entities.ActivityLog
 import com.mbs.mbsapp.Database.Entities.CampaignEntity
 import com.mbs.mbsapp.Database.Entities.CityEntity
 import com.mbs.mbsapp.Database.Entities.LocationEntity
@@ -31,7 +27,6 @@ import com.mbs.mbsapp.Utils.TinyDB
 import com.mbs.mbsapp.databinding.ActivitySelectBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 
 class SelectActivity : AppCompatActivity() {
@@ -361,45 +356,86 @@ class SelectActivity : AppCompatActivity() {
 
 
         binding.refresh.setOnClickListener {
-            var isSyncCheck = mbsDatabase.getMBSData().getAllMediaForSync(0)
-            var data = mbsDatabase.getMBSData().getmediabyID(0)
-            if (isSyncCheck.size > 0) {
 
+            if (!Constants.isInternetConnected(this@SelectActivity)) {
+                Toast.makeText(
+                    this@SelectActivity,
+                    "Please Connect to Internet",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                binding.refresh.visibility = View.GONE
-                binding.loading.visibility = View.VISIBLE
-
-                val handler = Handler(Looper.getMainLooper())
-                handler.postDelayed({
-                    // Your code to be executed after the delay
-                    // This is where you can perform actions after the delay has finished.
-                    // Add your logic here.
-
-                    binding.refresh.visibility = View.VISIBLE
-                    binding.loading.visibility = View.GONE
-                }, 60000)
-
-                val workManager = WorkManager.getInstance(applicationContext)
-                createWorkRequest()
             }else {
-                Toast.makeText(this@SelectActivity, "No Data to sync", Toast.LENGTH_SHORT).show()
+                var isSyncCheck = mbsDatabase.getMBSData().getAllMediaForSync(0)
+                var data = mbsDatabase.getMBSData().getmediabyID(0)
+                var activitylogid = mbsDatabase.getMBSData().getUnSyncActivityLogID()
+                if (activitylogid.size > 0) {
+                    binding.refresh.visibility = View.GONE
+                    binding.loading.visibility = View.VISIBLE
+
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed({
+                        // Your code to be executed after the delay
+                        // This is where you can perform actions after the delay has finished.
+                        // Add your logic here.
+
+                        binding.refresh.visibility = View.VISIBLE
+                        binding.loading.visibility = View.GONE
+                    }, 60000)
+
+                    val workManager = WorkManager.getInstance(applicationContext)
+                    createWorkRequest(true)
+
+
+                } else if (isSyncCheck.size > 0) {
+
+                    binding.refresh.visibility = View.GONE
+                    binding.loading.visibility = View.VISIBLE
+
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed({
+                        // Your code to be executed after the delay
+                        // This is where you can perform actions after the delay has finished.
+                        // Add your logic here.
+
+                        binding.refresh.visibility = View.VISIBLE
+                        binding.loading.visibility = View.GONE
+                    }, 60000)
+
+                    val workManager = WorkManager.getInstance(applicationContext)
+                    createWorkRequest(false)
+                } else {
+                    Toast.makeText(this@SelectActivity, "No Data to sync", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
+            }
+
+
 
 
 
     }
 
-    fun createWorkRequest() {
+    fun createWorkRequest(FullData: Boolean) {
+
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
-            .setConstraints(constraints)
-            .build()
+        if (FullData) {
+            val workRequest = OneTimeWorkRequest.Builder(FullWorker::class.java)
+                .setConstraints(constraints)
+                .build()
 
-        WorkManager.getInstance(this@SelectActivity).enqueue(workRequest)
+            WorkManager.getInstance(this@SelectActivity).enqueue(workRequest)
+        } else {
+            val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(this@SelectActivity).enqueue(workRequest)
+        }
+
     }
 
     fun calculateInitialDelay(): Long {

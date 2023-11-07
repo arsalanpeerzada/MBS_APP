@@ -31,6 +31,15 @@ data class ActivityLog(
     @ColumnInfo(name = "isSync")
     val isSync: Int?,
 
+    @ColumnInfo(name = "cityId")
+    val cityId: Int?,
+
+    @ColumnInfo(name = "locationId")
+    val locationId: Int?,
+
+    @ColumnInfo(name = "storeId")
+    val storeId: Int?,
+
     @ColumnInfo(name = "activity_detail_code")
     val activity_detail_code: String?,
 

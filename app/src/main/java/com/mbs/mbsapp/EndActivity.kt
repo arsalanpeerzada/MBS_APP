@@ -106,8 +106,6 @@ class EndActivity : AppCompatActivity() {
             openDialog()
         }
 
-
-
         binding.logout.setOnClickListener {
 //            val intent = Intent(this, MainActivity::class.java)
 //            startActivity(intent)
@@ -118,20 +116,13 @@ class EndActivity : AppCompatActivity() {
         binding.EndActivity.setOnClickListener {
 
 
-            if (Constants.isInternetConnected(this@EndActivity)) {
-                if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
-                else {
-                    Toast.makeText(
-                        this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
+            if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
+            else {
                 Toast.makeText(
-                    this@EndActivity,
-                    "Internet not Connected, please connect Internet",
-                    Toast.LENGTH_SHORT
+                    this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
                 ).show()
             }
+
 
         }
 
@@ -283,7 +274,7 @@ class EndActivity : AppCompatActivity() {
             }
         }
 
-        var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
+        // var activitylog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
         var finalUpdate =
             mbsDatabase.getMBSData().updateFinal(1, activitylogid, currentDate, currentTime)
         SubmitData()
@@ -313,13 +304,13 @@ class EndActivity : AppCompatActivity() {
     }
 
     fun SubmitProducts() {
-        var products = mbsDatabase.getMBSData().getProductStocks(campaignID, activityDetailID)
+        var products = mbsDatabase.getMBSData().getProductStocksbyID(activitylogid)
 
 
         if (products.size == 0) {
             SubmitAudioMedia()
 
-        }else {
+        } else {
             var producutId = ArrayList<String>()
             var producutCount = ArrayList<String>()
 
@@ -653,52 +644,79 @@ class EndActivity : AppCompatActivity() {
 
         binding.transparentLoader.visibility = View.VISIBLE
         binding.imageView3.visibility = View.VISIBLE
-
         mbsDatabase.getMBSData().updateEndActivity(1, activitylogid)
+        if (!Constants.isInternetConnected(this@EndActivity)) {
+            tinyDB.putString("time", "")
+            startActivity(Intent(this@EndActivity, SelectActivity::class.java))
+            this@EndActivity.finish()
+        } else {
+            var datalog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
+            var finaldata = datalog[datalog.size - 1]
+
+            apiInterface.SubmitActivity(
+                token,
+                finaldata.activityId,
+                activityDetailID,
+                finaldata.brandId,
+                finaldata.campaignId,
+                cityid,
+                locationId,
+                storeId,
+                finaldata.activityStartDate,
+                finaldata.activityStartTime,
+                finaldata.deviceLocationLat,
+                finaldata.deviceLocationLong,
+                finaldata.startActivityTasksCompleted,
+                finaldata.isQuestionnaireCompleted,
+                finaldata.stockEntryCompleted,
+                finaldata.storePictureCompleted,
+                finaldata.baChecklistCompleted,
+                finaldata.allTaskCompleted,
+                finaldata.endActivityTasksCompleted,
+                finaldata.activityEndDate,
+                finaldata.activityEndTime,
+            ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
+                override fun onResponse(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
+                    response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
+                ) {
+
+                    if (response.body()?.validation == false) {
+                        Toast.makeText(
+                            this@EndActivity,
+                            "Initial Data Inserted",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        newactivityLog = response.body()?.data?.activityLogId!!
+                        mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
+                        mbsDatabase.getMBSData().updateMedia(newactivityLog, activitylogid)
+                        SubmitAnswer()
+                    } else {
+                        Toast.makeText(
+                            this@EndActivity,
+                            "${response.errorBody().toString()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Toast.makeText(
+                            this@EndActivity,
+                            "Error In Initial Data",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        binding.transparentLoader.visibility = View.GONE
+                        binding.imageView3.visibility = View.GONE
+                    }
 
 
-        var datalog = mbsDatabase.getMBSData().getactivityLogs(campaignID)
-        var finaldata = datalog[datalog.size - 1]
+                }
 
-        apiInterface.SubmitActivity(
-            token,
-            finaldata.activityId,
-            activityDetailID,
-            finaldata.brandId,
-            finaldata.campaignId,
-            cityid,
-            locationId,
-            storeId,
-            finaldata.activityStartDate,
-            finaldata.activityStartTime,
-            finaldata.deviceLocationLat,
-            finaldata.deviceLocationLong,
-            finaldata.startActivityTasksCompleted,
-            finaldata.isQuestionnaireCompleted,
-            finaldata.stockEntryCompleted,
-            finaldata.storePictureCompleted,
-            finaldata.baChecklistCompleted,
-            finaldata.allTaskCompleted,
-            finaldata.endActivityTasksCompleted,
-            finaldata.activityEndDate,
-            finaldata.activityEndTime,
-        ).enqueue(object : Callback<APIInterface.ApiResponse<ActivitySubmitModel>> {
-            override fun onResponse(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>,
-                response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
-            ) {
-
-                if (response.body()?.validation == false) {
-                    Toast.makeText(this@EndActivity, "Initial Data Inserted", Toast.LENGTH_SHORT)
-                        .show()
-                    newactivityLog = response.body()?.data?.activityLogId!!
-                    mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
-                    mbsDatabase.getMBSData().updateMedia(newactivityLog, activitylogid)
-                    SubmitAnswer()
-                } else {
+                override fun onFailure(
+                    call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
+                ) {
                     Toast.makeText(
                         this@EndActivity,
-                        "${response.errorBody().toString()}",
+                        "${t.message.toString()}",
                         Toast.LENGTH_SHORT
                     ).show()
                     Toast.makeText(this@EndActivity, "Error In Initial Data", Toast.LENGTH_SHORT)
@@ -707,23 +725,8 @@ class EndActivity : AppCompatActivity() {
                     binding.imageView3.visibility = View.GONE
                 }
 
-
-            }
-
-            override fun onFailure(
-                call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
-            ) {
-                Toast.makeText(
-                    this@EndActivity,
-                    "${t.message.toString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Toast.makeText(this@EndActivity, "Error In Initial Data", Toast.LENGTH_SHORT).show()
-                binding.transparentLoader.visibility = View.GONE
-                binding.imageView3.visibility = View.GONE
-            }
-
-        })
+            })
+        }
     }
 
     private fun openDialog() {

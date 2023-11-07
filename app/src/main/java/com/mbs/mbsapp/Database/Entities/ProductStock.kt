@@ -15,6 +15,8 @@ data class ProductStock(
     val campaignId: Int?,
     @ColumnInfo(name = "activity_id")
     val activityId: Int?,
+    @ColumnInfo(name = "activity_log_id")
+    val activity_log_id: Int?,
     @ColumnInfo(name = "activity_detail_id")
     val activityDetailId: Int?,
     @ColumnInfo(name = "product_id")

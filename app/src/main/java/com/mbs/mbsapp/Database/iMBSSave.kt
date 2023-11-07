@@ -94,6 +94,9 @@ interface iMBSSave {
     @Query("Select * from product_stocks where campaign_id = :campaignId AND activity_detail_id = :activitydetailid")
     fun getProductStocks(campaignId: Int, activitydetailid: Int): List<ProductStock>
 
+    @Query("Select * from product_stocks where activity_log_id = :activitylogID")
+    fun getProductStocksbyID(activitylogID: Int,): List<ProductStock>
+
     @Query("Select * from media order by mid ASC")
     fun getmedia(): List<MediaEntity>
 
@@ -172,6 +175,9 @@ interface iMBSSave {
 
     @Query("Select * from activity_logs where campaign_id = :campaignId")
     fun getactivityLogs(campaignId: Int): List<ActivityLog>
+
+    @Query("Select * from activity_logs where isSync = 0 AND serverid = 0 AND start_activity_tasks_completed = 1 AND end_activity_tasks_completed = 1")
+    fun getUnSyncActivityLogID(): List<ActivityLog>
 
 
     @Query("Select * from activity_logs where activity_detail_code = :activityDetailCode AND activity_start_date = :activityStartDate")
@@ -278,7 +284,7 @@ interface iMBSSave {
     @Query("UPDATE brand_ambassadors SET pitchCompleted = :pitchCompleted WHERE id = :id")
     fun updatePitchCompleted(id: Int, pitchCompleted: Int)
 
-    @Query("UPDATE activity_logs SET serverid = :serverid WHERE mid = :mid")
+    @Query("UPDATE activity_logs SET serverid = :serverid WHERE mid = :mid AND isSync = 1")
     fun updateServerId(mid: Int, serverid: Int)
 
     @Query("UPDATE Media SET new_activity_log_id = :new_activity_log_id WHERE activity_log_id = :oldactivityLog")
