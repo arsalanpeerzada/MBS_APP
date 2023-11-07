@@ -148,7 +148,7 @@ class FullWorker(var context: Context, var workerParams: WorkerParameters) :
         campaignID = finaldata.campaignId!!
         activityLogId = finaldata.mid!!
         currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
+        activityDetailID = finaldata.activityId!!
 
         apiInterface.SubmitActivity(
             token,

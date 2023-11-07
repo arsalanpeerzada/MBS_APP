@@ -135,7 +135,7 @@ class ClusterStartActivity : AppCompatActivity() {
                         activityCount,
                         activityCount,
                         0,
-                        getmasterid[0].activityMasterId,
+                        getmasterid[0].id,
                         campaignid,
                         brandId,
                         user.id!!,

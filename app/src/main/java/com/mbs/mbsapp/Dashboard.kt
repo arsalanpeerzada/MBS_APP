@@ -87,9 +87,10 @@ class Dashboard : AppCompatActivity() {
             binding.storee.visibility = View.VISIBLE
         } else binding.storee.visibility = View.GONE
 
-        if (getBrand.brandPrimaryColor != "") {
-            binding.view.setBackgroundColor(Color.parseColor(getBrand.brandPrimaryColor))
-        }
+        if (getBrand.brandPrimaryColor != null)
+            if (getBrand.brandPrimaryColor != "") {
+                binding.view.setBackgroundColor(Color.parseColor(getBrand.brandPrimaryColor))
+            }
 
         Glide.with(this)
             .load(Constants.baseURLforPicture + getBrand.picturepath + getBrand.pictureName)
