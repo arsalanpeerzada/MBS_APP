@@ -26,7 +26,7 @@ data class QuestionEntity(
     @ColumnInfo(name = "marks")
     var marks: Int?, // Change this type to appropriate type (e.g., Int, Long, etc.)
     @ColumnInfo(name = "marksRecieved")
-    var marksRecieved: Int?, // Change this type to appropriate type (e.g., Int, Long, etc.)
+    var marksRecieved: String?, // Change this type to appropriate type (e.g., Int, Long, etc.)
     @ColumnInfo(name = "answere_comment")
     var answerComment: String?, // Convert to appropriate type if necessary
     @ColumnInfo(name = "created_by")

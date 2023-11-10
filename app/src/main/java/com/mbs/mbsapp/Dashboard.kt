@@ -282,7 +282,7 @@ class Dashboard : AppCompatActivity() {
         if (questions.size > 0) {
 
             for (item in questions) {
-                if (item.answer != "0") {
+                if (item.answer != "") {
                     count++
                 }
             }

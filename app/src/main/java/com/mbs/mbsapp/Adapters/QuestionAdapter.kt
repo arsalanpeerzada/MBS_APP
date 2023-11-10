@@ -99,9 +99,13 @@ class QuestionAdapter(
                             }
                         }
                         questionEntity[mypos].marksRecieved =
-                            enteredValue.toInt() // Update the data source
+                            enteredValue // Update the data source
 
                         if (list.size > 0) list[position].answer = enteredValue
+                    }else{
+                        questionEntity[mypos].marksRecieved = ""
+
+                        if (list.size > 0) list[position].answer = ""
                     }
                 }
 
@@ -116,9 +120,13 @@ class QuestionAdapter(
                             }
                         }
                         questionEntity[mypos].marksRecieved =
-                            enteredValue.toInt() // Update the data source
+                            enteredValue // Update the data source
 
                         if (list.size > 0) list[position].answer = enteredValue
+                    }else{
+                        questionEntity[mypos].marksRecieved = ""
+
+                        if (list.size > 0) list[position].answer = ""
                     }
                 }
             })
@@ -267,9 +275,9 @@ class QuestionAdapter(
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show()
         }
 
-        if (holder.marks.text.toString() == "0") {
-            holder.marks.text.clear();
-        }
+//        if (holder.marks.text.toString() == "0") {
+//            holder.marks.text.clear();
+//        }
     }
 
     override fun getItemCount(): Int {

@@ -17,7 +17,7 @@ data class QuestionnaireModel(
         @SerializedName("is_media_allowed") var isMediaAllowed: Int? = null,
         @SerializedName("media_count") var mediaCount: Int? = null,
         @SerializedName("marks") var marks: Int? = 0,
-        @SerializedName("marksreceived") var marksReceived: Int? = 0,
+        @SerializedName("marksreceived") var marksReceived: String? = "",
         @SerializedName("created_by") var createdBy: String? = null,
         @SerializedName("updated_by") var updatedBy: String? = null,
         @SerializedName("is_deleted") var isDeleted: String? = null,

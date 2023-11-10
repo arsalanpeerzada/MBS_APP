@@ -736,7 +736,7 @@ class MainActivity : AppCompatActivity() {
                                     item.isMediaAllowed,
                                     item.mediaCount,
                                     item.marks,
-                                    item.marksReceived,
+                                    item.marksReceived.toString(),
                                     "",
                                     item.createdBy,
                                     item.updatedBy,
