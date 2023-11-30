@@ -22,7 +22,7 @@
         android:layout_marginLeft="30dp"
         android:fontFamily="@font/poppins_regular"
         android:text="Section Hearder 1 "
-        android:textColor="@color/white"
+        android:textColor="@color/realwhite"
         app:layout_constraintBottom_toBottomOf="@+id/view10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view10" />

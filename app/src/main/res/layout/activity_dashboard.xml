@@ -60,7 +60,7 @@
         android:fontFamily="@font/poppins_regular"
         android:maxLines="1"
         android:text="Knorr Cluster Activity"
-        android:textColor="@color/white"
+        android:textColor="@color/realwhite"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toStartOf="@+id/refresh"
         app:layout_constraintHorizontal_bias="0.0"
@@ -68,6 +68,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:textColor="@color/realblack"
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="24dp"
@@ -253,6 +254,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
@@ -262,9 +264,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/questionnaire" />
+                        android:src="@drawable/questionnaire"
+                        app:tint="@color/black" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/questionsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -288,6 +292,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -299,9 +304,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
+                        app:tint="@color/black"
                         android:src="@drawable/gift" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/stockCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -333,6 +340,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
@@ -344,9 +352,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
+                        app:tint="@color/black"
                         android:src="@drawable/location" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/locationCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -371,6 +381,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
@@ -384,9 +395,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
+                        app:tint="@color/black"
                         android:src="@drawable/ba" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/BAPitch_Pending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -418,6 +431,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -428,10 +442,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        app:tint="@color/black"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/end_activity" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"

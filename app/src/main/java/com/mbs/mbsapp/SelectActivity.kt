@@ -409,10 +409,6 @@ class SelectActivity : AppCompatActivity() {
             }
             }
 
-
-
-
-
     }
 
     fun createWorkRequest(FullData: Boolean) {

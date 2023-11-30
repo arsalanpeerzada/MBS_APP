@@ -56,7 +56,7 @@
         android:layout_marginLeft="50dp"
         android:fontFamily="@font/poppins_regular"
         android:text="Stock / Gift Count"
-        android:textColor="@color/white"
+        android:textColor="@color/realwhite"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -44,6 +44,7 @@
         app:layout_constraintTop_toTopOf="@+id/marks" />
 
     <Button
+        android:textColor="@color/realwhite"
         android:id="@+id/upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

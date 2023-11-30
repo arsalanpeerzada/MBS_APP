@@ -66,7 +66,6 @@
         android:maxLines="1"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
-        android:textColor="@color/appgrey"
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +85,6 @@
         android:maxLines="1"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
-        android:textColor="@color/appgrey"
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,6 +120,7 @@
 
 
     <Button
+        android:textColor="@color/realwhite"
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -140,9 +139,9 @@
         android:layout_marginTop="15dp"
         android:elevation="11dp"
         android:text="Loading .....   0%"
-        android:textColor="@color/appblue"
+        android:textColor="@color/appblue1"
         android:textSize="25dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login" />

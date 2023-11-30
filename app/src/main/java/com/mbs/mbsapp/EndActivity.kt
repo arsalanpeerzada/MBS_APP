@@ -75,6 +75,7 @@ class EndActivity : AppCompatActivity() {
     var currentTime: String = ""
     var currentDate: String = ""
     var newactivityLog = 0
+    var syncStarted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEndBinding.inflate(layoutInflater)
@@ -115,12 +116,18 @@ class EndActivity : AppCompatActivity() {
 
         binding.EndActivity.setOnClickListener {
 
+            if (syncStarted) {
 
-            if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
-            else {
-                Toast.makeText(
-                    this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
-                ).show()
+                tinyDB.putString("time", "")
+                startActivity(Intent(this@EndActivity, SelectActivity::class.java))
+                this@EndActivity.finish()
+            } else {
+                if (selfiecount == 1 && teamcount == 1 && locationcount == 1) endActivity()
+                else {
+                    Toast.makeText(
+                        this@EndActivity, "Please Select All Picture", Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
 
 
@@ -334,21 +341,24 @@ class EndActivity : AppCompatActivity() {
                         if (response.body()?.validation == false) {
                             SubmitAudioMedia()
                             Log.d("MSB", "Products data Inserted")
-                            Toast.makeText(
-                                this@EndActivity,
-                                "Products data Inserted",
-                                Toast.LENGTH_SHORT
-                            ).show()
+//                            Toast.makeText(
+//                                this@EndActivity,
+//                                "Products data Inserted",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+                            binding.ProductResult.setText("Sync Successfully")
+                            binding.ProductResult.setTextColor(resources.getColor(R.color.darkgreen))
 
                         } else {
-                            Toast.makeText(
-                                this@EndActivity,
-                                "Error in Products",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+//                            Toast.makeText(
+//                                this@EndActivity,
+//                                "Error in Products",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
                             binding.transparentLoader.visibility = View.GONE
                             binding.imageView3.visibility = View.GONE
+                            binding.ProductResult.setText("Sync UnSuccessful")
+                            binding.ProductResult.setTextColor(resources.getColor(R.color.appred))
                         }
 
                     }
@@ -357,9 +367,11 @@ class EndActivity : AppCompatActivity() {
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
-                    Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@EndActivity, "Error in Products", Toast.LENGTH_SHORT).show()
                     binding.transparentLoader.visibility = View.GONE
                     binding.imageView3.visibility = View.GONE
+                    binding.ProductResult.setText("Sync UnSuccessful")
+                    binding.ProductResult.setTextColor(resources.getColor(R.color.appred))
 
                 }
 
@@ -415,16 +427,22 @@ class EndActivity : AppCompatActivity() {
                     response: Response<APIInterface.ApiResponse<ActivitySubmitModel>>
                 ) {
                     if (response.isSuccessful) {
-
+                        binding.BAPitchesResult.setText("Sync Successfully")
+                        binding.BAPitchesResult.setTextColor(resources.getColor(R.color.darkgreen))
+                    } else {
+                        binding.BAPitchesResult.setText("Sync UnSuccessful")
+                        binding.BAPitchesResult.setTextColor(resources.getColor(R.color.appred))
                     }
                 }
 
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
-                    Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT).show()
                     binding.transparentLoader.visibility = View.GONE
                     binding.imageView3.visibility = View.GONE
+                    binding.BAPitchesResult.setText("Sync UnSuccessful")
+                    binding.BAPitchesResult.setTextColor(resources.getColor(R.color.appred))
 
                 }
             })
@@ -442,7 +460,7 @@ class EndActivity : AppCompatActivity() {
 
         var data = questiondata
         var count = 0
-
+        var countDone = 0
         Log.d("MSB", "${data.size} Answers Media")
         for (item in data) {
             count++
@@ -482,7 +500,12 @@ class EndActivity : AppCompatActivity() {
                     val response = executeCallAsync(call)
 
                     if (response.isSuccessful) {
+                        countDone++
                         Log.d("MSB", count.toString() + " Answer Media Done")
+                        runOnUiThread {
+                            binding.AnswerMediaResult.setText("$countDone/${data.size}")
+                            binding.AnswerMediaResult.setTextColor(resources.getColor(R.color.darkgreen))
+                        }
                     } else {
                         Log.d("MSB", count.toString() + " Answer Media Failed")
                         // Toast.makeText(this@EndActivity, "Error in Media", Toast.LENGTH_SHORT)
@@ -507,6 +530,7 @@ class EndActivity : AppCompatActivity() {
     suspend fun SubmitMedia(data: List<MediaEntity>) {
 
         var count = 0
+        var countDone = 0
         Log.d("MSB", "${data.size} Media")
         for (item in data) {
             count++
@@ -538,8 +562,13 @@ class EndActivity : AppCompatActivity() {
 
             if (response.isSuccessful) {
                 if (response.isSuccessful) {
-
+                    countDone++
                     Log.d("MSB", count.toString() + "Media Done")
+                    runOnUiThread {
+                        binding.TotalMediaResult.setText("$countDone/${data.size}")
+                        binding.TotalMediaResult.setTextColor(resources.getColor(R.color.darkgreen))
+                    }
+
                     var mobileid = response.body()?.mobile_media_id
                     if (mobileid?.isNotEmpty() == true) mbsDatabase.getMBSData()
                         .updateMediaSync(mobileid.toInt(), 1)
@@ -551,9 +580,13 @@ class EndActivity : AppCompatActivity() {
         }
 
         if (count == data.size) {
-            tinyDB.putString("time", "")
-            startActivity(Intent(this@EndActivity, SelectActivity::class.java))
-            this@EndActivity.finish()
+//            tinyDB.putString("time", "")
+//            startActivity(Intent(this@EndActivity, SelectActivity::class.java))
+//            this@EndActivity.finish()
+            binding.transparentLoader.visibility = View.GONE
+            binding.imageView3.visibility = View.GONE
+
+            binding.textView13.setText("Here is your sync report, click on End Activity to end the Activity, and try to sync remaining items on first screeen.")
         }
     }
 
@@ -611,18 +644,21 @@ class EndActivity : AppCompatActivity() {
 
                     if (response.body()?.validation == false) {
                         Log.d("MSB", "Answers data Inserted")
-                        Toast.makeText(
-                            this@EndActivity,
-                            "Answers data Inserted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
+//                        Toast.makeText(
+//                            this@EndActivity,
+//                            "Answers data Inserted",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                        binding.AnswersResult.setText("Sync Successfully")
+                        binding.AnswersResult.setTextColor(resources.getColor(R.color.darkgreen))
                         SubmitProducts()
                     } else {
-                        Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT)
-                            .show()
+//                        Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT)
+//                            .show()
                         binding.transparentLoader.visibility = View.GONE
                         binding.imageView3.visibility = View.GONE
+                        binding.AnswersResult.setText("Sync UnSuccessful")
+                        binding.AnswersResult.setTextColor(resources.getColor(R.color.appred))
                     }
 
                 }
@@ -631,9 +667,12 @@ class EndActivity : AppCompatActivity() {
             override fun onFailure(
                 call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
             ) {
-                Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT).show()
+                //  Toast.makeText(this@EndActivity, "Error in Answer", Toast.LENGTH_SHORT).show()
                 binding.transparentLoader.visibility = View.GONE
                 binding.imageView3.visibility = View.GONE
+                binding.AnswersResult.setText("Sync UnSuccessful")
+                binding.AnswersResult.setTextColor(resources.getColor(R.color.appred))
+
             }
 
 
@@ -644,6 +683,8 @@ class EndActivity : AppCompatActivity() {
 
         binding.transparentLoader.visibility = View.VISIBLE
         binding.imageView3.visibility = View.VISIBLE
+        binding.syncReport.visibility = View.VISIBLE
+        syncStarted = true
         mbsDatabase.getMBSData().updateEndActivity(1, activitylogid)
         if (!Constants.isInternetConnected(this@EndActivity)) {
             tinyDB.putString("time", "")
@@ -682,30 +723,35 @@ class EndActivity : AppCompatActivity() {
                 ) {
 
                     if (response.body()?.validation == false) {
-                        Toast.makeText(
-                            this@EndActivity,
-                            "Initial Data Inserted",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+//                        Toast.makeText(
+//                            this@EndActivity,
+//                            "Initial Data Inserted",
+//                            Toast.LENGTH_SHORT
+//                        )
+//                            .show()
                         newactivityLog = response.body()?.data?.activityLogId!!
                         mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
                         mbsDatabase.getMBSData().updateMedia(newactivityLog, activitylogid)
                         SubmitAnswer()
+                        binding.IntialResult.setText("Sync Successfully")
+                        binding.IntialResult.setTextColor(resources.getColor(R.color.darkgreen))
                     } else {
-                        Toast.makeText(
-                            this@EndActivity,
-                            "${response.errorBody().toString()}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Toast.makeText(
-                            this@EndActivity,
-                            "Error In Initial Data",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+//                        Toast.makeText(
+//                            this@EndActivity,
+//                            "${response.errorBody().toString()}",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Toast.makeText(
+//                            this@EndActivity,
+//                            "Error In Initial Data",
+//                            Toast.LENGTH_SHORT
+//                        )
+//                            .show()
                         binding.transparentLoader.visibility = View.GONE
                         binding.imageView3.visibility = View.GONE
+                        binding.IntialResult.setText("Sync UnSuccessful")
+                        binding.IntialResult.setTextColor(resources.getColor(R.color.appred))
+                        binding.textView13.setText("Theres some issue with the sync, your data is saved locally, Click on End Activity and sync your data after some time")
                     }
 
 
@@ -714,15 +760,21 @@ class EndActivity : AppCompatActivity() {
                 override fun onFailure(
                     call: Call<APIInterface.ApiResponse<ActivitySubmitModel>>, t: Throwable
                 ) {
-                    Toast.makeText(
-                        this@EndActivity,
-                        "${t.message.toString()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Toast.makeText(this@EndActivity, "Error In Initial Data", Toast.LENGTH_SHORT)
-                        .show()
+//                    Toast.makeText(
+//                        this@EndActivity,
+//                        "${t.message.toString()}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                    Toast.makeText(this@EndActivity, "Error In Initial Data", Toast.LENGTH_SHORT)
+//                        .show()
                     binding.transparentLoader.visibility = View.GONE
                     binding.imageView3.visibility = View.GONE
+                    binding.IntialResult.setText("Sync UnSuccessful")
+                    binding.IntialResult.setTextColor(resources.getColor(R.color.appred))
+
+
+                    binding.textView13.setText("Theres some issue with the sync, your data is saved locally, Click on End Activity and sync your data after some time")
+
                 }
 
             })

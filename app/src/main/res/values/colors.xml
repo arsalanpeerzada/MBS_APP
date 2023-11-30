@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="appblue">#052669</color>
     <color name="appgrey">#858484</color>
+	<color name="appgrey1">#A1858484</color>
     <color name="appred">#FF0303</color>
     <color name="appwhite">#EEEEEE</color>
     <color name="dashboardblue">#EBF0FF</color>
@@ -12,8 +13,12 @@
     <color name="dashboardgreen">#CCFFC8</color>
     <color name="dashboardbapitch">#C8F5FF</color>
     <color name="darkpink">#FF9393</color>
-    <color name="darkgreen">#BBFCC1</color>
+    <color name="darkgreen">#7AFB86</color>
     <color name="color_divider">#d1d1d1</color>
     <color name="transparent">#00DDDDDD</color>
     <color name="blacktransparent">#66000000</color>
+	<color name="realblack">#FF000000</color>
+    <color name="realwhite">#FFFFFFFF</color>
+    <color name="appblue1">#052669</color>
+    <color name="editTextBackground">#EEEEEE</color>
 </resources>

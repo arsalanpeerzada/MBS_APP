@@ -47,7 +47,7 @@
         android:fontFamily="@font/poppins_regular"
         android:maxLines="1"
         android:text="Knorr Cluster Activity"
-        android:textColor="@color/white"
+        android:textColor="@color/realwhite"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toStartOf="@+id/imageView7"
         app:layout_constraintHorizontal_bias="0.0"
@@ -78,6 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <Button
+        android:textColor="@color/realwhite"
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -124,6 +125,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardview1" />
 
     <Button
+        android:textColor="@color/realwhite"
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -164,6 +166,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardview2" />
 
     <Button
+        android:textColor="@color/realwhite"
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -192,6 +195,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
+        android:textColor="@color/realwhite"
         android:id="@+id/startActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
