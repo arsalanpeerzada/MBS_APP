@@ -80,7 +80,10 @@ class EndActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEndBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.upperlayout.visibility = View.VISIBLE
+        binding.syncReport.visibility = View.GONE
+        binding.EndActivity.visibility = View.VISIBLE
+        binding.EndActivity2.visibility = View.GONE
         tinyDB = TinyDB(this@EndActivity)
         binding.logout.visibility = View.GONE
 
@@ -130,6 +133,14 @@ class EndActivity : AppCompatActivity() {
                 }
             }
 
+
+        }
+
+        binding.EndActivity2.setOnClickListener {
+
+            tinyDB.putString("time", "")
+            startActivity(Intent(this@EndActivity, SelectActivity::class.java))
+            this@EndActivity.finish()
 
         }
 
@@ -684,6 +695,12 @@ class EndActivity : AppCompatActivity() {
         binding.transparentLoader.visibility = View.VISIBLE
         binding.imageView3.visibility = View.VISIBLE
         binding.syncReport.visibility = View.VISIBLE
+
+        binding.upperlayout.visibility = View.GONE
+        binding.syncReport.visibility = View.VISIBLE
+        binding.EndActivity.visibility = View.GONE
+        binding.EndActivity2.visibility = View.VISIBLE
+        binding.textView13.text = "This is your sync report, now click on Finish Activity to Finish."
         syncStarted = true
         mbsDatabase.getMBSData().updateEndActivity(1, activitylogid)
         if (!Constants.isInternetConnected(this@EndActivity)) {

@@ -63,18 +63,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/view"
         android:id="@+id/upperlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/view">
 
         <TextView
-            android:layout_marginTop="30dp"
             android:id="@+id/selfie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/poppins_regular"
             android:text="Please Take Selfie"
             app:layout_constraintStart_toStartOf="parent"
@@ -226,44 +226,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/EndActivity" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/selfiecancel"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="-7dp"-->
-<!--        android:layout_marginRight="-7dp"-->
-<!--        android:elevation="10dp"-->
-<!--        android:padding="5dp"-->
-<!--        android:src="@drawable/cancel_sphere"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/cardview1"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/cardview1" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/selfiecancel"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="-7dp"-->
+    <!--        android:layout_marginRight="-7dp"-->
+    <!--        android:elevation="10dp"-->
+    <!--        android:padding="5dp"-->
+    <!--        android:src="@drawable/cancel_sphere"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/cardview1"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/cardview1" />-->
 
-<!--    <ImageView-->
-<!--        android:id="@+id/teamcancel"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="-7dp"-->
-<!--        android:layout_marginRight="-7dp"-->
-<!--        android:elevation="10dp"-->
-<!--        android:padding="5dp"-->
-<!--        android:src="@drawable/cancel_sphere"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/cardview2"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/cardview2" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/teamcancel"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="-7dp"-->
+    <!--        android:layout_marginRight="-7dp"-->
+    <!--        android:elevation="10dp"-->
+    <!--        android:padding="5dp"-->
+    <!--        android:src="@drawable/cancel_sphere"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/cardview2"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/cardview2" />-->
 
-<!--    <ImageView-->
-<!--        android:id="@+id/setupcancel"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="-7dp"-->
-<!--        android:layout_marginRight="-7dp"-->
-<!--        android:elevation="10dp"-->
-<!--        android:padding="5dp"-->
-<!--        android:src="@drawable/cancel_sphere"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/cardview3"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/cardview3" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/setupcancel"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="-7dp"-->
+    <!--        android:layout_marginRight="-7dp"-->
+    <!--        android:elevation="10dp"-->
+    <!--        android:padding="5dp"-->
+    <!--        android:src="@drawable/cancel_sphere"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/cardview3"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/cardview3" />-->
 
 
     <ImageView
@@ -471,6 +471,20 @@
 
 
     </LinearLayout>
+
+
+    <Button
+        android:id="@+id/EndActivity2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Finish Activity"
+        android:textColor="@color/realwhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/syncReport" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
