@@ -594,10 +594,12 @@ class EndActivity : AppCompatActivity() {
 //            tinyDB.putString("time", "")
 //            startActivity(Intent(this@EndActivity, SelectActivity::class.java))
 //            this@EndActivity.finish()
-            binding.transparentLoader.visibility = View.GONE
-            binding.imageView3.visibility = View.GONE
+            runOnUiThread {
+                binding.transparentLoader.visibility = View.GONE
+                binding.imageView3.visibility = View.GONE
 
-            binding.textView13.setText("Here is your sync report, click on End Activity to end the Activity, and try to sync remaining items on first screeen.")
+                binding.textView13.setText("Here is your sync report, click on End Activity to end the Activity, and try to sync remaining items on first screeen.")
+            }
         }
     }
 
@@ -700,7 +702,8 @@ class EndActivity : AppCompatActivity() {
         binding.syncReport.visibility = View.VISIBLE
         binding.EndActivity.visibility = View.GONE
         binding.EndActivity2.visibility = View.VISIBLE
-        binding.textView13.text = "This is your sync report, now click on Finish Activity to Finish."
+        binding.textView13.text =
+            "This is your sync report, now click on Finish Activity to Finish."
         syncStarted = true
         mbsDatabase.getMBSData().updateEndActivity(1, activitylogid)
         if (!Constants.isInternetConnected(this@EndActivity)) {
@@ -749,6 +752,7 @@ class EndActivity : AppCompatActivity() {
                         newactivityLog = response.body()?.data?.activityLogId!!
                         mbsDatabase.getMBSData().updateServerId(activitylogid, newactivityLog)
                         mbsDatabase.getMBSData().updateMedia(newactivityLog, activitylogid)
+
                         SubmitAnswer()
                         binding.IntialResult.setText("Sync Successfully")
                         binding.IntialResult.setTextColor(resources.getColor(R.color.darkgreen))
