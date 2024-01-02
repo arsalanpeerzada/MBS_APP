@@ -28,6 +28,8 @@ data class CampaignEntity(
     val campaignStartDate: String?,
     @ColumnInfo(name = "campaign_end_date")
     val campaignEndDate: String?,
+    @ColumnInfo(name = "logo_id")
+    val logo_id: Int?,
     @ColumnInfo(name = "created_by")
     val createdBy: String?,
     @ColumnInfo(name = "updated_by")

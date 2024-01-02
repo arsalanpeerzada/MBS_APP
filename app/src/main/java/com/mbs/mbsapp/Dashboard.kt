@@ -126,6 +126,12 @@ class Dashboard : AppCompatActivity() {
 
         }
 
+        binding.campaign.setOnClickListener {
+            val intent = Intent(this, CampaignActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.left, R.anim.left2);
+        }
+
         binding.stock.setOnClickListener {
             val intent = Intent(this, Stock_Gift_CountActivity::class.java)
             startActivity(intent)

@@ -166,6 +166,7 @@ class MainActivity : AppCompatActivity() {
                                     item.campaignDescription,
                                     item.campaignStartDate,
                                     item.campaignEndDate,
+                                    item.logoId,
                                     item.createdBy,
                                     item.updatedBy,
                                     item.isDeleted,

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF000000</color>
+    <color name="appblue">#052669</color>
+    <color name="appgrey">#FF000000</color>
+    <color name="appgrey1">#7E000000</color>
+    <color name="appred">#FF0303</color>
+    <color name="appwhite">#EEEEEE</color>
+    <color name="dashboardblue">#EBF0FF</color>
+    <color name="dashboardpink">#FFDDE5</color>
+    <color name="dashboardyellow">#FFFDC8</color>
+    <color name="dashboardgreen">#CCFFC8</color>
+    <color name="dashboardbapitch">#C8F5FF</color>
+    <color name="darkpink">#FF9393</color>
+    <color name="darkgreen">#7AFB86</color>
+    <color name="color_divider">#d1d1d1</color>
+    <color name="transparent">#00DDDDDD</color>
+    <color name="blacktransparent">#66000000</color>
+	<color name="realblack">#FF000000</color>
+    <color name="realwhite">#FFFFFFFF</color>
+    <color name="appblue1">#FFFFFFFF</color>
+	<color name="editTextBackground">#3EEEEEEE</color>
+	
+</resources>

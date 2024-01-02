@@ -29,6 +29,9 @@
         android:theme="@style/Theme.MBSAPP"
         tools:targetApi="31">
         <activity
+            android:name=".CampaignActivity"
+            android:exported="false" />
+        <activity
             android:name=".CameraActivity"
             android:exported="false" />
         <activity

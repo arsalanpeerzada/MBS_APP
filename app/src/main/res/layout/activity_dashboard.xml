@@ -245,6 +245,44 @@
                 app:layout_constraintTop_toBottomOf="@+id/storee">
 
                 <LinearLayout
+                    android:id="@+id/campaign"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="4.5"
+                    android:background="@drawable/curve_edittext"
+                    android:backgroundTint="@color/dashboardblue"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="Campaign" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/questionnaire"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:textColor="@color/black"
+                        android:id="@+id/campaignCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="Pending" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
                     android:id="@+id/questionnaire"
                     android:layout_width="0dp"
                     android:layout_height="150dp"
@@ -277,10 +315,17 @@
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
                 <LinearLayout
                     android:id="@+id/stock"
@@ -314,54 +359,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
                         android:layout_marginTop="10dp"
-                        android:text="Pending" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-                <LinearLayout
-                    android:id="@+id/store"
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_weight="4.5"
-                    android:background="@drawable/curve_edittext"
-                    android:backgroundTint="@color/dashboardyellow"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:textColor="@color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_marginTop="15dp"
-                        android:text="Store / Location Pictures" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
-                        app:tint="@color/black"
-                        android:src="@drawable/location" />
-
-                    <TextView
-                        android:textColor="@color/black"
-                        android:id="@+id/locationCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_marginTop="5dp"
                         android:text="Pending" />
 
                 </LinearLayout>
@@ -462,35 +459,38 @@
                     android:layout_weight="1" />
 
                 <LinearLayout
-                    android:id="@+id/EndsActivity"
+                    android:id="@+id/store"
                     android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:layout_weight="4.5"
                     android:background="@drawable/curve_edittext"
-                    android:backgroundTint="@color/dashboardgreen"
-                    android:orientation="vertical"
-                    android:visibility="invisible">
+                    android:backgroundTint="@color/dashboardyellow"
+                    android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginHorizontal="15dp"
                         android:layout_marginTop="15dp"
-                        android:text="End Activity" />
+                        android:text="Store / Location Pictures" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:src="@drawable/end_activity" />
+                        android:layout_marginTop="5dp"
+                        app:tint="@color/black"
+                        android:src="@drawable/location" />
 
                     <TextView
+                        android:textColor="@color/black"
+                        android:id="@+id/locationCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:text="Click to End Activity" />
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Pending" />
 
                 </LinearLayout>
 
