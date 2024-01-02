@@ -284,7 +284,7 @@ interface iMBSSave {
     @Query("UPDATE brand_ambassadors SET pitchCompleted = :pitchCompleted WHERE id = :id")
     fun updatePitchCompleted(id: Int, pitchCompleted: Int)
 
-    @Query("UPDATE activity_logs SET serverid = :serverid AND isSync = 1 WHERE mid = :mid ")
+    @Query("UPDATE activity_logs SET serverid = :serverid, isSync = 1 WHERE mid = :mid ")
     fun updateServerId(mid: Int, serverid: Int)
 
     @Query("UPDATE Media SET new_activity_log_id = :new_activity_log_id WHERE activity_log_id = :oldactivityLog")

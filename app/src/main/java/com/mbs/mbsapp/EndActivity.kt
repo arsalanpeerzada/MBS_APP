@@ -581,8 +581,7 @@ class EndActivity : AppCompatActivity() {
                     }
 
                     var mobileid = response.body()?.mobile_media_id
-                    if (mobileid?.isNotEmpty() == true) mbsDatabase.getMBSData()
-                        .updateMediaSync(mobileid.toInt(), 1)
+                    if (mobileid?.isNotEmpty() == true) mbsDatabase.getMBSData().updateMediaSync(mobileid.toInt(), 1)
                 }
             } else {
                 Log.d("MSB", count.toString() + " Media Failed")

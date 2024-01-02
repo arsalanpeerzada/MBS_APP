@@ -19,8 +19,13 @@ class AudioRecorder {
             initMediaRecorder()
         }
         mediaRecorder!!.setOutputFile(filePath)
-        mediaRecorder!!.prepare()
-        mediaRecorder!!.start()
+        try {
+            mediaRecorder!!.prepare()
+            mediaRecorder!!.start()
+        }catch (e:Exception){
+            
+        }
+
     }
 
     fun stop() {
