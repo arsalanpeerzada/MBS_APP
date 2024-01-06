@@ -9,6 +9,7 @@ import com.mbs.mbsapp.Model.AnswerModel
 import com.mbs.mbsapp.Model.BrandAmbassadorModel
 import com.mbs.mbsapp.Model.BrandsModel
 import com.mbs.mbsapp.Model.CampaignChannelModel
+import com.mbs.mbsapp.Model.CampaignMediaModel
 import com.mbs.mbsapp.Model.CampaignModel
 import com.mbs.mbsapp.Model.CitiesModel
 import com.mbs.mbsapp.Model.LocationModel
@@ -38,7 +39,6 @@ public interface APIInterface {
         @Field("latitude") latitude: String?,
         @Field("longitude") longitude: String?,
     ): Call<ApiResponse<ActivitySubmitModel>>
-
 
 
     @FormUrlEncoded
@@ -155,7 +155,17 @@ public interface APIInterface {
 
     @GET("initialsync/brands")
     @Headers("Accept: application/json")
-    fun getBrands(@Header("Authorization") token: String?): Call<ApiResponse<List<BrandsModel>>>
+    fun getBrands(
+        @Header("Authorization") token: String?
+    ): Call<ApiResponse<List<BrandsModel>>>
+
+    @FormUrlEncoded
+    @POST("initialsync/campaign_media")
+    @Headers("Accept: application/json")
+    fun getcampaign_media(
+        @Header("Authorization") token: String?,
+        @Field("campaign_id") campaign_id: Int
+    ): Call<ApiResponse<List<CampaignMediaModel>>>
 
     @GET("initialsync/question_section")
     @Headers("Accept: application/json")
@@ -227,8 +237,6 @@ public interface APIInterface {
 
         @SerializedName("log_id")
         var log_id: Int? = 0
-
-
 
 
         @SerializedName("data")

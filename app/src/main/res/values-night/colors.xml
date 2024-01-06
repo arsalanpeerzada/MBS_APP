@@ -8,6 +8,7 @@
     <color name="appred">#FF0303</color>
     <color name="appwhite">#EEEEEE</color>
     <color name="dashboardblue">#EBF0FF</color>
+    <color name="dashboardlighgreen">#EBFFEC</color>
     <color name="dashboardpink">#FFDDE5</color>
     <color name="dashboardyellow">#FFFDC8</color>
     <color name="dashboardgreen">#CCFFC8</color>

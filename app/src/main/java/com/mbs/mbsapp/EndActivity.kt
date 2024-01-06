@@ -97,7 +97,6 @@ class EndActivity : AppCompatActivity() {
         token = "Bearer $stoken"
         mbsDatabase = MBSDatabase.getInstance(this@EndActivity)!!
         mediacount = mbsDatabase.getMBSData().getmedia().size
-        var token = tinyDB.getString("token")
         activityMasterId = tinyDB.getInt("activitymasterid")
         activitylogid = tinyDB.getInt("activityLogID")
         campaignID = tinyDB.getInt("campaignId")

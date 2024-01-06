@@ -250,7 +250,7 @@
                     android:layout_height="150dp"
                     android:layout_weight="4.5"
                     android:background="@drawable/curve_edittext"
-                    android:backgroundTint="@color/dashboardblue"
+                    android:backgroundTint="@color/dashboardlighgreen"
                     android:orientation="vertical">
 
                     <TextView
@@ -258,13 +258,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
-                        android:text="Campaign" />
+                        android:text="Pre Activity" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/questionnaire"
+                        android:src="@drawable/pre_activity_logo"
                         app:tint="@color/black" />
 
                     <TextView
@@ -273,7 +273,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
-                        android:text="Pending" />
+                        android:text="Activity Details" />
 
                 </LinearLayout>
 
