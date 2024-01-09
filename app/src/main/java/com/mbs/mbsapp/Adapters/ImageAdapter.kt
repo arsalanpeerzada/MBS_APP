@@ -38,8 +38,10 @@ class ImageAdapter(
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val currentImage = images[position]
         //holder.imageView.setImageResource(currentImage.activityMediaPath)
+        var image =
+            Constants.baseURLforPicture + "/storage" + currentImage.activityMediaPath + currentImage.activityMediaName
         Glide.with(context)
-            .load(Constants.baseURL + currentImage.activityMediaPath + currentImage.activityMediaName)
+            .load(image)
             .into(holder.imageView)
     }
 

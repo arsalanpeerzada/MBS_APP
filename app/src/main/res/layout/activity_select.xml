@@ -53,13 +53,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/loading"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginRight="10dp"
         android:padding="10dp"
         android:src="@drawable/loading"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toStartOf="@+id/logout"
         app:layout_constraintTop_toTopOf="parent" />
@@ -203,6 +203,7 @@
         android:backgroundTint="@color/appblue"
         android:fontFamily="@font/poppins_regular"
         android:text="Next"
+        android:textColor="@color/realwhite"
         app:layout_constraintTop_toBottomOf="@+id/selectStore" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

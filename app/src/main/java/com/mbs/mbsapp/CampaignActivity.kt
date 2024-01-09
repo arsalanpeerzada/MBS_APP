@@ -2,12 +2,18 @@ package com.mbs.mbsapp
 
 import ImageAdapter
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Html
+import android.view.Window
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.inksy.Database.MBSDatabase
 import com.inksy.Remote.APIClient
 import com.inksy.Remote.APIInterface
@@ -37,10 +43,10 @@ class CampaignActivity : AppCompatActivity() {
         var stoken = tinydb?.getString("token")!!
         token = "Bearer $stoken"
         var data = mbsDatabase.getMBSData().getCampaignbyBrand(brandId)
-        if (!data[0].campaignDescription.isNullOrBlank())
-            binding.textview.text = Html.fromHtml(data[0].campaignDescription)
+        if (!data[1].campaignDescription.isNullOrBlank())
+            binding.textview.text = Html.fromHtml(data[1].campaignDescription)
 
-        getCampaignMedia(token, data[0].id!!)
+        getCampaignMedia(token, data[1].id!!)
 
         binding.back.setOnClickListener {
             binding.submit.performClick()
@@ -86,24 +92,32 @@ class CampaignActivity : AppCompatActivity() {
                 var list = response.body()?.data
                 binding.imagerecycler.adapter =
                     ImageAdapter(this@CampaignActivity, list!!) { image ->
-                        showImagePopup(image)
+                        showImagePopup(this@CampaignActivity, image)
                     }
             }
 
         })
     }
 
-    private fun showImagePopup(image: CampaignMediaModel) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_image, null)
-        val imageViewFull: ImageView = dialogView.findViewById(R.id.imageViewFull)
-        var data = Constants.baseURL + image.activityMediaPath + image.activityMediaName
-        //imageViewFull.setImageResource(data)
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setPositiveButton("Close") { _, _ -> }
-            .create()
-
-        dialog.show()
+    private fun showImagePopup(context: Context, image: CampaignMediaModel) {
+//        val dialog = Dialog(context)
+////        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+////        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        dialog.setContentView(R.layout.dialog_image)
+//
+//        // Get the ImageView from the layout
+//        val imageView: ImageView = dialog.findViewById(R.id.imageViewFull)
+//
+//        var image =
+//            Constants.baseURLforPicture + "/storage" + image.activityMediaPath + image.activityMediaName
+//        // Load the image using a library like Glide
+//        Glide.with(context)
+//            .load(image)
+//            .placeholder(ColorDrawable(android.graphics.Color.TRANSPARENT)) // Optional placeholder while loading
+//            //.error(R.drawable.ic_error) // Optional error placeholder
+//            .into(imageView)
+//
+//        // Show the dialog
+//        dialog.show()
     }
 }
